@@ -802,10 +802,12 @@ export const App = {
   injectFooter() {
     const mainEl = document.querySelector("main");
     if (mainEl && !document.getElementById("app-global-footer")) {
+      mainEl.classList.add("flex", "flex-col");
+
       const footer = document.createElement("footer");
       footer.id = "app-global-footer";
       footer.className =
-        "mt-12 py-6 border-t border-slate-150 dark:border-[#143E23]/15 text-center text-[11px] text-slate-400 dark:text-[#5F8369] font-medium w-full";
+        "mt-auto py-6 border-t border-slate-150 dark:border-[#143E23]/15 text-center text-[11px] text-slate-400 dark:text-[#5F8369] font-medium w-full";
       footer.innerHTML = `
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 max-w-7xl mx-auto px-6">
           <div class="flex items-center gap-1.5">
