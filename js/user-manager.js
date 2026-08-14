@@ -1,5 +1,5 @@
 // KA Farm - User Manager
-// Handles roles, permissions and authorization rules
+// Gère les rôles, les permissions et les règles d'autorisation
 
 import { KAStorage } from "./storage.js";
 import { USER_ROLES, ALL_USER_ROLES, ROLE_PERMISSIONS, isAdminRole } from "./constants/roles.js";
@@ -20,25 +20,25 @@ export const UserManager = {
     return KAStorage.getCurrentUser() !== null;
   },
 
-  // Check if current user has role Terrain (ground operator)
+  // Vérifier si l'utilisateur courant a le rôle Terrain (opérateur de terrain)
   isTerrain() {
     const user = this.getCurrentUser();
     return user && user.role === "Terrain";
   },
 
-  // Check if current user has role Bureau (office supervisor)
+  // Vérifier si l'utilisateur courant a le rôle Bureau (superviseur de bureau)
   isBureau() {
     const user = this.getCurrentUser();
     return user && user.role === "Bureau";
   },
 
-  // Check if current user is admin
+  // Vérifier si l'utilisateur courant est administrateur
   isAdmin() {
     const user = this.getCurrentUser();
     return user && isAdminRole(user.role);
   },
 
-  // Role permissions checking
+  // Vérification des permissions selon le rôle
   canEditCrops() {
     const user = this.getCurrentUser();
     return !!(user && ALL_USER_ROLES.includes(user.role));
@@ -69,7 +69,7 @@ export const UserManager = {
     return !!(user && (user.role === USER_ROLES.BUREAU || isAdminRole(user.role)));
   },
 
-  // View-only permissions for shared pages
+  // Permissions en lecture seule pour les pages partagées
   canViewFinances() {
     const user = this.getCurrentUser();
     return !!(user && ALL_USER_ROLES.includes(user.role));
@@ -85,7 +85,7 @@ export const UserManager = {
     return !!(user && ALL_USER_ROLES.includes(user.role));
   },
 
-  // Require login helper. Redirect to login if not authenticated
+  // Aide pour exiger une connexion. Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
   requireAuth() {
     if (!this.isLoggedIn()) {
       window.location.assign("/pages/auth/login.html");
@@ -94,7 +94,7 @@ export const UserManager = {
     return true;
   },
 
-  // Redirect if logged in (e.g., from login page to dashboard)
+  // Rediriger si l'utilisateur est déjà connecté (par exemple, de la page de connexion vers le tableau de bord)
   redirectIfAuth() {
     if (this.isLoggedIn()) {
       window.location.assign("/pages/shared/dashboard.html");

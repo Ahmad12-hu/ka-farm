@@ -1,6 +1,6 @@
 /**
- * DEV LOCAL SERVER ONLY - Do not deploy to production
- * Vercel production uses api/index.js instead
+ * Serveur local de développement uniquement - ne pas déployer en production
+ * La production sur Vercel utilise api/index.js à la place
  */
 import express from "express";
 import { createServer as createViteServer } from "vite";
@@ -29,7 +29,7 @@ import { z } from "zod";
 
 dotenv.config();
 
-// Security middleware
+// Middleware de sécurité
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -46,12 +46,12 @@ const apiLimiter = rateLimit({
   message: { error: "Trop de modifications, veuillez réessayer dans 5 minutes." },
 });
 
-// Note: code PostgreSQL/Supabase nettoyé du serveur de dev selon le cahier des charges.
+// Remarque : le code PostgreSQL/Supabase a été retiré du serveur de développement selon le cahier des charges.
 
 async function startServer() {
   const app = express();
 
-  // Security headers
+  // En-têtes de sécurité
   app.use(
     helmet({
       contentSecurityPolicy: {
@@ -74,7 +74,7 @@ async function startServer() {
     })
   );
 
-  // CORS configuration
+  // Configuration CORS
   app.use(
     cors({
       origin: process.env.ALLOWED_ORIGINS?.split(",") || [
@@ -86,13 +86,13 @@ async function startServer() {
     })
   );
 
-  // Rate limiting
+  // Limitation de débit
   app.use("/api/", limiter);
   app.use("/api/", apiLimiter);
 
   app.use(express.json({ limit: "12mb" }));
 
-  // In-memory fallback stores (used when PostgreSQL is not available)
+  // Stockages de repli en mémoire (utilisés lorsque PostgreSQL n'est pas disponible)
   let serverMessages = [];
   let serverStocks = [];
   let serverCrops = [];
@@ -143,7 +143,7 @@ async function startServer() {
   app.post("/api/treatments", async (req, res) => {
     const treatment = req.body;
 
-    // Validation with Zod
+    // Validation avec Zod
     const validation = validateData(TreatmentSchema, treatment);
     if (!validation.success) {
       logger.warn("Treatment validation failed", { errors: validation.errors });

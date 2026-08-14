@@ -1320,7 +1320,7 @@ export const CropsModule = {
             }
           </div>
 
-          <!-- Bottom Warning/Safe Badge -->
+          <!-- Badge inférieur d'avertissement / sécurité -->
           <div class="pt-3 border-t border-slate-50 dark:border-[#143E23]/10 flex items-center justify-between">
             ${instructionText}
           </div>
@@ -1335,7 +1335,7 @@ export const CropsModule = {
   },
 };
 
-// Global image viewer helper
+// Assistant global de visualisation d'image
 window.viewFullSizePhoto = (imgUrl) => {
   const viewer = document.createElement("div");
   viewer.className =
@@ -1350,7 +1350,7 @@ window.viewFullSizePhoto = (imgUrl) => {
   document.body.appendChild(viewer);
 };
 
-// Global handlers for Sénégal Crop Practical Sheets library (Option 4)
+// Gestionnaires globaux pour la bibliothèque des fiches pratiques des cultures du Sénégal (Option 4)
 window.filterLibraryCrops = () => {
   const query = document.getElementById("library-search")?.value.toLowerCase().trim() || "";
   const filterType = document.getElementById("library-filter")?.value || "all";

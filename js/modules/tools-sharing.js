@@ -1,25 +1,25 @@
-// KA Farm - Module Bourse d'Outils Agricoles
-// Fonctionnalité 2.6 : Partage et location d'outils agricoles entre fermes
+// KA Farm - Module de bourse d'outils agricoles
+// Fonctionnalité 2.6 : partage et location d'outils agricoles entre fermes
 
 import { KAStorage } from "../storage.js";
 import { ErrorHandler } from "./error-handler.js";
 
 // ============================================================
-// MAIN MODULE EXPORT
+// EXPORT PRINCIPAL DU MODULE
 // ============================================================
 
 export const ToolsSharingModule = {
-  // State management
+  // Gestion de l'état
   state: {
     selectedRegion: "Niayes",
     selectedToolType: "",
     searchQuery: "",
     viewMode: "catalog", // 'catalog', 'my-rentals', 'my-tools', 'favorites'
-    currentUserFarmId: "FARM-006", // TODO: Get from session
-    currentUserFarmName: "Ferme Ba - Dakar", // TODO: Get from session
+    currentUserFarmId: "FARM-006", // TODO : récupérer depuis la session
+    currentUserFarmName: "Ferme Ba - Dakar", // TODO : récupérer depuis la session
   },
 
-  // Tool types
+  // Types d'outils
   toolTypes: [
     "Irrigation",
     "Transport",
@@ -31,11 +31,11 @@ export const ToolsSharingModule = {
     "Autre",
   ],
 
-  // Regions
+  // Régions
   regions: ["Niayes", "Dakar", "Thiès", "Saint-Louis", "Kaolack", "Mbour", "Fatick", "Diourbel"],
 
   // ============================================================
-  // INITIALIZATION
+  // INITIALISATION
   // ============================================================
 
   init() {
@@ -52,46 +52,46 @@ export const ToolsSharingModule = {
 
   cacheElements() {
     this.elements = {
-      // Statistics
+      // Statistiques
       statTotalTools: document.getElementById("stat-total-tools"),
       statAvailableTools: document.getElementById("stat-available-tools"),
       statActiveRentals: document.getElementById("stat-active-rentals"),
       statTotalRentals: document.getElementById("stat-total-rentals"),
 
-      // View tabs
+      // Onglets d'affichage
       viewCatalogBtn: document.getElementById("view-catalog"),
       viewMyRentalsBtn: document.getElementById("view-my-rentals"),
       viewMyToolsBtn: document.getElementById("view-my-tools"),
       viewFavoritesBtn: document.getElementById("view-favorites"),
 
-      // Tool cards container
+      // Conteneur des cartes d'outils
       toolsGrid: document.getElementById("tools-grid"),
 
-      // Rental table
+      // Tableau des locations
       rentalsTableBody: document.getElementById("rentals-table-body"),
 
-      // My tools table
+      // Tableau de mes outils
       myToolsTableBody: document.getElementById("my-tools-table-body"),
 
-      // Favorites table
+      // Tableau des favoris
       favoritesTableBody: document.getElementById("favorites-table-body"),
 
-      // Tool detail modal
+      // Fenêtre modale de détail d'un outil
       toolDetailModal: document.getElementById("tool-detail-modal"),
 
-      // Rental modal
+      // Fenêtre modale de location
       rentalModal: document.getElementById("rental-modal"),
 
-      // Add tool modal
+      // Fenêtre modale d'ajout d'un outil
       addToolModal: document.getElementById("add-tool-modal"),
 
-      // Review modal
+      // Fenêtre modale d'avis
       reviewModal: document.getElementById("review-modal"),
     };
   },
 
   setupListeners() {
-    // View tabs
+    // Onglets d'affichage
     if (this.elements.viewCatalogBtn) {
       this.elements.viewCatalogBtn.addEventListener("click", () => this.switchView("catalog"));
     }
@@ -105,7 +105,7 @@ export const ToolsSharingModule = {
       this.elements.viewFavoritesBtn.addEventListener("click", () => this.switchView("favorites"));
     }
 
-    // Modals
+    // Fenêtres modales
     if (this.elements.toolDetailModal) {
       const closeBtn = this.elements.toolDetailModal.querySelector("[data-close-tool-detail]");
       if (closeBtn) {
@@ -134,13 +134,13 @@ export const ToolsSharingModule = {
       if (closeBtn) closeBtn.addEventListener("click", () => this.closeReviewModal());
     }
 
-    // Add tool button
+    // Bouton d'ajout d'un outil
     const addToolBtn = document.getElementById("add-tool-btn");
     if (addToolBtn) {
       addToolBtn.addEventListener("click", () => this.openAddToolModal());
     }
 
-    // Search
+    // Recherche
     const searchInput = document.getElementById("tools-search");
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
@@ -149,7 +149,7 @@ export const ToolsSharingModule = {
       });
     }
 
-    // Filters
+    // Filtres
     const regionFilter = document.getElementById("filter-region");
     if (regionFilter) {
       regionFilter.addEventListener("change", (e) => {
@@ -168,7 +168,7 @@ export const ToolsSharingModule = {
   },
 
   // ============================================================
-  // DATA LOADING
+  // CHARGEMENT DES DONNÉES
   // ============================================================
 
   loadInitialData() {
@@ -200,13 +200,13 @@ export const ToolsSharingModule = {
   },
 
   // ============================================================
-  // VIEW MANAGEMENT
+  // GESTION DES VUES
   // ============================================================
 
   switchView(mode) {
     this.state.viewMode = mode;
 
-    // Update active tab
+    // Mettre à jour l'onglet actif
     if (this.elements.viewCatalogBtn) {
       this.elements.viewCatalogBtn.classList.toggle("bg-brand-green", mode === "catalog");
       this.elements.viewCatalogBtn.classList.toggle("bg-brand-slate", mode !== "catalog");
@@ -224,7 +224,7 @@ export const ToolsSharingModule = {
       this.elements.viewFavoritesBtn.classList.toggle("bg-brand-slate", mode !== "favorites");
     }
 
-    // Show/hide sections
+    // Afficher / masquer les sections
     const catalogSection = document.getElementById("catalog-section");
     const myRentalsSection = document.getElementById("my-rentals-section");
     const myToolsSection = document.getElementById("my-tools-section");
@@ -239,7 +239,7 @@ export const ToolsSharingModule = {
   },
 
   // ============================================================
-  // RENDERING
+  // RENDU
   // ============================================================
 
   render() {
@@ -266,7 +266,7 @@ export const ToolsSharingModule = {
 
     let tools = this.storage.getAvailableTools();
 
-    // Apply filters
+    // Appliquer les filtres
     if (this.state.selectedRegion) {
       tools = tools.filter((t) => t.region === this.state.selectedRegion);
     }
@@ -501,7 +501,7 @@ export const ToolsSharingModule = {
   },
 
   // ============================================================
-  // TOOL DETAIL MODAL
+  // FENÊTRE MODALE DE DÉTAIL D'UN OUTIL
   // ============================================================
 
   openToolDetail(toolId) {
@@ -711,7 +711,7 @@ export const ToolsSharingModule = {
   },
 
   // ============================================================
-  // RENTAL MODAL
+  // FENÊTRE MODALE DE LOCATION
   // ============================================================
 
   openRentalModal(toolId) {
@@ -774,7 +774,7 @@ export const ToolsSharingModule = {
     // Calculate days difference
     const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
-    // Use daily rate for full days, hourly rate for partial days
+    // Utiliser le tarif journalier pour les jours complets, et le tarif horaire pour les jours partiels
     let total = 0;
     if (tool.hourly_rental_price_fcfa > 0 && hours < 24) {
       total = hours * tool.hourly_rental_price_fcfa;
@@ -877,7 +877,7 @@ export const ToolsSharingModule = {
   },
 
   // ============================================================
-  // ADD TOOL MODAL
+  // FENÊTRE MODALE D'AJOUT D'UN OUTIL
   // ============================================================
 
   openAddToolModal(toolId = null) {
@@ -910,7 +910,7 @@ export const ToolsSharingModule = {
         }
       }
     } else {
-      // Reset form
+      // Réinitialiser le formulaire
       const form = this.elements.addToolModal.querySelector("form");
       if (form) form.reset();
     }
@@ -946,11 +946,11 @@ export const ToolsSharingModule = {
       is_available: true,
       owner_farm_id: this.state.currentUserFarmId,
       owner_farm_name: this.state.currentUserFarmName,
-      owner_contact_name: "Utilisateur Actuel", // TODO: Get from session
-      owner_phone: "", // TODO: Get from session
+      owner_contact_name: "Utilisateur Actuel", // TODO : récupérer depuis la session
+      owner_phone: "", // TODO : récupérer depuis la session
       owner_location: form.elements["tool-location"].value,
-      owner_lat: 14.7932, // TODO: Get from geolocation
-      owner_lng: -17.2654, // TODO: Get from geolocation
+      owner_lat: 14.7932, // TODO : récupérer depuis la géolocalisation
+      owner_lng: -17.2654, // TODO : récupérer depuis la géolocalisation
       region: form.elements["tool-region"].value,
       usage_instructions: form.elements["tool-usage"].value,
       maintenance_requirements: form.elements["tool-maintenance"].value,
@@ -997,7 +997,7 @@ export const ToolsSharingModule = {
   },
 
   // ============================================================
-  // REVIEW MODAL
+  // FENÊTRE MODALE D'AVIS
   // ============================================================
 
   openReviewModal(rentalId) {
@@ -1044,7 +1044,7 @@ export const ToolsSharingModule = {
 
     this.storage.addToolReview(review);
 
-    // Update tool rating
+    // Mettre à jour la note de l'outil
     const tool = this.storage.getToolSharingById(rental.tool_id);
     if (tool) {
       const avgRating = this.storage.getAverageToolRating(rental.tool_id);
@@ -1082,7 +1082,7 @@ export const ToolsSharingModule = {
   },
 };
 
-// Initialize module when DOM is loaded
+// Initialiser le module lorsque le DOM est chargé
 document.addEventListener("DOMContentLoaded", () => {
   ToolsSharingModule.init();
 });

@@ -1,4 +1,4 @@
-// Polyfill TextEncoder for jsdom test environment
+// Polyfill TextEncoder pour l'environnement de test jsdom
 if (typeof global.TextEncoder === "undefined") {
   const { TextEncoder, TextDecoder } = require("util");
   global.TextEncoder = TextEncoder;

@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Suivi des Cultures - KA Farm</title>
 
-    <!-- Favicon & Branding -->
+    <!-- Favicon et identité visuelle -->
     <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
     <link rel="apple-touch-icon" href="/assets/logo.svg" />
 
-    <!-- Tailwind CSS CDN & Lucide Icons -->
+    <!-- CDN Tailwind CSS et icônes Lucide -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Custom separated Stylesheets -->
+    <!-- Feuilles de style séparées personnalisées -->
     <link rel="stylesheet" href="/css/styles.css" />
 
     <script>
@@ -38,17 +38,17 @@
   <body
     class="bg-slate-50 dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200"
   >
-    <!-- Mobile Top Header Placeholder -->
+    <!-- Emplacement réservé pour l'en-tête mobile -->
     <div id="mobile-header-placeholder"></div>
 
     <div class="min-h-screen flex flex-col lg:flex-row">
-      <!-- Sidebar Placeholder -->
+      <!-- Emplacement réservé pour la barre latérale -->
       <div id="sidebar-placeholder"></div>
 
-      <!-- Main Content Stage -->
+      <!-- Zone du contenu principal -->
       <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
         <div class="w-full space-y-8">
-          <!-- ==================== TAB: CROPS & NURSERIES ==================== -->
+          <!-- ==================== ONGLET : CULTURES & PÉPINIÈRES ==================== -->
           <div class="space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
               <div class="space-y-1">
@@ -113,7 +113,7 @@
                     class="px-3 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-600 dark:text-slate-300 cursor-pointer"
                   >
                     <option value="all">📍 Toutes Parcelles</option>
-                    <!-- Populated dynamically -->
+                    <!-- Rempli dynamiquement -->
                   </select>
                   <select
                     id="crops-filter-seed"
@@ -143,7 +143,7 @@
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 id="crops-container"
               >
-                <!-- Dynamically populated via crops.js -->
+                <!-- Rempli dynamiquement via crops.js -->
               </div>
             </div>
 
@@ -156,13 +156,13 @@
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 id="nurseries-container"
               >
-                <!-- Dynamically populated via crops.js -->
+                <!-- Rempli dynamiquement via crops.js -->
               </div>
             </div>
 
             <!-- Traitements & Délai Avant Récolte (DAR) Section -->
             <div class="space-y-4 pt-6 border-t border-slate-150 dark:border-[#143E23]/20">
-              <!-- DAR Alert Banner for Crops -->
+              <!-- Bannière d'alerte DAR pour les cultures -->
               <div
                 id="crops-dar-alert"
                 class="hidden p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center gap-2"
@@ -209,7 +209,7 @@
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 id="treatments-container"
               >
-                <!-- Dynamically populated via crops.js -->
+                <!-- Rempli dynamiquement via crops.js -->
               </div>
             </div>
 
@@ -383,7 +383,7 @@
                 </p>
               </div>
 
-              <!-- Library search & filter inputs -->
+              <!-- Champs de recherche et de filtre de la bibliothèque -->
               <div class="flex flex-col sm:flex-row gap-3">
                 <div class="relative flex-1">
                   <i
@@ -415,7 +415,7 @@
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                 id="library-container"
               >
-                <!-- Rendered dynamically by CropsModule via crops.js -->
+                <!-- Rendu dynamiquement par CropsModule via crops.js -->
               </div>
             </div>
           </div>
@@ -472,7 +472,7 @@
               onchange="window.onCropFieldChange(this.value)"
               class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none cursor-pointer"
             >
-              <!-- Populated dynamically with parcelles -->
+              <!-- Rempli dynamiquement avec les parcelles -->
               <option value="custom">+ Saisir une nouvelle parcelle...</option>
             </select>
           </div>
@@ -675,7 +675,7 @@
       <div
         class="w-full max-w-4xl bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto"
       >
-        <!-- Left side: diagnostic list and history -->
+            <!-- Côté gauche : liste des diagnostics et historique -->
         <div class="flex-1 space-y-4">
           <div
             class="flex justify-between items-center pb-2 border-b border-slate-50 dark:border-[#143E23]/10"
@@ -700,11 +700,11 @@
             Historique des diagnostics
           </h4>
           <div id="sanitary-history" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
-            <!-- Populated dynamically -->
+            <!-- Rempli dynamiquement -->
           </div>
         </div>
 
-        <!-- Right side: camera capture and upload form -->
+        <!-- Côté droit : capture caméra et formulaire d'envoi -->
         <div
           class="w-full md:w-[360px] space-y-4 border-t md:border-t-0 md:border-l border-slate-100 dark:border-[#143E23]/20 pt-4 md:pt-0 md:pl-6 text-xs font-semibold"
         >
@@ -735,7 +735,7 @@
             ></video>
             <!-- Canvas for capturing frame -->
             <canvas id="sanitary-canvas" class="hidden"></canvas>
-            <!-- Upload preview image -->
+            <!-- Aperçu de l'image importée -->
             <img
               id="sanitary-preview"
               src=""
@@ -743,7 +743,7 @@
               class="absolute inset-0 w-full h-full object-cover hidden"
             />
 
-            <!-- Upload and Camera actions placeholder -->
+            <!-- Emplacement des actions d'importation et de caméra -->
             <div id="sanitary-placeholder" class="text-center p-4 space-y-3 z-10">
               <span class="text-3xl">📸</span>
               <div class="flex flex-wrap gap-2 justify-center">
@@ -790,7 +790,7 @@
               </button>
             </div>
 
-            <!-- Reset selection button -->
+            <!-- Bouton de réinitialisation de la sélection -->
             <button
               id="sanitary-reset-preview-btn"
               onclick="window.resetSanitaryPhoto()"
@@ -801,7 +801,7 @@
             </button>
           </div>
 
-          <!-- AI Analysis Button -->
+          <!-- Bouton d'analyse IA -->
           <button
             type="button"
             id="sanitary-ai-analyze-btn"
@@ -811,7 +811,7 @@
             <i data-lucide="sparkles" class="h-4 w-4"></i> Analyser avec IA
           </button>
 
-          <!-- AI Diagnostic Result Display -->
+          <!-- Affichage du résultat du diagnostic IA -->
           <div
             id="sanitary-ai-result"
             class="hidden space-y-2 p-3 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 rounded-xl"
@@ -917,7 +917,7 @@
               required
               class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
             >
-              <!-- Populated dynamically -->
+              <!-- Rempli dynamiquement -->
             </select>
           </div>
 
@@ -1024,7 +1024,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // Set default dates on load
+        // Définir les dates par défaut au chargement
         const todayStr = new Date().toISOString().split("T")[0];
         const cropSowingInput = document.getElementById("form-crop-sowing");
         const cropHarvestInput = document.getElementById("form-crop-harvest");

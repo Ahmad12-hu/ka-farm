@@ -1,15 +1,15 @@
-// KA Farm - Module Commandes Groupées d'Intrants
-// Fonctionnalité 2.7 : Module coopératif pour commandes groupées
+// KA Farm - Module des commandes groupées d'intrants
+// Fonctionnalité 2.7 : module coopératif pour commandes groupées
 
 import { KAStorage } from "../storage.js";
 import { ErrorHandler } from "./error-handler.js";
 
 // ============================================================
-// MAIN MODULE EXPORT
+// EXPORT PRINCIPAL DU MODULE
 // ============================================================
 
 export const GroupOrdersModule = {
-  // State management
+  // Gestion de l'état
   state: {
     selectedRegion: "Niayes",
     selectedStatus: "",
@@ -19,14 +19,14 @@ export const GroupOrdersModule = {
     currentFarmId: null,
   },
 
-  // Regions
+  // Régions
   regions: ["Niayes", "Dakar", "Thiès", "Saint-Louis", "Kaolack", "Mbour", "Fatick", "Diourbel"],
 
-  // Order statuses
+  // Statuts des commandes
   statuses: ["En cours", "Confirmée", "Livrée", "Annulée", "Terminée"],
 
   // ============================================================
-  // INITIALIZATION
+  // INITIALISATION
   // ============================================================
 
   init() {
@@ -43,7 +43,7 @@ export const GroupOrdersModule = {
 
   cacheElements() {
     this.elements = {
-      // Statistics
+      // Statistiques
       statTotalOrders: document.getElementById("stat-total-orders"),
       statActiveOrders: document.getElementById("stat-active-orders"),
       statDeliveredOrders: document.getElementById("stat-delivered-orders"),
@@ -51,17 +51,17 @@ export const GroupOrdersModule = {
       statTotalFarms: document.getElementById("stat-total-farms"),
       statActiveFarms: document.getElementById("stat-active-farms"),
 
-      // View tabs
+      // Onglets d'affichage
       viewOrdersBtn: document.getElementById("view-orders"),
       viewItemsBtn: document.getElementById("view-items"),
       viewFarmsBtn: document.getElementById("view-farms"),
 
-      // Tables
+      // Tableaux
       ordersTableBody: document.getElementById("orders-table-body"),
       itemsTableBody: document.getElementById("items-table-body"),
       farmsTableBody: document.getElementById("farms-table-body"),
 
-      // Modals
+      // Fenêtres modales
       orderDetailModal: document.getElementById("order-detail-modal"),
       createOrderModal: document.getElementById("create-order-modal"),
       addFarmModal: document.getElementById("add-farm-modal"),
@@ -70,7 +70,7 @@ export const GroupOrdersModule = {
   },
 
   setupListeners() {
-    // View tabs
+    // Onglets d'affichage
     if (this.elements.viewOrdersBtn) {
       this.elements.viewOrdersBtn.addEventListener("click", () => this.switchView("orders"));
     }
@@ -81,7 +81,7 @@ export const GroupOrdersModule = {
       this.elements.viewFarmsBtn.addEventListener("click", () => this.switchView("farms"));
     }
 
-    // Modals
+    // Fenêtres modales
     if (this.elements.orderDetailModal) {
       const closeBtn = this.elements.orderDetailModal.querySelector("[data-close-order-detail]");
       if (closeBtn) closeBtn.addEventListener("click", () => this.closeOrderDetailModal());
@@ -108,7 +108,7 @@ export const GroupOrdersModule = {
       if (closeBtn) closeBtn.addEventListener("click", () => this.closeAddItemModal());
     }
 
-    // Action buttons
+    // Bouton d'ajout d'un outil
     const createOrderBtn = document.getElementById("create-order-btn");
     if (createOrderBtn) {
       createOrderBtn.addEventListener("click", () => this.openCreateOrderModal());
@@ -124,7 +124,7 @@ export const GroupOrdersModule = {
       addItemBtn.addEventListener("click", () => this.openAddItemModal());
     }
 
-    // Search
+    // Recherche
     const searchInput = document.getElementById("group-search");
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
@@ -133,7 +133,7 @@ export const GroupOrdersModule = {
       });
     }
 
-    // Filters
+    // Filtres
     const regionFilter = document.getElementById("filter-region");
     if (regionFilter) {
       regionFilter.addEventListener("change", (e) => {
@@ -152,7 +152,7 @@ export const GroupOrdersModule = {
   },
 
   // ============================================================
-  // DATA LOADING
+  // CHARGEMENT DES DONNÉES
   // ============================================================
 
   loadInitialData() {
@@ -187,13 +187,13 @@ export const GroupOrdersModule = {
   },
 
   // ============================================================
-  // VIEW MANAGEMENT
+  // GESTION DES VUES
   // ============================================================
 
   switchView(mode) {
     this.state.viewMode = mode;
 
-    // Update active tab
+    // Mettre à jour l'onglet actif
     if (this.elements.viewOrdersBtn) {
       this.elements.viewOrdersBtn.classList.toggle("bg-brand-green", mode === "orders");
       this.elements.viewOrdersBtn.classList.toggle("bg-brand-slate", mode !== "orders");
@@ -207,7 +207,7 @@ export const GroupOrdersModule = {
       this.elements.viewFarmsBtn.classList.toggle("bg-brand-slate", mode !== "farms");
     }
 
-    // Show/hide sections
+    // Afficher / masquer les sections
     const ordersSection = document.getElementById("orders-section");
     const itemsSection = document.getElementById("items-section");
     const farmsSection = document.getElementById("farms-section");
@@ -220,7 +220,7 @@ export const GroupOrdersModule = {
   },
 
   // ============================================================
-  // RENDERING
+  // RENDU
   // ============================================================
 
   render() {
@@ -244,7 +244,7 @@ export const GroupOrdersModule = {
 
     let orders = this.storage.getGroupOrders();
 
-    // Apply filters
+    // Appliquer les filtres
     if (this.state.selectedRegion) {
       orders = orders.filter((o) => o.region === this.state.selectedRegion);
     }
@@ -311,7 +311,7 @@ export const GroupOrdersModule = {
 
     let items = this.storage.getGroupOrderItems();
 
-    // Apply filters
+    // Appliquer les filtres
     if (this.state.selectedRegion) {
       const orders = this.storage.getGroupOrdersByRegion(this.state.selectedRegion);
       const orderIds = orders.map((o) => o.id);
@@ -376,7 +376,7 @@ export const GroupOrdersModule = {
 
     let farms = this.storage.getFarmsCommunity();
 
-    // Apply filters
+    // Appliquer les filtres
     if (this.state.selectedRegion) {
       farms = farms.filter((f) => f.region === this.state.selectedRegion);
     }
@@ -483,7 +483,7 @@ export const GroupOrdersModule = {
       const form = this.elements.createOrderModal.querySelector("form");
       if (form) form.reset();
 
-      // Set default date
+      // Définir la date par défaut
       const today = new Date().toISOString().split("T")[0];
       const deliveryDate = new Date();
       deliveryDate.setDate(deliveryDate.getDate() + 10);
@@ -514,13 +514,13 @@ export const GroupOrdersModule = {
     const order = {
       id: this.currentOrderId || `GO-${Date.now()}`,
       group_name: form.elements["order-name"].value,
-      initiated_by: "Utilisateur Actuel", // TODO: Get from session
+      initiated_by: "Utilisateur Actuel", // TODO : récupérer depuis la session
       supplier_id: "",
       supplier_name: form.elements["order-supplier"].value,
       status: this.currentOrderId
         ? this.storage.getGroupOrderById(this.currentOrderId).status
         : "En cours",
-      total_amount_fcfa: 0, // Will be calculated from items
+      total_amount_fcfa: 0, // Sera calculé à partir des articles
       order_date: form.elements["order-date"].value,
       expected_delivery_date: form.elements["order-delivery-date"].value,
       delivery_address: form.elements["order-address"].value,
@@ -549,7 +549,7 @@ export const GroupOrdersModule = {
 
   deleteOrder(orderId) {
     if (confirm("Êtes-vous sûr de vouloir supprimer cette commande ?")) {
-      // Delete all items for this order first
+      // Supprimer d'abord tous les articles de cette commande
       const items = this.storage.getGroupOrderItemsByOrder(orderId);
       items.forEach((item) => {
         this.storage.deleteGroupOrderItem(item.id);
@@ -565,7 +565,7 @@ export const GroupOrdersModule = {
     this.currentOrderId = orderId;
     this.openCreateOrderModal(orderId);
 
-    // Show items for this order
+    // Afficher les articles de cette commande
     const items = this.storage.getGroupOrderItemsByOrder(orderId);
   },
 
@@ -650,7 +650,7 @@ export const GroupOrdersModule = {
     } else {
       this.storage.addGroupOrderItem(item);
 
-      // Update order total amount
+      // Mettre à jour le montant total de la commande
       const orderItems = this.storage.getGroupOrderItemsByOrder(orderId);
       const totalAmount = orderItems.reduce((sum, i) => sum + (i.total_price || 0), 0);
       this.storage.updateGroupOrder(orderId, { total_amount_fcfa: totalAmount });
@@ -671,14 +671,14 @@ export const GroupOrdersModule = {
     if (quantity !== null) {
       this.storage.markItemAsReceived(itemId, parseFloat(quantity));
 
-      // Check if all items are received
+      // Vérifier si tous les articles sont reçus
       const orderId = item.group_order_id;
       const orderItems = this.storage.getGroupOrderItemsByOrder(orderId);
       const allReceived = orderItems.every((i) => i.delivery_received);
 
       if (allReceived) {
         this.storage.updateGroupOrder(orderId, { status: "Livré" });
-        // Update farm last order date
+        // Mettre à jour la date de dernière commande de la ferme
         const farms = this.storage.getFarmsCommunity();
         const farmIds = [...new Set(orderItems.map((i) => i.farm_id))];
         farmIds.forEach((farmId) => {
@@ -789,7 +789,7 @@ export const GroupOrdersModule = {
   },
 };
 
-// Initialize module when DOM is loaded
+// Initialiser le module lorsque le DOM est chargé
 document.addEventListener("DOMContentLoaded", () => {
   GroupOrdersModule.init();
 });

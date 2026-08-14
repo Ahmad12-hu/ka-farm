@@ -7,7 +7,7 @@ import { MarketPricesModule } from "./modules/market-prices.js";
 import { FeedbackModule } from "./modules/feedback.js";
 import { BackupModule } from "./modules/backup.js";
 
-// Global variables for other scripts to use
+// Variables globales pour les autres scripts
 window.KAStorage = KAStorage;
 window.UserManager = UserManager;
 window.WolofAudio = WolofAudio;
@@ -17,7 +17,7 @@ window.ErrorHandler = ErrorHandler;
 let currentUser = null;
 let isDarkMode = true;
 
-// Predefined Weather recommendations and presets for Senegal
+// Recommandations et préréglages météo prédéfinis pour le Sénégal
 window.SENEGAL_WEATHER_PRESETS = {
   dakar: {
     name: "Dakar (Région de Dakar)",
@@ -220,7 +220,7 @@ Object.entries(window.SENEGAL_WEATHER_PRESETS).forEach(([key, preset]) => {
   };
 });
 
-// High-performance smooth cubic ease-out number animation utility
+// Utilitaire d'animation numérique fluide à sortie cubique haute performance
 window.animateValue = function (element, start, end, duration = 800) {
   if (!element) return;
   const startNum = Number(start) || 0;
@@ -283,7 +283,7 @@ window.animateValue = function (element, start, end, duration = 800) {
 export const App = {
   init() {
     console.info("[App] init started");
-    // FORCER l'authentification D'ABORD pour éviter le race condition avec router.js
+    // FORCER l'authentification en premier pour éviter une condition de concurrence avec router.js
     UserManager.requireAuth();
     currentUser = UserManager.getCurrentUser();
 
@@ -304,10 +304,10 @@ export const App = {
       window.syncManager.init();
     }
 
-    // Ensure storage is initialized and cloud sync on-snapshots are active on all pages
+    // S'assurer que le stockage est initialisé et que la synchronisation cloud par instantanés est active sur toutes les pages
     KAStorage.init();
 
-    // Auto-load demo data on first launch if no data exists
+    // Charger automatiquement les données de démonstration au premier lancement si aucune donnée n'existe
     const hasAnyData = () => {
       const keys = [
         "ka_farm_crops",
@@ -328,16 +328,16 @@ export const App = {
         .catch((e) => console.error("Demo data load failed", e));
     }
 
-    // Detect system theme preference (matchMedia)
+    // Détecter la préférence de thème du système (matchMedia)
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const systemPrefersDark = mediaQuery.matches;
 
-    // Use stored preference if available, otherwise fallback to system preference
+    // Utiliser la préférence enregistrée si elle existe, sinon revenir à celle du système
     isDarkMode = KAStorage.get("ka_farm_dark_mode", systemPrefersDark);
 
     this.applyTheme(isDarkMode);
 
-    // Automatically switch the theme when system preferences change
+    // Changer automatiquement le thème lorsque les préférences du système évoluent
     const handleSystemThemeChange = (e) => {
       isDarkMode = e.matches;
       KAStorage.set("ka_farm_dark_mode", isDarkMode);
@@ -347,7 +347,7 @@ export const App = {
     try {
       mediaQuery.addEventListener("change", handleSystemThemeChange);
     } catch (err) {
-      // Fallback support for older browser/headless environments
+      // Solution de repli pour les navigateurs plus anciens ou les environnements sans interface
       mediaQuery.addListener(handleSystemThemeChange);
     }
     this.injectSidebar();
@@ -357,30 +357,30 @@ export const App = {
     this.setupGlobalListeners();
     this.updateBadges();
 
-    // Initialize MarketPricesModule if on market-prices page
+    // Initialiser MarketPricesModule si l'on se trouve sur la page market-prices
     if (window.location.pathname.includes("market-prices.html")) {
       MarketPricesModule.init();
     }
 
-    // Initialize FeedbackModule if on shared pages (not auth/admin)
+    // Initialiser FeedbackModule sur les pages partagées (hors authentification/admin)
     const pathname = window.location.pathname;
     console.log("Current pathname:", pathname);
 
     if (!pathname.includes("/pages/auth/") && !pathname.includes("/pages/admin/")) {
       console.log("Initializing FeedbackModule on shared page...");
 
-      // Initialize feedback with Supabase credentials from Vite env if available
+      // Initialiser le module de retour utilisateur avec les identifiants Supabase depuis l'environnement Vite si disponibles
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || null;
       const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || null;
 
       if (supabaseUrl && supabaseKey) {
         FeedbackModule.init(supabaseUrl, supabaseKey);
       } else {
-        // Still inject the button but it will store locally
+        // Injecter quand même le bouton, mais il stockera localement
         FeedbackModule.init(null, null);
       }
 
-      // Force inject the button directly if not present after 3 seconds
+      // Forcer l'injection du bouton directement s'il n'est pas présent après 3 secondes
       setTimeout(() => {
         console.log("Checking for feedback button...");
         if (!document.getElementById("feedback-fab")) {
@@ -394,7 +394,7 @@ export const App = {
       console.log("Skipping FeedbackModule on auth/admin page");
     }
 
-    // Initialize BackupModule on all pages
+    // Initialiser BackupModule sur toutes les pages
     BackupModule.init();
   },
 
@@ -445,7 +445,7 @@ export const App = {
     // Activer la transition fluide temporaire pour le changement de thème
     document.documentElement.classList.add("theme-transition");
 
-    // Animate theme toggle icons (desktop + mobile)
+    // Animer les icônes du changement de thème (bureau + mobile)
     const btnDesktop = document.getElementById("btn-theme-desktop");
     const btnMobile = document.getElementById("btn-theme-mobile");
 
@@ -471,7 +471,7 @@ export const App = {
 
     this.applyTheme(isDarkMode);
 
-    // Nettoyer après l'animation pour ne pas perturber les hover normaux
+    // Nettoyer après l'animation pour ne pas perturber les survols normaux
     setTimeout(() => {
       document.documentElement.classList.remove("theme-transition");
     }, 450);
@@ -499,27 +499,27 @@ export const App = {
     const sidebarHTML = `
       <aside id="sidebar" class="w-64 flex-shrink-0 bg-[#06130B] dark:bg-[#06130B] text-slate-300 flex flex-col border-r border-[#143E23] z-[60] lg:sticky lg:top-0 lg:h-screen transition-all duration-300 fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 lg:transform-none">
         
-        <!-- Sidebar Header -->
+        <!-- En-tête de la barre latérale -->
         <div class="p-5 border-b border-[#143E23] flex items-center justify-between">
           <a href="/index.html" class="flex items-center gap-3 text-left hover:opacity-90 transition-opacity">
-            <!-- Custom High-Fidelity SVG KA Farm Logo -->
+            <!-- Logo SVG haute fidélité personnalisé de KA Farm -->
             <div class="h-10 w-10 bg-white/5 p-1 rounded-xl border border-[#143E23]/30 flex items-center justify-center">
               <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Shield Outlines -->
+                <!-- Contours du bouclier -->
                 <path d="M50 12 C70 12, 82 15, 82 34 C82 52, 70 66, 50 75 C30 66, 18 52, 18 34 C18 15, 30 12, 50 12 Z" stroke="#10b981" stroke-width="2" stroke-linejoin="round" fill="none"/>
                 <path d="M50 15 C67 15, 78 18, 78 34 C78 50, 67 63, 50 71 C33 63, 22 50, 22 34 C22 18, 33 15, 50 15 Z" stroke="#10b981" stroke-width="0.8" stroke-linejoin="round" fill="none"/>
                 
-                <!-- "KA" Outline -->
+                <!-- Contour de "KA" -->
                 <path d="M29 29 V46 M29 37 L38 29 M32 39 L39 46" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M44 46 L49 29 L54 46 M46 41 H52" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 
-                <!-- Sprout Icon -->
+                <!-- Icône de pousse -->
                 <path d="M59 46 H71" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
                 <path d="M65 46 V39" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
                 <path d="M65 39 C61 39, 58 36, 58 33 C58 30, 61 29, 65 33 C65 33, 65 39, 65 39 Z" stroke="#10b981" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
                 <path d="M65 37 C65 37, 72 37, 72 31 C72 28, 69 27, 65 33" stroke="#10b981" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
                 
-                <!-- "FARM" Text -->
+                <!-- Texte "FARM" -->
                 <text x="50" y="61" fill="#059669" font-family="'Inter', system-ui, sans-serif" font-weight="900" font-size="12.5" text-anchor="middle" letter-spacing="1">FARM</text>
               </svg>
             </div>
@@ -529,7 +529,7 @@ export const App = {
             </div>
           </a>
           <div class="flex items-center gap-1.5">
-            <!-- Theme Toggle Button -->
+            <!-- Bouton de changement de thème -->
             <button onclick="window.toggleAppTheme()" id="btn-theme-desktop" class="p-1.5 text-slate-400 hover:text-white hover:bg-[#0E2F19] rounded-lg transition-all cursor-pointer" title="Basculer le thème">
               <i data-lucide="${isDarkMode ? "sun" : "moon"}" class="h-4 w-4"></i>
             </button>
@@ -539,7 +539,7 @@ export const App = {
           </div>
         </div>
 
-        <!-- Navigation buttons -->
+        <!-- Boutons de navigation -->
         <div class="flex-1 overflow-y-auto px-3 py-4 space-y-5 text-left">
           <div class="space-y-1">
             <a href="/index.html" data-tab="accueil" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
@@ -673,7 +673,7 @@ export const App = {
           </div>
         </div>
 
-        <!-- Sidebar Footer User Panel -->
+        <!-- Panneau utilisateur du pied de barre latérale -->
         <div class="p-4 border-t border-[#143E23] space-y-3 bg-[#051009]">
             <div class="px-1 text-left">
             <div class="flex items-center gap-2.5">
@@ -699,7 +699,7 @@ export const App = {
 
     placeholder.innerHTML = sidebarHTML;
 
-    // Dispatch an event to notify that the sidebar has been loaded
+    // Déclencher un événement pour signaler que la barre latérale a été chargée
     document.dispatchEvent(new Event("sidebarInjected"));
   },
 
@@ -710,7 +710,7 @@ export const App = {
     placeholder.innerHTML = `
       <div class="lg:hidden flex items-center justify-between px-4 py-3 bg-[#06130B] border-b border-[#143E23] text-white">
         <a href="/index.html" class="flex items-center gap-2.5">
-          <!-- Custom High-Fidelity SVG KA Farm Logo -->
+          <!-- Logo SVG haute fidélité personnalisé de KA Farm -->
           <div class="h-9 w-9 bg-white/5 p-0.5 rounded-lg border border-[#143E23]/30 flex items-center justify-center">
             <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
               <!-- Shield Outlines -->
@@ -742,7 +742,7 @@ export const App = {
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             ${currentUser ? currentUser.name.split(" ")[0] : "Amadou"}
           </span>
-          <!-- Theme Toggle Button -->
+          <!-- Bouton de changement de thème -->
           <button onclick="window.toggleAppTheme()" id="btn-theme-mobile" class="p-1.5 text-slate-300 hover:text-white hover:bg-[#0E2F19] rounded-lg transition-all cursor-pointer" title="Basculer le thème">
             <i data-lucide="${isDarkMode ? "sun" : "moon"}" class="h-4.5 w-4.5"></i>
           </button>
@@ -793,7 +793,7 @@ export const App = {
       window.lucide.createIcons();
     }
 
-    // Dispatch the sidebarInjected event to let Router highlight bottom navigation buttons
+    // Déclencher l'événement sidebarInjected pour permettre au routeur de mettre en évidence les boutons de navigation inférieure
     setTimeout(() => {
       document.dispatchEvent(new Event("sidebarInjected"));
     }, 50);
@@ -802,8 +802,6 @@ export const App = {
   injectFooter() {
     const mainEl = document.querySelector("main");
     if (mainEl && !document.getElementById("app-global-footer")) {
-      mainEl.classList.add("flex", "flex-col");
-
       const footer = document.createElement("footer");
       footer.id = "app-global-footer";
       footer.className =
@@ -833,11 +831,11 @@ export const App = {
         const isCurrentlyActive = sidebar.classList.contains("active");
 
         if (isCurrentlyActive) {
-          // Close sidebar
+          // Fermer la barre latérale
           sidebar.classList.add("-translate-x-full");
           sidebar.classList.remove("active");
 
-          // Remove backdrop overlay if exists
+          // Supprimer l'arrière-plan de superposition s'il existe
           const backdrop = document.getElementById("sidebar-backdrop");
           if (backdrop) {
             backdrop.classList.remove("opacity-100");
@@ -847,11 +845,11 @@ export const App = {
             }, 300);
           }
         } else {
-          // Open sidebar
+          // Ouvrir la barre latérale
           sidebar.classList.remove("-translate-x-full");
           sidebar.classList.add("active");
 
-          // Create and insert backdrop overlay
+          // Créer et insérer l'arrière-plan de superposition
           let backdrop = document.getElementById("sidebar-backdrop");
           if (!backdrop) {
             backdrop = document.createElement("div");
@@ -881,7 +879,7 @@ export const App = {
       }
     };
 
-    // Auto load lucide icons
+    // Charger automatiquement les icônes Lucide
     if (window.lucide) {
       window.lucide.createIcons();
     }
@@ -892,7 +890,7 @@ export const App = {
       }
     });
 
-    // Global micro-interaction: springy scale-up pop when an icon or icon button is clicked
+    // Micro-interaction globale : effet de rebond et d'agrandissement lorsqu'une icône ou un bouton icône est cliqué
     document.addEventListener("click", (e) => {
       const target = e.target;
       if (!target) return;
@@ -909,7 +907,7 @@ export const App = {
             ? target
             : target.closest("[data-lucide]");
       } else {
-        // 2. If we clicked a button, anchor, or custom active tab containing an icon
+        // 2. Si nous avons cliqué sur un bouton, un lien ou un onglet actif personnalisé contenant une icône
         const parentBtn = target.closest('button, a, .nav-btn, [role="button"], .tab-btn');
         if (parentBtn) {
           icon = parentBtn.querySelector("[data-lucide], svg");
@@ -917,13 +915,13 @@ export const App = {
       }
 
       if (icon) {
-        // Trigger the pop animation smoothly
+        // Déclencher l'animation de rebond en douceur
         icon.classList.remove("animate-icon-pop");
-        // Force reflow/repaint to restart CSS animation
+        // Forcer le reflow / repaint pour redémarrer l'animation CSS
         void icon.offsetWidth;
         icon.classList.add("animate-icon-pop");
 
-        // Remove class after animation finishes (320ms matches CSS keyframes)
+        // Retirer la classe une fois l'animation terminée (320 ms correspondent aux keyframes CSS)
         setTimeout(() => {
           icon.classList.remove("animate-icon-pop");
         }, 350);
@@ -932,28 +930,28 @@ export const App = {
   },
 
   updateBadges() {
-    // Update crops badge count
+    // Mettre à jour le compteur du badge des cultures
     const crops = KAStorage.getCrops();
     const cropsBadge = document.getElementById("crops-badge");
     if (cropsBadge) {
       cropsBadge.textContent = crops.length;
     }
 
-    // Update parcelles badge count
+    // Mettre à jour le compteur du badge des parcelles
     const parcelles = KAStorage.getParcelles();
     const parcellesBadge = document.getElementById("parcelles-badge");
     if (parcellesBadge) {
       parcellesBadge.textContent = parcelles.length;
     }
 
-    // Update employees badge count
+    // Mettre à jour le compteur du badge des employés
     const employees = KAStorage.getEmployees ? KAStorage.getEmployees() : [];
     const employeesBadge = document.getElementById("employees-badge");
     if (employeesBadge) {
       employeesBadge.textContent = employees.length;
     }
 
-    // Update incomplete tasks badge count
+    // Mettre à jour le compteur des tâches incomplètes
     const tasks = KAStorage.getTasks();
     const pendingTasks = tasks.filter((t) => !t.completed).length;
     const tasksBadge = document.getElementById("tasks-badge");
@@ -966,7 +964,7 @@ export const App = {
       }
     }
 
-    // Update stocks badge count showing count of low items
+    // Mettre à jour le badge des stocks en affichant le nombre d'articles en faible quantité
     const stocks = KAStorage.getStocks();
     const lowStocksCount = stocks.filter((s) => s.quantity <= s.maxQuantity * 0.2).length;
     const stocksBadge = document.getElementById("stocks-badge");
@@ -982,7 +980,7 @@ export const App = {
       }
     }
 
-    // Update elevage badge count showing active livestock alerts or total count
+    // Mettre à jour le badge d'élevage en affichant les alertes actives ou le total
     const cheptel = KAStorage.getCheptel ? KAStorage.getCheptel() : [];
     const alertAnimalsCount = cheptel.filter(
       (c) => c.status === "Surveiller" || c.status === "Malade" || c.status === "Alerte"
@@ -1002,7 +1000,7 @@ export const App = {
   },
 };
 
-// Start application framework
+// Démarrer le framework de l'application
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     App.init();

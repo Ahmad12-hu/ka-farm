@@ -1,11 +1,11 @@
-// Polyfill TextEncoder for jsdom test environment
+// Polyfill TextEncoder pour l'environnement de test jsdom
 if (typeof global.TextEncoder === "undefined") {
   const { TextEncoder, TextDecoder } = require("util");
   global.TextEncoder = TextEncoder;
   global.TextDecoder = TextDecoder;
 }
 
-// Mock @google/genai to avoid ESM parsing issues in Jest
+// Simuler @google/genai pour éviter les problèmes d'analyse ESM dans Jest
 jest.mock("@google/genai", () => ({
   GoogleGenAI: jest.fn().mockImplementation(() => ({
     models: {
@@ -14,7 +14,7 @@ jest.mock("@google/genai", () => ({
   })),
 }));
 
-// Mock Firebase modules
+// Simuler les modules Firebase
 jest.mock("firebase/app", () => ({
   initializeApp: jest.fn(),
 }));
@@ -26,13 +26,13 @@ jest.mock("firebase/firestore", () => ({
   setDoc: jest.fn(),
 }));
 
-// Mock firebase-admin submodules
+// Simuler les sous-modules firebase-admin
 jest.mock("firebase-admin/app", () => ({
   initializeApp: jest.fn(() => ({ name: "[DEFAULT]" })),
   cert: jest.fn(() => ({ projectId: "ka-farm-test" })),
 }));
 
-// Mock for multi-tenant structure: adminDb.collection("app_data").doc(enterpriseId).collection(collection).doc("data")
+// Simulation de la structure multitenant : adminDb.collection("app_data").doc(enterpriseId).collection(collection).doc("data")
 jest.mock("firebase-admin/firestore", () => {
   const mockCollection = () => ({
     doc: jest.fn(() => ({
@@ -52,7 +52,7 @@ jest.mock("firebase-admin/firestore", () => {
   };
 });
 
-// Mock jsonwebtoken to bypass auth in tests using the remaining admin account
+// Simuler jsonwebtoken pour contourner l'authentification dans les tests utilisant le compte admin restant
 jest.mock("jsonwebtoken", () => ({
   ...jest.requireActual("jsonwebtoken"),
   verify: jest.fn(() => ({
@@ -63,7 +63,7 @@ jest.mock("jsonwebtoken", () => ({
   })),
 }));
 
-// Mock fetch for weather API test
+// Simuler fetch pour le test de l'API météo
 global.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,

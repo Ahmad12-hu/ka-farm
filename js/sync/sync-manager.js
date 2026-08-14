@@ -1,6 +1,6 @@
 // KA Farm - Sync Manager
-// Central orchestrator for localStorage ↔ Firestore synchronization
-// Handles online/offline states, batching, and heartbeat
+// Orchestrateur central de la synchronisation localStorage ↔ Firestore
+// Gère les états en ligne/hors ligne, le traitement par lots et le signal de présence
 
 import { syncQueue } from "./queue-manager.js";
 
@@ -10,28 +10,28 @@ export class SyncManager {
     this.isSyncing = false;
     this.syncInterval = null;
     this.heartbeatInterval = null;
-    this.batchSize = 10; // Max actions per sync cycle
-    this.syncCheckInterval = 3000; // Check queue every 3 seconds
-    this.heartbeatInterval = 30000; // Heartbeat every 30 seconds
+    this.batchSize = 10; // Nombre maximal d'actions par cycle de synchronisation
+    this.syncCheckInterval = 3000; // Vérifier la file toutes les 3 secondes
+    this.heartbeatInterval = 30000; // Signal de présence toutes les 30 secondes
 
     this.listeners = [];
   }
 
   /**
-   * Initialize sync manager
+    * Initialiser le gestionnaire de synchronisation
    */
   init() {
     try {
       console.log("[SyncManager] Initializing...");
 
-      // Monitor online/offline
+      // Surveiller les changements en ligne / hors ligne
       window.addEventListener("online", () => this.onOnline());
       window.addEventListener("offline", () => this.onOffline());
 
-      // Start sync loop
+      // Démarrer la boucle de synchronisation
       this.startSyncLoop();
 
-      // Start heartbeat
+      // Démarrer le signal de présence
       this.startHeartbeat();
 
       console.log("[SyncManager] Initialized. Online:", this.isOnline);
@@ -42,7 +42,7 @@ export class SyncManager {
   }
 
   /**
-   * Called when connection comes online
+    * Appelé lorsque la connexion revient en ligne
    */
   onOnline() {
     this.isOnline = true;
@@ -52,7 +52,7 @@ export class SyncManager {
   }
 
   /**
-   * Called when connection goes offline
+    * Appelé lorsque la connexion passe hors ligne
    */
   onOffline() {
     this.isOnline = false;
@@ -61,7 +61,7 @@ export class SyncManager {
   }
 
   /**
-   * Start sync loop (check queue periodically)
+    * Démarrer la boucle de synchronisation (vérification périodique de la file)
    */
   startSyncLoop() {
     if (this.syncInterval) clearInterval(this.syncInterval);
@@ -85,12 +85,12 @@ export class SyncManager {
 
       if (stats.pending === 0) {
         this.isSyncing = false;
-        return; // Nothing to sync
+        return; // Rien à synchroniser
       }
 
       console.log(`[SyncManager] Processing ${stats.pending} pending actions...`);
 
-      // Get retryable actions (respect backoff)
+      // Récupérer les actions relançables (en respectant le délai d'attente progressif)
       const actions = syncQueue.getRetryableActions().slice(0, this.batchSize);
 
       if (actions.length === 0) {
@@ -98,11 +98,11 @@ export class SyncManager {
         return;
       }
 
-      // Process each action
+      // Traiter chaque action
       for (const action of actions) {
         await this.syncAction(action);
 
-        // Small delay between actions
+        // Petite pause entre les actions
         await new Promise((r) => setTimeout(r, 100));
       }
 
@@ -117,14 +117,14 @@ export class SyncManager {
   }
 
   /**
-   * Sync single action to Firestore
+    * Synchroniser une seule action vers Firestore
    * @param {Object} action
    */
   async syncAction(action) {
     try {
       syncQueue.markProcessing(action.id);
 
-      // Simulate Firebase sync (replace with real API call)
+      // Simuler la synchronisation Firebase (à remplacer par un appel API réel)
       const response = await this.sendToFirebase(action);
 
       if (response.success) {
@@ -144,14 +144,14 @@ export class SyncManager {
   }
 
   /**
-   * Send action to Firebase (placeholder)
+    * Envoyer l'action vers Firebase (solution temporaire)
    * @param {Object} action
    * @returns {Promise<{success: boolean, error?: string}>}
    */
   async sendToFirebase(action) {
     try {
-      // TODO: Replace with actual Firebase API endpoint
-      // For now, simulate with localStorage verification
+      // TODO : remplacer par le vrai point de terminaison Firebase
+      // Pour l'instant, simuler avec une vérification de localStorage
 
       const key = `ka_farm_${action.action.toLowerCase()}`;
       const storedValue = localStorage.getItem(key);
@@ -160,10 +160,10 @@ export class SyncManager {
         return { success: false, error: "No data in localStorage" };
       }
 
-      // Simulate network delay
+      // Simuler un délai réseau
       await new Promise((r) => setTimeout(r, Math.random() * 500));
 
-      // In production, POST to: /api/sync
+      // En production, faire un POST vers : /api/sync
       // const response = await fetch('/api/sync', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
@@ -185,7 +185,7 @@ export class SyncManager {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
     this.heartbeatInterval = setInterval(() => {
-      // Ping server to verify actual connection
+      // Interroger le serveur pour vérifier la connexion réelle
       if (this.isOnline) {
         this.checkConnection();
       }
@@ -197,7 +197,7 @@ export class SyncManager {
    */
   async checkConnection() {
     try {
-      // Simple HEAD request to verify connectivity
+      // Requête HEAD simple pour vérifier la connectivité
       const response = await fetch("/api/health", {
         method: "HEAD",
         cache: "no-cache",
@@ -209,7 +209,7 @@ export class SyncManager {
         this.onOnline();
       }
     } catch (err) {
-      // Network error: mark as offline
+        // Erreur réseau : marquer comme hors ligne
       if (this.isOnline) {
         this.onOffline();
       }

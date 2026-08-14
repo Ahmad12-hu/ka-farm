@@ -1,12 +1,12 @@
 // Tests RBAC (Role-Based Access Control) de non-régression
-// Vérifie que chaque rôle a les bonnes permissions
+// Vérifie que chaque rôle dispose des bonnes permissions
 
 import { UserManager } from "../js/user-manager.js";
 import { KAStorage } from "../js/storage.js";
 
 describe("RBAC - Non-regression Tests", () => {
   beforeEach(() => {
-    // Reset localStorage avant chaque test
+    // Réinitialiser localStorage avant chaque test
     if (typeof window !== "undefined") {
       window.localStorage.clear();
     }

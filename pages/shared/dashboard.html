@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tableau de Bord - KA Farm</title>
 
-    <!-- Favicon & Branding -->
+    <!-- Favicon et identité visuelle -->
     <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
     <link rel="apple-touch-icon" href="/assets/logo.svg" />
 
-    <!-- Tailwind CSS CDN & Lucide Icons -->
+    <!-- CDN Tailwind CSS, icônes Lucide et D3.js -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
-    <!-- Custom separated Stylesheets -->
+    <!-- Feuilles de style séparées personnalisées -->
     <link rel="stylesheet" href="/css/styles.css" />
     <link rel="stylesheet" href="/css/dashboard.css" />
   </head>
@@ -22,7 +22,7 @@
   <body
     class="bg-slate-50 dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200"
   >
-    <!-- Skip Navigation for Accessibility -->
+    <!-- Lien de saut pour l'accessibilité -->
     <a
       href="#main-dashboard-content"
       class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-emerald-600 text-white px-4 py-2 rounded-lg z-[100] font-bold text-sm shadow-lg"
@@ -30,20 +30,20 @@
       Aller au contenu principal
     </a>
 
-    <!-- Main Content Anchor -->
+    <!-- Ancre du contenu principal -->
     <div id="main-dashboard-content"></div>
 
-    <!-- Mobile Top Header Placeholder -->
+    <!-- Emplacement réservé pour l'en-tête mobile -->
     <div id="mobile-header-placeholder"></div>
 
     <div class="min-h-screen flex flex-col lg:flex-row">
-      <!-- Sidebar Placeholder -->
+      <!-- Emplacement réservé pour la barre latérale -->
       <div id="sidebar-placeholder"></div>
 
-      <!-- Main Content Stage -->
+      <!-- Zone du contenu principal -->
       <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
         <div class="w-full space-y-6">
-          <!-- Global Search Bar Section -->
+          <!-- Section de recherche globale -->
           <div class="relative z-50 w-full max-w-2xl mx-auto md:mx-0">
             <div class="relative group">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -76,7 +76,7 @@
               </div>
             </div>
 
-            <!-- Floating Results Dropdown -->
+            <!-- Menu déroulant des résultats flottants -->
             <div
               id="global-search-dropdown"
               class="hidden absolute left-0 right-0 mt-2 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl shadow-2xl overflow-hidden animate-fadeIn text-left max-h-[380px] overflow-y-auto"
@@ -90,12 +90,12 @@
                 class="divide-y divide-slate-100 dark:divide-[#143E23]/15"
                 id="global-search-results"
               >
-                <!-- Dynamically rendered rows -->
+                <!-- Lignes rendues dynamiquement -->
               </div>
             </div>
           </div>
 
-          <!-- Dashboard Welcome header -->
+          <!-- En-tête d'accueil du tableau de bord -->
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 text-left">
             <div class="space-y-1">
               <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest"
@@ -113,7 +113,7 @@
               </p>
             </div>
 
-            <!-- Weather Station selector -->
+            <!-- Sélecteur de station météo -->
             <div
               class="flex items-center gap-2 bg-[#0B2112]/40 border border-[#143E23]/30 px-3 py-1.5 rounded-xl"
             >
@@ -430,7 +430,7 @@
                   🎯 Récolte Prête
                 </h4>
                 <div class="space-y-2" id="dash-harvest-list">
-                  <!-- Populated dynamically -->
+                  <!-- Rempli dynamiquement -->
                 </div>
                 <!-- Empty State -->
                 <div id="dash-harvest-empty" class="empty-state hidden">
@@ -449,7 +449,7 @@
                   ⚠️ Stock Bas (&lt;25%)
                 </h4>
                 <div class="space-y-2" id="dash-stock-list">
-                  <!-- Populated dynamically -->
+                  <!-- Rempli dynamiquement -->
                 </div>
                 <!-- Empty State -->
                 <div id="dash-stock-empty" class="empty-state hidden">
@@ -469,7 +469,7 @@
                   🥛 Productions d'Élevage (7j)
                 </h4>
                 <div class="space-y-2" id="dash-elevage-production-list">
-                  <!-- Populated dynamically -->
+                  <!-- Rempli dynamiquement -->
                 </div>
                 <!-- Empty State -->
                 <div id="dash-elevage-empty" class="empty-state hidden">
@@ -541,7 +541,7 @@
                     </p>
                   </div>
                   <div id="budget-legend" class="space-y-1.5 max-h-[140px] overflow-y-auto pr-1">
-                    <!-- Dynamic Legend Rows -->
+                    <!-- Lignes de légende dynamiques -->
                   </div>
                 </div>
               </div>
@@ -567,7 +567,7 @@
                 ></a>
               </div>
               <div class="space-y-3.5 max-h-[220px] overflow-y-auto pr-1" id="dash-finances-list">
-                <!-- Populated dynamically -->
+                  <!-- Rempli dynamiquement -->
               </div>
               <!-- Empty State -->
               <div id="dash-finances-empty" class="empty-state hidden">

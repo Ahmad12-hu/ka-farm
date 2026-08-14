@@ -1,7 +1,7 @@
-// KA Farm - Tests pour le module Crops
+// KA Farm - Tests pour le module Cultures
 import { CropsModule } from "../js/modules/crops.js";
 
-// Mock localStorage
+// Simuler localStorage
 const localStorageMock = (() => {
   let store = {};
   return {
@@ -20,7 +20,7 @@ const localStorageMock = (() => {
 
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
-// Mock KAStorage
+// Simuler KAStorage
 const mockKAStorage = {
   getCrops: () => [],
   saveCrops: (crops) => {
@@ -37,27 +37,27 @@ const mockKAStorage = {
 
 Object.defineProperty(window, "KAStorage", { value: mockKAStorage });
 
-// Mock window.confirm
+// Simuler window.confirm
 window.confirm = jest.fn(() => true);
 
-// Mock lucide icons
+// Simuler les icônes Lucide
 window.lucide = { createIcons: () => {} };
 
-// Mock fetch
+// Simuler fetch
 global.fetch = () => Promise.resolve({});
 
 describe("CropsModule", () => {
   beforeEach(() => {
     localStorage.clear();
-    // Prevent demo data loading by setting empty arrays
+    // Empêcher le chargement des données de démonstration en définissant des tableaux vides
     localStorage.setItem("ka_farm_crops", JSON.stringify([]));
     localStorage.setItem("ka_farm_nurseries", JSON.stringify([]));
-    // Reset confirm mock
+    // Réinitialiser la simulation de confirm
     window.confirm = jest.fn(() => true);
   });
 
   test("devrait initialiser le module sans erreur", () => {
-    // Mock the required DOM elements
+    // Simuler les éléments DOM requis
     document.body.innerHTML = `
       <div id="crops-container"></div>
       <div id="nurseries-container"></div>
@@ -68,7 +68,7 @@ describe("CropsModule", () => {
   });
 
   test("devrait calculer le rendement pour tomate", () => {
-    // Simuler les inputs du calculateur
+    // Simuler les entrées du calculateur
     document.body.innerHTML = `
       <select id="est-crop-select"><option value="tomate" selected></option></select>
       <input id="est-surface" value="10">

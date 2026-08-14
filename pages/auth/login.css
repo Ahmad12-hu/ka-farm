@@ -1,4 +1,4 @@
-/* Login page styles */
+/* Styles de la page de connexion */
 
 .skip-nav {
   position: absolute;
@@ -19,13 +19,13 @@
   top: 16px;
 }
 
-/* Focus visible global */
+/* État focus visible global */
 *:focus-visible {
   outline: 2px solid #10b981;
   outline-offset: 2px;
 }
 
-/* Improve contrast for dark mode inputs */
+/* Améliorer le contraste des champs en mode sombre */
 .dark .auth-input::placeholder {
   color: #94a3b8;
 }
@@ -35,7 +35,7 @@
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-/* Error message styling */
+/* Style des messages d'erreur */
 .error-message {
   color: #ef4444;
   font-size: 11px;
@@ -48,7 +48,7 @@
   display: block;
 }
 
-/* Loading state for buttons */
+/* État de chargement pour les boutons */
 .btn-loading {
   opacity: 0.7;
   pointer-events: none;

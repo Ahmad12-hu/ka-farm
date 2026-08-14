@@ -8,9 +8,9 @@
   --color-slate-850: #1e293b;
 }
 
-/* KA Farm - Global Stylesheet */
+/* KA Farm - Feuille de style globale */
 
-/* Custom scrollbars */
+/* Barres de défilement personnalisées */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -29,7 +29,7 @@
   background: rgba(16, 185, 129, 0.4);
 }
 
-/* Base transitions - smooth theme switching */
+/* Transitions de base - changement de thème fluide */
 html,
 body {
   transition:
@@ -39,7 +39,7 @@ body {
     box-shadow 0.3s ease;
 }
 
-/* Ensure theme-transition class provides comprehensive coverage */
+/* S'assurer que la classe theme-transition couvre l'ensemble des éléments */
 html.theme-transition,
 html.theme-transition *,
 html.theme-transition *:before,
@@ -53,7 +53,7 @@ html.theme-transition *:after {
     fill 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* Respect reduced motion preferences */
+/* Respecter les préférences de réduction des animations */
 @media (prefers-reduced-motion: reduce) {
   html,
   body,
@@ -70,7 +70,7 @@ html.theme-transition *:after {
   transition-duration: 200ms;
 }
 
-/* Global Smooth Page Entry & Staggered Section Transitions */
+/* Entrée fluide globale des pages et transitions échelonnées des sections */
 @keyframes pageSlideUp {
   0% {
     opacity: 0;
@@ -83,10 +83,12 @@ html.theme-transition *:after {
 }
 
 main {
+  display: flex;
+  flex-direction: column;
   animation: pageSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Staggered load for card grids, panels, and stats inside the main container */
+/* Chargement échelonné des grilles de cartes, panneaux et statistiques dans le conteneur principal */
 main > div > div,
 main > div > section,
 main > div > .grid {
@@ -123,7 +125,7 @@ main > div > .grid:nth-child(5) {
   animation-delay: 0.24s;
 }
 
-/* Utility Animations */
+/* Animations utilitaires */
 .animate-scaleUp {
   animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -154,7 +156,7 @@ main > div > .grid:nth-child(5) {
   }
 }
 
-/* Micro-interaction: Icon Pop Animation */
+/* Micro-interaction : animation de pop des icônes */
 @keyframes iconPop {
   0% {
     transform: scale(1);
@@ -175,7 +177,7 @@ main > div > .grid:nth-child(5) {
   display: inline-block;
 }
 
-/* Smooth transition for all icons in buttons and navigation */
+/* Transition fluide pour toutes les icônes des boutons et de la navigation */
 svg,
 [data-lucide] {
   transition:
@@ -193,7 +195,7 @@ button:hover [data-lucide],
   transform: scale(1.08);
 }
 
-/* Navigation button styling (inactive by default) */
+/* Style des boutons de navigation (inactifs par défaut) */
 .nav-btn {
   color: #cbd5e1; /* text-slate-300 */
 }
@@ -242,7 +244,7 @@ button:hover [data-lucide],
   }
 }
 
-/* Premium Card hover effects with spring transform and smooth glow */
+/* Effets de survol premium des cartes avec transformation souple et halo fluide */
 .stat-card,
 .hover-lift,
 main .grid > div,
@@ -264,7 +266,7 @@ main > div > .grid > div:not(.col-span-full):hover {
   border-color: rgba(16, 185, 129, 0.3) !important;
 }
 
-/* Global Progress bar reveal animation */
+/* Animation d'apparition globale de la barre de progression */
 @keyframes progressBarGrow {
   from {
     width: 0%;
@@ -308,7 +310,7 @@ main > div > .grid > div:not(.col-span-full):hover {
   animation: ringPulseAmber 2s cubic-bezier(0.25, 0, 0, 1) infinite;
 }
 
-/* Smooth global theme switching transition */
+/* Transition fluide globale lors du changement de thème */
 html.theme-transition,
 html.theme-transition *,
 html.theme-transition *:before,
@@ -322,7 +324,7 @@ html.theme-transition *:after {
     fill 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* Theme icon rotation animation */
+/* Animation de rotation de l'icône de thème */
 @keyframes themeIconRotate {
   0% {
     transform: rotate(0deg) scale(1);
@@ -339,7 +341,7 @@ html.theme-transition *:after {
   animation: themeIconRotate 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Theme toggle switch smooth transition */
+/* Transition fluide du bouton de changement de thème */
 #dark-toggle-btn {
   transition: background-color 0.3s ease-in-out;
 }
@@ -352,7 +354,7 @@ html.theme-transition *:after {
    SMARTPHONE / MOBILE RESPONSIVE PRESETS (75% of users)
    ========================================================================== */
 @media (max-width: 1024px) {
-  /* Prevent horizontal screen overflowing on smaller devices */
+  /* Empêcher le débordement horizontal sur les petits appareils */
   body,
   html {
     overflow-x: hidden;
@@ -360,21 +362,21 @@ html.theme-transition *:after {
     max-width: 100%;
   }
 
-  /* Set comfortable spacing on main container for mobile so content doesn't crash against the screen edges */
+  /* Définir un espacement confortable sur le conteneur principal mobile afin que le contenu ne touche pas les bords de l'écran */
   main {
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
-    padding-bottom: 5.5rem !important; /* Reserve spacing for the sticky mobile bottom navigation */
+    padding-bottom: 5.5rem !important; /* Réserver de l'espace pour la navigation mobile inférieure fixe */
   }
 
-  /* Prevent Safari from auto-zooming on input elements while typing */
+  /* Empêcher Safari de zoomer automatiquement sur les champs de saisie pendant la frappe */
   input,
   select,
   textarea {
     font-size: 16px !important;
   }
 
-  /* Make sure modals are fully scrollable on short phone screens */
+  /* S'assurer que les fenêtres modales restent entièrement défilables sur les petits écrans */
   .modal-overlay > div,
   [id$="-modal"] > div,
   .modal-container,
@@ -388,13 +390,13 @@ html.theme-transition *:after {
     border-radius: 20px !important;
   }
 
-  /* Hide custom badges that are too wide on mobile views */
+  /* Masquer les badges personnalisés trop larges sur les vues mobiles */
   #search-badge {
     display: none !important;
   }
 }
 
-/* Bottom navigation dynamic indicators */
+/* Indicateurs dynamiques de la navigation inférieure */
 .mobile-nav-dot {
   width: 4px;
   height: 4px;
@@ -404,7 +406,7 @@ html.theme-transition *:after {
   transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Feedback浮动按钮 */
+/* Bouton flottant de retour utilisateur */
 #feedback-fab {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   animation: feedbackPulse 2s ease-in-out infinite;
@@ -425,7 +427,7 @@ html.theme-transition *:after {
   }
 }
 
-/* Feedback modal animations */
+/* Animations de la fenêtre modale de retour utilisateur */
 #feedback-modal {
   animation: feedbackFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -439,7 +441,7 @@ html.theme-transition *:after {
   }
 }
 
-/* Rating buttons hover effect */
+/* Effet de survol des boutons de notation */
 .rating-btn:hover {
   transform: scale(1.25);
 }

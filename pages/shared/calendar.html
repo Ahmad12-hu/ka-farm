@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calendrier Agricole - KA Farm</title>
 
-    <!-- Favicon & Branding -->
+    <!-- Favicon et identité visuelle -->
     <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
     <link rel="apple-touch-icon" href="/assets/logo.svg" />
 
-    <!-- Tailwind CSS CDN & Lucide Icons -->
+    <!-- CDN Tailwind CSS et icônes Lucide -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Custom separated Stylesheets -->
+    <!-- Feuilles de style séparées personnalisées -->
     <link rel="stylesheet" href="/css/styles.css" />
 
     <script>
@@ -37,17 +37,17 @@
   <body
     class="bg-slate-50 dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200"
   >
-    <!-- Mobile Top Header Placeholder -->
+    <!-- Emplacement réservé pour l'en-tête mobile -->
     <div id="mobile-header-placeholder"></div>
 
     <div class="min-h-screen flex flex-col lg:flex-row">
-      <!-- Sidebar Placeholder -->
+      <!-- Emplacement réservé pour la barre latérale -->
       <div id="sidebar-placeholder"></div>
 
-      <!-- Main Content Stage -->
+      <!-- Zone du contenu principal -->
       <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
         <div class="w-full space-y-8">
-          <!-- Header -->
+          <!-- En-tête -->
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
             <div class="space-y-1">
               <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest"
@@ -73,7 +73,7 @@
             </button>
           </div>
 
-          <!-- Notification Banner if action is needed -->
+          <!-- Bannière de notification si une action est requise -->
           <div
             id="calendar-alert-banner"
             class="hidden p-4 bg-amber-500/10 border border-amber-500/20 text-amber-500 dark:text-amber-400 rounded-2xl flex items-start gap-3 text-left"
@@ -127,7 +127,7 @@
 
               <!-- Calendar Grid -->
               <div class="space-y-2">
-                <!-- Weekdays header -->
+                <!-- En-tête des jours de la semaine -->
                 <div
                   class="grid grid-cols-7 gap-1 text-center text-[10px] font-black text-slate-400 uppercase tracking-wider pb-2 border-b border-slate-100 dark:border-[#143E23]/20"
                 >
@@ -142,7 +142,7 @@
 
                 <!-- Month dates grid -->
                 <div id="calendar-days-grid" class="grid grid-cols-7 gap-1.5 min-h-[280px]">
-                  <!-- Dynamically populated via calendar.js -->
+                  <!-- Rempli dynamiquement via calendar.js -->
                 </div>
               </div>
 
@@ -170,7 +170,7 @@
               </div>
             </div>
 
-            <!-- Dynamic Task Generator & Alerts Panel -->
+            <!-- Panneau dynamique de génération de tâches et d'alertes -->
             <div
               class="bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl p-6 shadow-sm space-y-6 text-left flex flex-col justify-between"
             >
@@ -192,7 +192,7 @@
                   id="suggested-reminders-list"
                   class="space-y-3.5 max-h-[340px] overflow-y-auto pr-1"
                 >
-                  <!-- Dynamically populated -->
+                  <!-- Rempli dynamiquement -->
                 </div>
               </div>
 
@@ -211,7 +211,7 @@
 
           <!-- Lower section: Senegalese Crop Cycle & Seasonal Simulator -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Crop preset planner form -->
+            <!-- Formulaire de planification des cultures prédéfinies -->
             <div
               class="bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl p-6 shadow-sm text-left space-y-5"
             >
@@ -296,7 +296,7 @@
               </form>
             </div>
 
-            <!-- Dynamic Timeline output of Simulator -->
+            <!-- Sortie chronologique dynamique du simulateur -->
             <div
               class="lg:col-span-2 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl p-6 shadow-sm text-left flex flex-col justify-between"
             >
@@ -325,7 +325,7 @@
 
                 <!-- Timeline step blocks -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="sim-steps-container">
-                  <!-- Dynamically populated milestones -->
+                  <!-- Jalons remplis dynamiquement -->
                 </div>
               </div>
 
@@ -357,7 +357,7 @@
       </main>
     </div>
 
-    <!-- Modal: Plan Active Cycle (Creates parcel crop + pépinière) -->
+      <!-- Modale : planifier un cycle actif (crée une culture de parcelle + une pépinière) -->
     <div
       id="planification-modal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden animate-fadeIn"
@@ -395,7 +395,7 @@
                 required
                 class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
               >
-                <!-- Populated dynamically with free parcelles -->
+                <!-- Rempli dynamiquement avec les parcelles disponibles -->
               </select>
             </div>
             <div class="space-y-1">

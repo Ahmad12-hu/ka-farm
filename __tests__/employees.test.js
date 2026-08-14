@@ -1,7 +1,7 @@
-// KA Farm - Tests pour le module Employees
+// KA Farm - Tests pour le module Employés
 import { EmployeesModule } from "../js/modules/employees.js";
 
-// Mock localStorage
+// Simuler localStorage
 const localStorageMock = (() => {
   let store = {};
   return {
@@ -20,7 +20,7 @@ const localStorageMock = (() => {
 
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
-// Mock KAStorage
+// Simuler KAStorage
 const mockKAStorage = {
   getEmployees: () => [],
   saveEmployees: (emp) => {
@@ -48,16 +48,16 @@ const mockKAStorage = {
 
 Object.defineProperty(window, "KAStorage", { value: mockKAStorage });
 
-// Mock window.confirm
+// Simuler window.confirm
 window.confirm = () => true;
 
-// Mock fetch
+// Simuler fetch
 global.fetch = () => Promise.resolve({});
 
 describe("EmployeesModule", () => {
   beforeEach(() => {
     localStorage.clear();
-    // Prevent demo data loading
+    // Empêcher le chargement des données de démonstration
     localStorage.setItem("ka_farm_employees", JSON.stringify([]));
     localStorage.setItem("ka_farm_attendance", JSON.stringify([]));
     localStorage.setItem("ka_farm_employee_payments", JSON.stringify([]));

@@ -130,7 +130,7 @@ const CropProfitSchema = z.object({
   notes: z.string().optional(),
 });
 
-// Helper to check if we're in production mode
+// Aide pour vérifier si nous sommes en mode production
 function isProduction() {
   return process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
 }
@@ -140,20 +140,20 @@ function getJwtSecret() {
   if (configuredSecret) return configuredSecret;
 
   if (!isProduction()) {
-    // Development fallback with explicit warning
+    // Solution de repli pour le développement avec avertissement explicite
     console.warn(
       "[SECURITY WARNING] Using insecure JWT fallback for development. Set JWT_SECRET in production."
     );
     return "ka-farm-dev-only-secret-change-in-production";
   }
 
-  // Production: fail-fast with clear error
+  // Production : échec immédiat avec message clair
   const errorMsg = "JWT_SECRET environment variable is required in production";
   console.error(`[FATAL] ${errorMsg}`);
   throw new Error(errorMsg);
 }
 
-// Initialize Firebase Admin SDK (for secure backend operations)
+// Initialiser le SDK Firebase Admin (pour les opérations backend sécurisées)
 let adminDb = null;
 let firebaseInitializationError = null;
 
@@ -190,7 +190,7 @@ try {
     });
 
     adminDb = getFirestore(adminApp);
-    logger.info("Firebase Admin SDK initialized successfully");
+    logger.info("SDK Firebase Admin initialisé avec succès");
   }
 } catch (e) {
   adminDb = null;
@@ -199,7 +199,7 @@ try {
       ? "Configuration Firebase Admin manquante ou invalide en production"
       : `Firebase Admin non configure ou invalide: ${e.message}`
   );
-  logger.error("Failed to initialize Firebase Admin SDK", { error: e.message, stack: e.stack });
+    logger.error("Échec de l'initialisation du SDK Firebase Admin", { error: e.message, stack: e.stack });
 }
 
 function getFirestoreUnavailableMessage() {
@@ -219,7 +219,7 @@ function getFirestoreUnavailableMessage() {
 function requireFirestoreReady(req, res, next) {
   const errorMessage = getFirestoreUnavailableMessage();
   if (errorMessage) {
-    logger.error("Firestore unavailable for API route", {
+    logger.error("Firestore indisponible pour la route API", {
       route: `${req.method} ${req.originalUrl}`,
       error: errorMessage,
     });
@@ -231,10 +231,10 @@ function requireFirestoreReady(req, res, next) {
 
 const app = express();
 
-// Security headers
+// En-têtes de sécurité
 app.use(helmet());
 
-// CORS configuration
+// Configuration CORS
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://localhost:5173"
 )

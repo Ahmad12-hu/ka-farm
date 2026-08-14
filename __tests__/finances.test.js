@@ -1,7 +1,7 @@
 // KA Farm - Tests pour le module Finances
 import { FinancesModule } from "../js/modules/finances.js";
 
-// Mock localStorage
+// Simuler localStorage
 const localStorageMock = (() => {
   let store = {};
   return {
@@ -20,7 +20,7 @@ const localStorageMock = (() => {
 
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
-// Mock KAStorage
+// Simuler KAStorage
 const mockKAStorage = {
   getFinances: () => [],
   saveFinances: (finances) => {
@@ -33,26 +33,26 @@ const mockKAStorage = {
 
 Object.defineProperty(window, "KAStorage", { value: mockKAStorage });
 
-// Mock window.confirm
+// Simuler window.confirm
 window.confirm = jest.fn(() => true);
 
-// Mock lucide icons
+// Simuler les icônes Lucide
 window.lucide = { createIcons: () => {} };
 
-// Mock fetch
+// Simuler fetch
 global.fetch = () => Promise.resolve({});
 
 describe("FinancesModule", () => {
   beforeEach(() => {
     localStorage.clear();
-    // Prevent demo data loading
+    // Empêcher le chargement des données de démonstration
     localStorage.setItem("ka_farm_finances", JSON.stringify([]));
-    // Reset confirm mock
+    // Réinitialiser la simulation de confirm
     window.confirm = jest.fn(() => true);
   });
 
   test("devrait initialiser le module sans erreur", () => {
-    // Mock the required DOM elements for init
+    // Simuler les éléments DOM requis pour l'initialisation
     document.body.innerHTML = `
       <tbody id="finances-table-body"></tbody>
       <span id="finances-total-revenu"></span>

@@ -1,13 +1,13 @@
-/* KA Farm - Responsive Media Queries */
+/* KA Farm - Requêtes média responsive */
 
 @media (max-width: 1024px) {
-  /* Dynamic mobile menu overlay transitions */
+  /* Transitions dynamiques du panneau mobile superposé */
   #sidebar.active {
     transform: translateX(0);
   }
 }
 
-/* Safe touch target padding for smaller displays */
+/* Espacement de cible tactile sécurisé pour les petits écrans */
 @media (max-width: 640px) {
   .btn-touch {
     min-height: 44px;

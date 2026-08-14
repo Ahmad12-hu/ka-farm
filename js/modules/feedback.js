@@ -102,9 +102,9 @@ export const FeedbackModule = {
     console.log("✅ Feedback button injected successfully at position bottom-28 right-6");
   },
 
-  /**
-   * Ouvre le modal de feedback
-   */
+    /**
+     * Ouvre la fenêtre modale de retour utilisateur
+     */
   openModal() {
     const modal = document.createElement("div");
     modal.id = "feedback-modal";
@@ -114,7 +114,7 @@ export const FeedbackModule = {
       <div class="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
         <div class="bg-[#162010] border border-[#143E23] rounded-2xl p-6 max-w-md w-full shadow-2xl shadow-black/50 transform scale-95 opacity-0 transition-all duration-300 pointer-events-none" id="feedback-content">
           
-          <!-- Header -->
+          <!-- En-tête -->
           <div class="flex items-center justify-between mb-5">
             <h3 class="text-lg font-black text-white flex items-center gap-2">
               <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@ export const FeedbackModule = {
             </button>
           </div>
 
-          <!-- Question 1: Note rapide -->
+          <!-- Question 1 : note rapide -->
           <div class="mb-5">
             <label class="block text-sm font-bold text-slate-200 mb-2">
               Comment trouvez-vous l'application ?
@@ -143,7 +143,7 @@ export const FeedbackModule = {
             <input type="hidden" id="feedback-rating" value="">
           </div>
 
-          <!-- Question 2: Amélioration -->
+          <!-- Question 2 : améliorations -->
           <div class="mb-4">
             <label class="block text-sm font-bold text-slate-200 mb-2">
               Qu'est-ce qu'on pourrait améliorer ?
@@ -156,7 +156,7 @@ export const FeedbackModule = {
             ></textarea>
           </div>
 
-          <!-- Bouton envoyer -->
+          <!-- Bouton d'envoi -->
           <button 
             id="feedback-submit"
             class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 px-4 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -188,7 +188,7 @@ export const FeedbackModule = {
       }, 10);
     });
 
-    // Gestion des étoiles/emojis
+    // Gestion des étoiles / emojis
     this.setupRatingButtons();
 
     // Gestion de la soumission
@@ -196,10 +196,10 @@ export const FeedbackModule = {
       .getElementById("feedback-submit")
       .addEventListener("click", () => this.submitFeedback());
 
-    // Fermer en cliquant sur le backdrop
+    // Fermer en cliquant sur l'arrière-plan
     document.getElementById("feedback-backdrop").addEventListener("click", () => this.closeModal());
 
-    // Fermer avec Escape
+    // Fermer avec la touche Échap
     const handleEscape = (e) => {
       if (e.key === "Escape") {
         this.closeModal();
@@ -209,9 +209,9 @@ export const FeedbackModule = {
     document.addEventListener("keydown", handleEscape);
   },
 
-  /**
-   * Configure les boutons de notation
-   */
+    /**
+     * Configure les boutons de notation
+     */
   setupRatingButtons() {
     const buttons = document.querySelectorAll(".rating-btn");
     const input = document.getElementById("feedback-rating");

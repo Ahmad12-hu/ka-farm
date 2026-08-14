@@ -1,4 +1,4 @@
-// KA Farm - Dashboard Statistics & Overview Module
+// KA Farm - Module des statistiques et de la vue d'ensemble du tableau de bord
 import { KAStorage } from "../storage.js";
 import { ErrorHandler } from "./error-handler.js";
 
@@ -32,7 +32,7 @@ export const DashboardModule = {
     const stocks = KAStorage.getStocks();
     const finances = KAStorage.getFinances();
 
-    // 1. Quantities
+    // 1. Quantités
     const cropsCount = crops.length;
     const activeTasksCount = tasks.filter((t) => !t.completed).length;
     const nurseriesCount = nurseries.length;
@@ -63,7 +63,7 @@ export const DashboardModule = {
       else elCheptel.textContent = totalCheptelCount;
     }
 
-    // 2. Centralized Financial calculation
+    // 2. Calcul financier centralisé
     const { totalRevenu, totalDepense, solde } = KAStorage.getFinanceStats();
 
     const elRevenu = document.getElementById("stat-total-revenu");
@@ -88,7 +88,7 @@ export const DashboardModule = {
       }
     }
 
-    // 3. Water alert banner
+    // 3. Bannière d'alerte sur l'eau
     const hasDryCrop = crops.some((c) => c.waterStatus === "Besoin d'eau");
     const elWaterAlert = document.getElementById("dashboard-water-alert");
     if (elWaterAlert) {
@@ -526,7 +526,7 @@ export const DashboardModule = {
     const payments = KAStorage.getEmployeePayments() || [];
     const healthInterventions = KAStorage.get("ka_farm_elevage_health", []) || [];
 
-    // On se base sur le mois simulé "2026-06" (mois actuel du dashboard)
+    // On se base sur le mois simulé "2026-06" (mois actuel du tableau de bord)
     const currentMonthStr = "2026-06";
 
     // Agrégations financières dynamiques
@@ -580,10 +580,10 @@ export const DashboardModule = {
       { label: "Divers & Autres", amount: divers, color: "#F59E0B", icon: "package" }, // amber-500
     ];
 
-    // Ne garder que les catégories avec des dépenses actives (> 0)
+    // Ne conserver que les catégories avec des dépenses actives (> 0)
     data = data.filter((d) => d.amount > 0);
 
-    // Fallback de secours si aucune dépense réelle n'est présente dans le cache
+    // Solution de repli si aucune dépense réelle n'est présente dans le cache
     if (data.length === 0) {
       data = [
         { label: "Salaires Ouvriers", amount: 350000, color: "#10B981", icon: "users" },
@@ -607,7 +607,7 @@ export const DashboardModule = {
     const radius = Math.min(width, height) / 2;
     const donutWidth = 24; // Épaisseur de l'anneau
 
-    // Création de l'élément de base G dans le SVG existant
+    // Création de l'élément G de base dans le SVG existant
     const svg = d3
       .select("#budget-donut-chart")
       .attr("width", width)

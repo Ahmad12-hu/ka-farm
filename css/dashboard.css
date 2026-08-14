@@ -1,17 +1,17 @@
-/* Focus visible global for dashboard */
+/* Focus visible global pour le tableau de bord */
 *:focus-visible {
   outline: 2px solid #10b981;
   outline-offset: 2px;
 }
 
-/* Improve dark mode input focus */
+/* Améliorer le focus des champs en mode sombre */
 .dark input:focus,
 .dark select:focus {
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 }
 
-/* Empty state styling */
+/* Style des états vides */
 .empty-state {
   text-align: center;
   padding: 2rem 1rem;
@@ -34,7 +34,7 @@
   font-style: italic;
 }
 
-/* Loading skeleton animation */
+/* Animation du squelette de chargement */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;

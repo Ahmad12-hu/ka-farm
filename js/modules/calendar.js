@@ -321,7 +321,7 @@ export const CalendarModule = {
     return container;
   },
 
-  // Identifies events on a date
+  // Identifie les événements à une date donnée
   getEventsForDate(dateString, crops, tasks) {
     const events = [];
 
@@ -336,7 +336,7 @@ export const CalendarModule = {
       }
     });
 
-    // 2. Harvest (Récolte)
+    // 2. Récolte
     crops.forEach((c) => {
       if (c.harvestDate === dateString) {
         events.push({
@@ -347,7 +347,7 @@ export const CalendarModule = {
       }
     });
 
-    // 3. Irrigation & system tasks
+    // 3. Irrigation et tâches système
     tasks.forEach((t) => {
       if (t.dueDate === dateString) {
         const color = t.category === "Irrigation" ? "bg-sky-400" : "bg-purple-400";
@@ -362,7 +362,7 @@ export const CalendarModule = {
     return events;
   },
 
-  // Navigate calendar months
+  // Naviguer entre les mois du calendrier
   navigateMonth(direction) {
     selectedMonth += direction;
     if (selectedMonth < 0) {
@@ -381,22 +381,22 @@ export const CalendarModule = {
     this.renderMonthCalendar();
   },
 
-  // Local Senegal climate helper based on sowing date
+  // Aide locale sur le climat du Sénégal basée sur la date de semis
   getSenegalSeason(dateObj) {
     const month = dateObj.getMonth(); // 0 to 11
     if (month >= 10 || month <= 1) {
-      // Nov, Dec, Jan, Feb
+      // Nov., déc., janv., févr.
       return { name: "Contre-saison froide ❄️", key: "Froid" };
     } else if (month >= 2 && month <= 5) {
-      // Mar, Apr, May, Jun
+      // Mars, avr., mai, juin
       return { name: "Contre-saison chaude ☀️", key: "Chaud" };
     } else {
-      // Jul, Aug, Sep, Oct
+      // Juil., août, sept., oct.
       return { name: "Hivernage (Saison des pluies) 🌧️", key: "Hivernage" };
     }
   },
 
-  // Simulator
+  // Simulateur
   runSimulation(e) {
     if (e) e.preventDefault();
 
@@ -413,7 +413,7 @@ export const CalendarModule = {
     const meta = CROP_METADATA[cropName];
     if (!meta) return;
 
-    // Climate Season
+    // Saison climatique
     const season = this.getSenegalSeason(sowingDate);
     const seasonBadge = document.getElementById("sim-season-badge");
     if (seasonBadge) {
@@ -465,7 +465,7 @@ export const CalendarModule = {
         .join("");
     }
 
-    // Local specific advice
+    // Conseils spécifiques locaux
     const adviceTextEl = document.getElementById("sim-advice-text");
     const adviceTitleEl = document.getElementById("sim-advice-title");
 
@@ -481,7 +481,7 @@ export const CalendarModule = {
     }
   },
 
-  // Generates automatic alerts and suggested reminders based on active crops and pépinières
+  // Génère des alertes automatiques et des rappels suggérés à partir des cultures actives et des pépinières
   renderSuggestedReminders() {
     const listContainer = document.getElementById("suggested-reminders-list");
     if (!listContainer) return;
@@ -493,7 +493,7 @@ export const CalendarModule = {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // 1. Check water levels from active crops
+    // 1. Vérifier le niveau d'eau des cultures actives
     crops.forEach((c) => {
       if (c.waterStatus === "Besoin d'eau") {
         suggestions.push({
@@ -509,14 +509,14 @@ export const CalendarModule = {
       }
     });
 
-    // 2. Compute cycles suggested activities
+    // 2. Calculer les activités suggérées selon le cycle
     crops.forEach((c) => {
       const sowing = new Date(c.sowingDate);
       sowing.setHours(0, 0, 0, 0);
       const diffTime = today.getTime() - sowing.getTime();
       const ageDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
-      // Fetch base crop family if exists in our metadata
+      // Récupérer la famille de culture de base si elle existe dans nos métadonnées
       const cleanName = Object.keys(CROP_METADATA).find((k) =>
         c.name.toLowerCase().includes(k.split(" ")[0].toLowerCase())
       );

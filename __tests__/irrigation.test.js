@@ -1,8 +1,8 @@
 /**
- * Tests for Irrigation Calculator Module
+ * Tests pour le module Calculateur d'irrigation
  */
 
-// Mock dependencies
+// Simuler les dépendances
 const mockKAStorage = {
   getParcelles: () => [
     {
@@ -26,7 +26,7 @@ const mockUserManager = {
   getCurrentUser: () => ({ role: "Bureau" }),
 };
 
-// Mock localStorage
+// Simuler localStorage
 const localStorageMock = {
   data: {},
   getItem(key) {
@@ -39,7 +39,7 @@ const localStorageMock = {
 
 global.localStorage = localStorageMock;
 
-// Import the module (we'll test the calculation logic)
+// Importer le module (nous testerons la logique de calcul)
 describe("Irrigation Calculator", () => {
   // CROP_IRRIGATION_COEFFS from irrigation.js
   const CROP_IRRIGATION_COEFFS = {

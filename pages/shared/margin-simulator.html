@@ -1004,9 +1004,9 @@
     <script type="module" src="/js/app.js"></script>
     <script type="module" src="/js/modules/margin-simulator.js"></script>
     <script>
-      // Update modal form to use same functionality as main form
+      // Mettre à jour le formulaire de la modale pour utiliser la même fonctionnalité que le formulaire principal
       window.saveSimulationFromModal = function () {
-        // Copy values from modal to main form
+        // Copier les valeurs de la modale vers le formulaire principal
         const mainForm = {
           crop: document.getElementById("simulator-crop"),
           quantity: document.getElementById("simulator-quantity"),
@@ -1038,16 +1038,16 @@
         if (mainForm.otherCosts && modalForm.otherCosts)
           mainForm.otherCosts.value = modalForm.otherCosts.value;
 
-        // Trigger calculation and save
+        // Déclencher le calcul et l'enregistrement
         window.calculateMargin();
         window.saveSimulation();
       };
 
-      // Sync modal form with main form when opening
+      // Synchroniser le formulaire de la modale avec le formulaire principal à l'ouverture
       const originalOpen = window.openSimulatorModal;
       window.openSimulatorModal = function () {
         originalOpen();
-        // Copy values from main to modal
+        // Copier les valeurs du principal vers la modale
         setTimeout(() => {
           const mainForm = {
             crop: document.getElementById("simulator-crop"),
@@ -1081,7 +1081,7 @@
           if (mainForm.otherCosts && modalForm.otherCosts)
             modalForm.otherCosts.value = mainForm.otherCosts.value;
 
-          // Set up modal listeners
+          // Mettre en place les écouteurs de la modale
           const inputs = [
             "modal-simulator-crop",
             "modal-simulator-quantity",
@@ -1138,7 +1138,7 @@
         }, 100);
       };
 
-      // Update best/worst margins on load
+      // Mettre à jour les meilleures et pires marges au chargement
       document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
           const simulations = window.MarginSimulatorModule.storage.getMarginSimulations();
