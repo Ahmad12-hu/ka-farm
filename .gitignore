@@ -5,6 +5,7 @@
 # Firebase Service Account (NE JAMAIS COMMITTER)
 *-firebase-adminsdk-*.json
 firebase-service-account.json
+firebase-applet-config.json
 
 # Dépendances du projet (très volumineux et inutile sur GitHub)
 /node_modules

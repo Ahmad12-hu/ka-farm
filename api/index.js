@@ -6,7 +6,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { logger } from "../js/modules/logger.js";
 import { z } from "zod";
 import { Cache } from "../js/modules/cache.js";
-import { verifyPassword } from "../js/modules/crypto.js";
+import { Crypto } from "../js/modules/crypto.js";
 import helmet from "helmet";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
@@ -311,7 +311,24 @@ function requireAuth(req, res, next) {
 }
 
 // Public routes (no auth required)
-app.use(["/api/gemini", "/api/weather", "/api/auth/login"], requireFirestoreReady);
+app.use(["/api/weather", "/api/auth/login"], requireFirestoreReady);
+
+// Protected AI routes (auth required, no Firestore dependency)
+// /api/gemini et /api/ai/* ne dépendent pas de Firestore : on les isole du middleware
+// requireFirestoreReady pour éviter un blocage silencieux (503) lorsque
+// FIREBASE_SERVICE_ACCOUNT_KEY est absent, mais on exige une authentification
+// pour empêcher tout appel non authentifié (protection du quota API).
+app.use(
+  [
+    "/api/gemini",
+    "/api/ai/openai",
+    "/api/ai/claude",
+    "/api/ai/stream",
+    "/api/ai/agents",
+    "/api/ai/translate",
+  ],
+  requireAuth
+);
 
 // Protected routes (auth + Firestore required)
 app.use(
@@ -354,7 +371,7 @@ app.post("/api/auth/login", async (req, res) => {
     }
 
     // Verify password
-    const isValid = await verifyPassword(password, user.password, user.password_salt);
+    const isValid = await Crypto.verifyPassword(password, user.password, user.password_salt);
     if (!isValid) {
       return res.status(401).json({ error: "Identifiants incorrects" });
     }
@@ -382,9 +399,14 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // In-memory fallback stores
+// ⚠️ SÉCURITÉ : en production, les données de démo sont désactivées pour éviter
+// d'afficher des données fictives aux utilisateurs si Firestore est vide.
+// En développement/test, les données de démo restent actives pour faciliter le développement.
+const isProd = isProduction();
+
 let serverMessages = [];
 
-let serverStocks = [
+let serverStocks = isProd ? [] : [
   {
     id: "S-301",
     name: "Compost Organique Bio",
@@ -427,7 +449,7 @@ let serverStocks = [
   },
 ];
 
-let serverCrops = [
+let serverCrops = isProd ? [] : [
   {
     id: "C-101",
     name: "Tomate Mongal F1",
@@ -452,7 +474,7 @@ let serverCrops = [
   },
 ];
 
-let serverParcelles = [
+let serverParcelles = isProd ? [] : [
   {
     id: "P-001",
     name: "Parcelle Nord - Planche 2",
@@ -479,7 +501,7 @@ let serverParcelles = [
   },
 ];
 
-let serverTasks = [
+let serverTasks = isProd ? [] : [
   {
     id: "T-401",
     title: "Irrigation matin de l'oignon Galmi",
@@ -500,7 +522,7 @@ let serverTasks = [
   },
 ];
 
-let serverFinances = [
+let serverFinances = isProd ? [] : [
   {
     id: "F-501",
     description: "Vente de 8 caisses de Tomates Mongal",
@@ -519,7 +541,7 @@ let serverFinances = [
   },
 ];
 
-let serverEmployees = [
+let serverEmployees = isProd ? [] : [
   {
     id: "E-001",
     name: "Samba Diouf",
@@ -538,7 +560,7 @@ let serverEmployees = [
   },
 ];
 
-let serverCheptel = [
+let serverCheptel = isProd ? [] : [
   {
     id: "CH-001",
     name: "Génisses Laitières Holstein",
@@ -561,7 +583,7 @@ let serverCheptel = [
   },
 ];
 
-let serverElevageProduction = [
+let serverElevageProduction = isProd ? [] : [
   {
     id: "PROD-001",
     date: "2026-06-25",
@@ -580,7 +602,7 @@ let serverElevageProduction = [
   },
 ];
 
-let serverElevageHealth = [
+let serverElevageHealth = isProd ? [] : [
   {
     id: "HEA-001",
     date: "2026-06-10",
@@ -1295,9 +1317,82 @@ app.post("/api/stocks", async (req, res) => {
 });
 
 // ==================== GEMINI AI ====================
+// Prompts système spécialisés par agent
+const AI_SYSTEM_PROMPTS = {
+  advisor: `Tu es KA-Farm Agro-Advisor, un conseiller horticole et maraîcher expert d'Afrique de l'Ouest (Sénégal), chaleureux, pragmatique, direct et scientifique. Tu réponds en français. Tu es spécialisé exclusivement dans le maraîchage (cultures de légumes, fines herbes, fruits de jardin, pépinières, irrigation goutte-à-goutte ou aspersion, maladies horticoles comme la mineuse de la tomate Tuta absoluta, le mildiou, l'oïdium, les thrips, et l'usage de biopesticides locaux comme le neem ou le piment). Tu aides à diagnostiquer les ravageurs et maladies des légumes, planifier les pépinières maraîchères et le repiquage, optimiser l'arrosage et les amendements (compost organique, fumier) de manière écologique et agroécologique. Donne des réponses concises, claires, structurées et adaptées aux conditions locales ouest-africaines.`,
+
+  plantDoctor: `Tu es KA-Farm Doctor Plante, un expert phytosanitaire horticole spécialisé dans le diagnostic visuel des maladies et carences des légumes en Afrique de l'Ouest (Sénégal). Analyse cette photo de culture et fournis un diagnostic structuré en français avec : 1) Nom probable de la maladie/carence (si identifiable), 2) Niveau de gravité (Faible/Moyen/Élevé/Critique), 3) Action de traitement recommandée (produit bio ou chimique, dosage, fréquence), 4) Prévention. Sois direct, scientifique et adapté aux conditions locales. Si l'image n'est pas claire ou ne montre pas de problème visible, indique-le honnêtement.`,
+
+  livestock: `Tu es KA-Farm Conseiller Élevage, expert en production animale en Afrique de l'Ouest. Spécialisé dans : bovins, ovins, caprins, volailles au Sénégal. Conseils sur : alimentation, santé animale, reproduction, logement, prophylaxie. Réponds en français avec des solutions locales et abordables.`,
+
+  finance: `Tu es KA-Farm Analyste Financier Agricole, expert en gestion financière des exploitations agricoles. Aide à : analyser la rentabilité des cultures, optimiser les dépenses, prévoir les revenus, conseiller sur les prix du marché (marchés sénégalais), suggestions de diversification. Réponds en français avec des chiffres concrets adaptés au contexte sénégalais.`,
+
+  irrigation: `Tu es KA-Farm Expert Irrigation & Météo, spécialisé en gestion de l'eau pour l'agriculture sahélienne. Conseils sur : irrigation goutte-à-goutte, aspersion, calendrier d'arrosage selon les saisons, gestion de la sécheresse, optimisation de l'eau, drainage. Réponds en français avec des solutions adaptées au climat sénégalais.`,
+
+  soil: `Tu es KA-Farm Expert Sol & Compost, spécialisé en agroécologie et fertilité des sols au Sénégal. Conseils sur : fabrication de compost, fumier, amendements organiques, rotation des cultures, analyse du sol (sableux, limoneux, argileux), couverture végétale. Réponds en français avec des techniques locales et écologiques.`,
+
+  personal: `Tu es KA-Farm Assistant Personnel Agricole. Tu aides l'agriculteur à organiser son travail quotidien : planification des tâches, rappels, suivi des cultures, gestion du temps. Sois amical, motivateur et pratique. Réponds en français.`,
+
+  wolofAdvisor: `Ña ng ci KA-Farm Agro-Advisor, jàngoro bu am solo ci mbey mi ci Sénégal. Maa ngiy faj ay jàngoro yu mel ni: mbey, garab, àndi ndox, ay jàkka, ay garab yu bon. Maa ngiy wax ci Wolof ak Français. Na nga may ay mbir yu am solo ci sa mbey mi.`,
+};
+
+// Helper pour construire le contexte RAG de l'exploitation
+function buildFarmContext(agentType) {
+  try {
+    const context = [];
+    if (["advisor", "plantDoctor", "finance"].includes(agentType) && serverCrops.length) {
+      context.push(`Cultures actuelles: ${serverCrops.slice(0, 5).map(c => `${c.name} (${c.field || '?'}) - ${c.status || '?'}`).join(', ')}`);
+    }
+    if (["livestock"].includes(agentType) && serverCheptel.length) {
+      context.push(`Cheptel: ${serverCheptel.map(c => `${c.name}: ${c.quantity} ${c.unit || 'têtes'} (${c.status || '?'})`).join(', ')}`);
+    }
+    if (["finance"].includes(agentType) && serverFinances.length) {
+      const revenus = serverFinances.filter(f => f.type === 'Revenu').reduce((a, b) => a + (b.amount || 0), 0);
+      const depenses = serverFinances.filter(f => f.type === 'Dépense').reduce((a, b) => a + (b.amount || 0), 0);
+      context.push(`Finances: Revenus ${revenus}F, Dépenses ${depenses}F`);
+    }
+    if (["irrigation"].includes(agentType) && serverParcelles.length) {
+      context.push(`Parcelles: ${serverParcelles.map(p => `${p.name} (${p.surface}m², ${p.type_sol || '?'})`).join(', ')}`);
+    }
+    return context.length ? `\n\n--- CONTEXTE DE VOTRE EXPLOITATION ---\n${context.join('\n')}` : "";
+  } catch (e) {
+    return "";
+  }
+}
+
+// Helper pour appeler Gemini avec retry
+async function callGeminiWithRetry(ai, model, contents, systemInstruction) {
+    const modelsToTry = [model, "gemini-3.6-flash", "gemini-3.5-flash-lite"];
+  let response = null;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    for (const m of modelsToTry) {
+      try {
+        response = await ai.models.generateContent({
+          model: m,
+          contents,
+          config: {
+            systemInstruction,
+            temperature: 0.7,
+          },
+        });
+        if (response && response.text) {
+          return response;
+        }
+      } catch (err) {
+        lastError = err;
+        await new Promise((resolve) => setTimeout(resolve, 600 * attempt));
+      }
+    }
+  }
+  throw lastError || new Error("Impossible de générer une réponse de l'IA après plusieurs tentatives");
+}
+
+// Route principale Gemini améliorée avec agents spécialisés + RAG
 app.post("/api/gemini", async (req, res) => {
   try {
-    const { prompt, history, image } = req.body;
+    const { prompt, history, image, systemPrompt, model, agentType = "advisor" } = req.body;
     if (!prompt) {
       return res.status(400).json({ error: "Prompt requis" });
     }
@@ -1316,12 +1411,233 @@ app.post("/api/gemini", async (req, res) => {
       },
     });
 
-    let systemInstruction =
-      "Tu es KA-Farm Agro-Advisor, un conseiller horticole et maraîcher expert d'Afrique de l'Ouest (Sénégal), chaleureux, pragmatique, direct et scientifique. Tu réponds en français. Tu es spécialisé exclusivement dans le maraîchage (cultures de légumes, fines herbes, fruits de jardin, pépinières, irrigation goutte-à-goutte ou aspersion, maladies horticoles comme la mineuse de la tomate Tuta absoluta, le mildiou, l'oïdium, les thrips, et l'usage de biopesticides locaux comme le neem ou le piment). Tu aides à diagnostiquer les ravageurs et maladies des légumes, planifier les pépinières maraîchères et le repiquage, optimiser l'arrosage et les amendements (compost organique, fumier) de manière écologique et agroécologique. Donne des réponses concises, claires, structurées et adaptées aux conditions locales ouest-africaines.";
+    // Utiliser le prompt système fourni ou celui de l'agent
+    let systemInstruction = systemPrompt || AI_SYSTEM_PROMPTS[agentType] || AI_SYSTEM_PROMPTS.advisor;
 
+    // Si image et pas de prompt système spécifique, utiliser Doctor Plante
+    if (image && !systemPrompt && agentType === "advisor") {
+      systemInstruction = AI_SYSTEM_PROMPTS.plantDoctor;
+    }
+
+    // Ajouter le contexte RAG de l'exploitation
+    const ragContext = buildFarmContext(agentType);
+    const enhancedPrompt = ragContext ? `${prompt}${ragContext}` : prompt;
+
+    const contents = [];
+    if (history && Array.isArray(history) && history.length > 0) {
+      history.forEach((m) => {
+        if (!m?.text) return;
+        contents.push({
+          role: m.role === "user" ? "user" : "model",
+          parts: [{ text: m.text }],
+        });
+      });
+    }
+
+    const requestParts = [{ text: enhancedPrompt }];
     if (image) {
-      systemInstruction =
-        "Tu es KA-Farm Doctor Plante, un expert phytosanitaire horticole spécialisé dans le diagnostic visuel des maladies et carences des légumes en Afrique de l'Ouest (Sénégal). Analyse cette photo de culture et fournis un diagnostic structuré en français avec : 1) Nom probable de la maladie/carence (si identifiable), 2) Niveau de gravité (Faible/Moyen/Élevé), 3) Action de traitement recommandée (produit bio ou chimique, dosage, fréquence), 4) Prévention. Sois direct, scientifique et adapté aux conditions locales. Si l'image n'est pas claire ou ne montre pas de problème visible, indique-le honnêtement.";
+      const mimeMatch = image.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,/);
+      if (!mimeMatch) {
+        return res.status(400).json({ error: "Format d'image invalide" });
+      }
+      requestParts.push({
+        inlineData: {
+          mimeType: mimeMatch[1],
+          data: image.split(",")[1],
+        },
+      });
+    }
+
+    const finalContents = contents.length > 0
+      ? [...contents, { role: "user", parts: requestParts }]
+      : requestParts;
+
+      const response = await callGeminiWithRetry(ai, model || "gemini-3.6-flash", finalContents, systemInstruction);
+
+    return res.json({ text: response.text });
+    } catch (error) {
+      // Logger l'erreur exacte renvoyée par l'API Gemini (clé invalide, quota dépassé, mauvais nom de modèle, etc.)
+      logger.error("Error calling Gemini API", {
+        message: error.message,
+        status: error.status,
+        code: error.code,
+        errorDetails: error.errorDetails,
+        stack: error.stack,
+      });
+      return res.status(500).json({ error: error.message || "Erreur interne de l'API" });
+    }
+});
+
+// ==================== OPENAI FALLBACK ====================
+app.post("/api/ai/openai", async (req, res) => {
+  try {
+    const { prompt, systemPrompt, history, image, model = "gpt-4o-mini" } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt requis" });
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Clé OPENAI_API_KEY non configurée" });
+    }
+
+    const messages = [];
+    if (systemPrompt) {
+      messages.push({ role: "system", content: systemPrompt });
+    }
+    if (history && Array.isArray(history)) {
+      history.forEach((m) => {
+        if (!m?.text) return;
+        messages.push({ role: m.role === "user" ? "user" : "assistant", content: m.text });
+      });
+    }
+
+    const content = [];
+    content.push({ type: "text", text: prompt });
+    if (image) {
+      const mimeMatch = image.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,/);
+      if (!mimeMatch) {
+        return res.status(400).json({ error: "Format d'image invalide" });
+      }
+      content.push({
+        type: "image_url",
+        image_url: { url: image },
+      });
+    }
+    messages.push({ role: "user", content });
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: 0.7,
+        max_tokens: 2048,
+      }),
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `OpenAI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content;
+    if (!text) {
+      throw new Error("Aucune réponse générée par OpenAI");
+    }
+
+    return res.json({ text, provider: "openai" });
+  } catch (error) {
+    logger.error("Error calling OpenAI API", { error: error.message });
+    return res.status(500).json({ error: error.message || "Erreur interne de l'API" });
+  }
+});
+
+// ==================== CLAUDE FALLBACK ====================
+app.post("/api/ai/claude", async (req, res) => {
+  try {
+    const { prompt, systemPrompt, history, image, model = "claude-3-5-haiku-latest" } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt requis" });
+    }
+
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Clé ANTHROPIC_API_KEY non configurée" });
+    }
+
+    const messages = [];
+    if (history && Array.isArray(history)) {
+      history.forEach((m) => {
+        if (!m?.text) return;
+        messages.push({ role: m.role === "user" ? "user" : "assistant", content: m.text });
+      });
+    }
+
+    let content = prompt;
+    if (image) {
+      const mimeMatch = image.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,/);
+      if (!mimeMatch) {
+        return res.status(400).json({ error: "Format d'image invalide" });
+      }
+      content = [
+        { type: "text", text: prompt },
+        {
+          type: "image",
+          source: {
+            type: "base64",
+            media_type: mimeMatch[1],
+            data: image.split(",")[1],
+          },
+        },
+      ];
+    }
+    messages.push({ role: "user", content });
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model,
+        system: systemPrompt || "Tu es KA-Farm Agro-Advisor, un conseiller agricole expert du Sénégal.",
+        messages,
+        max_tokens: 2048,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `Claude API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text;
+    if (!text) {
+      throw new Error("Aucune réponse générée par Claude");
+    }
+
+    return res.json({ text, provider: "claude" });
+  } catch (error) {
+    logger.error("Error calling Claude API", { error: error.message });
+    return res.status(500).json({ error: error.message || "Erreur interne de l'API" });
+  }
+});
+
+// ==================== STREAMING SSE ====================
+app.post("/api/ai/stream", async (req, res) => {
+  try {
+    const { prompt, systemPrompt, history, image, language = "fr", agentType = "advisor" } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt requis" });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Clé GEMINI_API_KEY non configurée" });
+    }
+
+    const ai = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        },
+      },
+    });
+
+    let systemInstruction = systemPrompt || AI_SYSTEM_PROMPTS[agentType] || AI_SYSTEM_PROMPTS.advisor;
+    if (language === "wo") {
+      systemInstruction = AI_SYSTEM_PROMPTS.wolofAdvisor;
     }
 
     const contents = [];
@@ -1349,50 +1665,129 @@ app.post("/api/gemini", async (req, res) => {
       });
     }
 
-    const modelsToTry = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
-    let response = null;
-    let lastError = null;
+    const finalContents = contents.length > 0
+      ? [...contents, { role: "user", parts: requestParts }]
+      : requestParts;
 
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      for (const model of modelsToTry) {
-        try {
-          response = await ai.models.generateContent({
-            model: model,
-            contents:
-              contents.length > 0
-                ? [...contents, { role: "user", parts: requestParts }]
-                : requestParts,
-            config: {
-              systemInstruction,
-              temperature: 0.7,
-            },
-          });
-          if (response && response.text) {
-            break;
-          }
-        } catch (err) {
-          lastError = err;
-          await new Promise((resolve) => setTimeout(resolve, 600 * attempt));
+    // Configurer SSE
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.flushHeaders();
+
+    try {
+        const stream = await ai.models.generateContentStream({
+          model: "gemini-3.6-flash",
+        contents: finalContents,
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+        },
+      });
+
+      for await (const chunk of stream) {
+        const text = chunk.text;
+        if (text) {
+          res.write(`data: ${JSON.stringify({ text })}\n\n`);
         }
       }
-      if (response && response.text) {
-        break;
-      }
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      res.end();
+    } catch (streamError) {
+      res.write(`data: ${JSON.stringify({ error: streamError.message })}\n\n`);
+      res.end();
+    }
+  } catch (error) {
+    logger.error("Error in AI streaming", { error: error.message });
+    res.status(500).json({ error: error.message || "Erreur interne de l'API" });
+  }
+});
+
+// ==================== AGENTS IA ====================
+app.get("/api/ai/agents", (req, res) => {
+  const agents = Object.keys(AI_SYSTEM_PROMPTS).map((key) => ({
+    id: key,
+    name: getAgentDisplayName(key),
+    description: getAgentDescription(key),
+  }));
+  res.json(agents);
+});
+
+// ==================== TRADUCTION ====================
+app.post("/api/ai/translate", async (req, res) => {
+  try {
+    const { text, fromLang = "fr", toLang = "wo" } = req.body;
+    if (!text) {
+      return res.status(400).json({ error: "Texte requis" });
     }
 
-    if (!response || !response.text) {
-      throw (
-        lastError ||
-        new Error("Impossible de générer une réponse de l'IA après plusieurs tentatives")
-      );
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Clé GEMINI_API_KEY non configurée" });
     }
+
+    const ai = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        },
+      },
+    });
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `Traduis ce texte du ${fromLang} au ${toLang} : "${text}". Réponds UNIQUEMENT avec la traduction, sans explications.`,
+              },
+            ],
+          },
+        ],
+      config: {
+        systemInstruction: "Tu es un traducteur expert. Traduis fidèlement le texte fourni.",
+        temperature: 0.3,
+      },
+    });
 
     return res.json({ text: response.text });
   } catch (error) {
-    logger.error("Error calling Gemini API", { error: error.message });
-    return res.status(500).json({ error: error.message || "Erreur interne de l'API" });
+    logger.error("Error translating", { error: error.message });
+    return res.status(500).json({ error: error.message || "Erreur de traduction" });
   }
 });
+
+// Helpers pour les noms d'agents
+function getAgentDisplayName(id) {
+  const names = {
+    advisor: "Conseiller Horticole IA",
+    plantDoctor: "Docteur Plante IA",
+    livestock: "Conseiller Élevage IA",
+    finance: "Analyste Financier IA",
+    irrigation: "Expert Irrigation IA",
+    soil: "Expert Sol & Compost IA",
+    personal: "Assistant Personnel IA",
+    wolofAdvisor: "Conseiller en Wolof",
+  };
+  return names[id] || `Agent ${id}`;
+}
+
+function getAgentDescription(id) {
+  const descs = {
+    advisor: "Conseils maraîchage, maladies, traitements bio",
+    plantDoctor: "Diagnostic visuel des maladies des plantes",
+    livestock: "Soins, alimentation et reproduction animale",
+    finance: "Rentabilité, budget et analyse financière",
+    irrigation: "Gestion de l'eau et calendrier d'arrosage",
+    soil: "Compost, amendements et fertilité des sols",
+    personal: "Organisation des tâches et suivi quotidien",
+    wolofAdvisor: "Nga wax ci Wolof, mbey mi ci Sénégal",
+  };
+  return descs[id] || "";
+}
 
 // ==================== WEATHER ====================
 app.get("/api/weather", async (req, res) => {

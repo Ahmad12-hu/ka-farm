@@ -36,9 +36,24 @@ CREATE POLICY "Allow public insert" ON public.feedback
   FOR INSERT WITH CHECK (true);
 
 -- Politique : Seuls les admins peuvent modifier/supprimer
+-- Vérifie le rôle admin via les claims JWT (auth.jwt() ->> 'role' = 'admin')
+-- Nécessite que le rôle admin soit défini dans les claims JWT de l'utilisateur
 CREATE POLICY "Allow admin update delete" ON public.feedback
-  FOR UPDATE USING (auth.role() = 'authenticated')
-  USING (auth.role() = 'authenticated');
+  FOR UPDATE USING (
+    auth.role() = 'authenticated'
+    AND COALESCE(auth.jwt() ->> 'role', '') = 'admin'
+  )
+  USING (
+    auth.role() = 'authenticated'
+    AND COALESCE(auth.jwt() ->> 'role', '') = 'admin'
+  );
+
+-- Politique : Seuls les admins peuvent supprimer
+CREATE POLICY "Allow admin delete" ON public.feedback
+  FOR DELETE USING (
+    auth.role() = 'authenticated'
+    AND COALESCE(auth.jwt() ->> 'role', '') = 'admin'
+  );
 
 -- Vue matérialisée pour les statistiques (optionnel)
 CREATE OR REPLACE VIEW feedback_stats AS
