@@ -1,0 +1,386 @@
+/* =============================================
+   KA Farm - Animations Modernes
+   Inspiré du style BenDJo - Vanilla CSS + JS
+   Thème vert foncé: #0f1a0b, #162010, accent #7ec850
+   ============================================= */
+
+/* Respect du reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* =============================================
+   1. FADE IN + SLIDE UP au scroll
+   ============================================= */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Variante pour le slide depuis la gauche */
+.animate-on-scroll.slide-left {
+  transform: translateX(-20px);
+}
+
+.animate-on-scroll.slide-left.is-visible {
+  transform: translateX(0);
+}
+
+/* Variante pour le slide depuis la droite */
+.animate-on-scroll.slide-right {
+  transform: translateX(20px);
+}
+
+.animate-on-scroll.slide-right.is-visible {
+  transform: translateX(0);
+}
+
+/* Variante pour le fade in sans déplacement */
+.animate-on-scroll.fade-only {
+  transform: none;
+}
+
+/* =============================================
+   2. ANIMATIONS DES CARTES (hover)
+   ============================================= */
+.card-hover {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow;
+}
+
+.card-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 35px rgba(126, 200, 80, 0.15),
+              0 4px 12px rgba(126, 200, 80, 0.08);
+}
+
+/* Thème sombre - ombre verte subtile */
+.dark .card-hover:hover {
+  box-shadow: 0 12px 35px rgba(126, 200, 80, 0.12),
+              0 4px 12px rgba(126, 200, 80, 0.06);
+}
+
+/* =============================================
+   3. PULSE - réservé aux alertes urgentes UNIQUEMENT
+   ============================================= */
+.pulse-alert {
+  animation: pulse-alert 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-alert {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Variante avec scale pour les badges d'alerte critique */
+.pulse-badge {
+  animation: pulse-badge 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+/* Variante spécifique pour alertes DAR (Délai Avant Récolte) */
+.pulse-dar {
+  animation: pulse-dar 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-dar {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 6px rgba(244, 63, 94, 0);
+  }
+}
+
+/* Variante pour stocks critiques */
+.pulse-stock-critical {
+  animation: pulse-stock-critical 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-stock-critical {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+  }
+}
+
+/* =============================================
+   4. TRANSITION DARK/LIGHT MODE - Fluide et douce
+   ============================================= */
+body,
+.bg-transition,
+.text-transition,
+.border-transition,
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Thème vert foncé personnalisé */
+:root {
+  --ka-farm-dark-bg: #0f1a0b;
+  --ka-farm-dark-surface: #162010;
+  --ka-farm-accent: #7ec850;
+  --ka-farm-accent-hover: #6ab342;
+}
+
+.dark body {
+  background-color: var(--ka-farm-dark-bg);
+  color: #f1f5f9;
+}
+
+.light body {
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+/* =============================================
+   5. ANIMATIONS ADDITIONNELLES - Style BenDJo
+   ============================================= */
+
+/* Fade in rapide pour les éléments dynamiques */
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide up premium pour les modales/toasts */
+.slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale doux pour les boutons actifs */
+.scale-active {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scale-active:active {
+  transform: scale(0.96);
+}
+
+/* Animation de révélation progressive (BenDJo style) */
+.reveal {
+  animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Effet de brillance subtil au survol */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(126, 200, 80, 0.1),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.shimmer:hover::after {
+  left: 100%;
+}
+
+/* =============================================
+   6. STAGGERED ANIMATIONS (délai en cascade)
+   ============================================= */
+.animate-on-scroll.stagger-1 { transition-delay: 0.08s; }
+.animate-on-scroll.stagger-2 { transition-delay: 0.12s; }
+.animate-on-scroll.stagger-3 { transition-delay: 0.16s; }
+.animate-on-scroll.stagger-4 { transition-delay: 0.20s; }
+.animate-on-scroll.stagger-5 { transition-delay: 0.24s; }
+.animate-on-scroll.stagger-6 { transition-delay: 0.28s; }
+.animate-on-scroll.stagger-7 { transition-delay: 0.32s; }
+.animate-on-scroll.stagger-8 { transition-delay: 0.36s; }
+
+/* =============================================
+   7. LOADING SPINNER (optionnel)
+   ============================================= */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Spinner avec couleur accent KA Farm */
+.spinner-accent {
+  border: 3px solid rgba(126, 200, 80, 0.2);
+  border-top-color: var(--ka-farm-accent);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.8s linear infinite;
+}
+
+/* =============================================
+   8. UTILITAIRES DE PERFORMANCE
+   ============================================= */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimisation pour les animations complexes */
+.smooth-animation {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Éviter le layout thrashing pendant les animations */
+.no-layout-shift {
+  contain: layout;
+}
+
+/* =============================================
+   9. ANIMATIONS SPÉCIFIQUES KA FARM
+   ============================================= */
+
+/* Animation pour les cartes de statistiques */
+.stat-card-enter {
+  animation: statCardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes statCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animation pour les indicateurs de progression */
+.progress-bar-animate {
+  animation: progressGrow 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes progressGrow {
+  from {
+    width: 0%;
+  }
+}
+
+/* Notification toast animation */
+.toast-enter {
+  animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-exit {
+  animation: toastSlideOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}

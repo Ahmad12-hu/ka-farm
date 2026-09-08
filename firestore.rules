@@ -13,6 +13,13 @@ service cloud.firestore {
         && request.auth.token.role == role;
     }
 
+    // Vérifie que l'utilisateur possède l'un des rôles donnés (valeurs réelles des tokens JWT
+    // définies dans js/constants/roles.js : 'admin', 'super_admin', 'Bureau', 'Terrain')
+    function hasAnyRole(...roles) {
+      return isAuthenticated()
+        && roles.some(role => request.auth.token.role == role);
+    }
+
     // Fonction helper : vérifie que l'utilisateur accède à son propre entreprise
     function isInSameEnterprise(enterpriseId) {
       return isAuthenticated()
@@ -31,10 +38,10 @@ service cloud.firestore {
       // Lecture : utilisateur authentifié du même entreprise
       allow read: if isAuthenticated() && isInSameEnterprise(enterpriseId);
 
-      // Écriture : Admin ou Bureau du même entreprise
+      // Écriture : Admin, Super Admin ou Bureau du même entreprise
       allow write: if isAuthenticated()
         && isInSameEnterprise(enterpriseId)
-        && (hasRole('ADMIN') || hasRole('BUREAU'));
+        && hasAnyRole('admin', 'super_admin', 'Bureau');
     }
 
     // Bloque tout accès autre par défaut

@@ -3,7 +3,7 @@ import { logger } from "./logger.js";
 import { ErrorHandler } from "./error-handler.js";
 import { UserManager } from "../user-manager.js";
 
-const HarvestsModule = {
+export const HarvestsModule = {
   async init() {
     try {
       this.applyRbac();

@@ -1,1049 +1,746 @@
 <!doctype html>
 <html lang="fr" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Suivi des Cultures - KA Farm</title>
 
-    <!-- Favicon et identité visuelle -->
-    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
-    <link rel="apple-touch-icon" href="/assets/logo.svg" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suivi des Cultures - KA Farm</title>
 
-    <!-- CDN Tailwind CSS et icônes Lucide -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Favicon et identité visuelle -->
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+  <link rel="apple-touch-icon" href="/assets/logo.svg" />
 
-    <!-- Feuilles de style séparées personnalisées -->
-    <link rel="stylesheet" href="/css/styles.css" />
+  <!-- CDN Tailwind CSS et icônes Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                dark: "#06130B",
-                slate: "#0B2112",
-                green: "#10B981",
-                hover: "#059669",
-              },
+  <!-- Feuilles de style séparées personnalisées -->
+  <link rel="stylesheet" href="/css/styles.css" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: "#06130B",
+              slate: "#0B2112",
+              green: "#10B981",
+              hover: "#059669",
             },
           },
         },
-      };
-    </script>
-  </head>
+      },
+    };
+  </script>
+</head>
 
-  <body
-    class="bg-slate-50 dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200"
-  >
-    <!-- Emplacement réservé pour l'en-tête mobile -->
-    <div id="mobile-header-placeholder"></div>
+<body
+  class="bg-slate-50 dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
+  <!-- Emplacement réservé pour l'en-tête mobile -->
+  <div id="mobile-header-placeholder"></div>
 
-    <div class="min-h-screen flex flex-col lg:flex-row">
-      <!-- Emplacement réservé pour la barre latérale -->
-      <div id="sidebar-placeholder"></div>
+  <div class="min-h-screen flex flex-col lg:flex-row">
+    <!-- Emplacement réservé pour la barre latérale -->
+    <div id="sidebar-placeholder"></div>
 
-      <!-- Zone du contenu principal -->
-      <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
-        <div class="w-full space-y-8">
-          <!-- ==================== ONGLET : CULTURES & PÉPINIÈRES ==================== -->
-          <div class="space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
-              <div class="space-y-1">
-                <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest"
-                  >Données d'Exploitation</span
-                >
-                <h2
-                  class="text-2xl font-black text-slate-850 dark:text-white flex items-center gap-2"
-                >
-                  <i data-lucide="folder-dot" class="h-6 w-6 text-emerald-500"></i> Suivi des
-                  Cultures actives
-                </h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">
-                  Suivez la croissance de vos planches et réalisez vos diagnostics sanitaires sur le
-                  terrain.
-                </p>
-              </div>
-
-              <div class="flex flex-wrap gap-2">
-                <button
-                  onclick="document.getElementById('crop-form-modal').classList.remove('hidden')"
-                  class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
-                >
-                  <i data-lucide="plus" class="h-3.5 w-3.5"></i> Nouvelle planche
-                </button>
-                <button
-                  onclick="document.getElementById('nursery-form-modal').classList.remove('hidden')"
-                  class="px-4 py-2 bg-slate-100 dark:bg-[#0B2112] hover:bg-slate-250 dark:hover:bg-[#143E23]/40 border border-slate-250 dark:border-[#143E23] text-emerald-700 dark:text-emerald-400 font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
-                >
-                  <i data-lucide="layers" class="h-3.5 w-3.5"></i> Nouvelle Pépinière
-                </button>
-              </div>
-            </div>
-
-            <!-- Crops Section -->
-            <div class="space-y-4">
-              <h3 class="text-xs font-black text-[#819888] uppercase tracking-wider text-left">
-                Planches de Cultures actives
-              </h3>
-
-              <!-- Crops Filter Panel -->
-              <div
-                class="p-4 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-2xl flex flex-col md:flex-row gap-3 items-center text-xs font-semibold"
-              >
-                <div class="relative flex-1 w-full text-left">
-                  <i
-                    data-lucide="search"
-                    class="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400"
-                  ></i>
-                  <input
-                    type="text"
-                    id="crops-search"
-                    oninput="window.filterActiveCrops()"
-                    placeholder="Rechercher une culture (ex: Tomate)..."
-                    class="w-full pl-10 pr-4 py-3 bg-[#061109]/5 dark:bg-[#061109]/40 border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-700 dark:text-slate-250"
-                  />
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto flex-shrink-0">
-                  <select
-                    id="crops-filter-field"
-                    onchange="window.filterActiveCrops()"
-                    class="px-3 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-600 dark:text-slate-300 cursor-pointer"
-                  >
-                    <option value="all">📍 Toutes Parcelles</option>
-                    <!-- Rempli dynamiquement -->
-                  </select>
-                  <select
-                    id="crops-filter-seed"
-                    onchange="window.filterActiveCrops()"
-                    class="px-3 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-600 dark:text-slate-300 cursor-pointer"
-                  >
-                    <option value="all">🌱 Toutes Semences</option>
-                    <option value="Hybride F1 Certifiée">Hybride F1</option>
-                    <option value="Locale Améliorée">Locale Améliorée</option>
-                    <option value="Graines Paysannes">Graines Paysannes</option>
-                    <option value="Bouture / Éclat de souche">Bouture / Éclat</option>
-                  </select>
-                  <select
-                    id="crops-filter-season"
-                    onchange="window.filterActiveCrops()"
-                    class="px-3 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-600 dark:text-slate-300 cursor-pointer"
-                  >
-                    <option value="all">📅 Toutes Saisons</option>
-                    <option value="Saison Sèche Froide">Saison Sèche Froide</option>
-                    <option value="Saison Sèche Chaude">Saison Sèche Chaude</option>
-                    <option value="Hivernage / Saison des Pluies">Hivernage</option>
-                  </select>
-                </div>
-              </div>
-
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                id="crops-container"
-              >
-                <!-- Rempli dynamiquement via crops.js -->
-              </div>
-            </div>
-
-            <!-- Nurseries Section -->
-            <div class="space-y-4 pt-6 border-t border-slate-150 dark:border-[#143E23]/20">
-              <h3 class="text-xs font-black text-[#819888] uppercase tracking-wider text-left">
-                Pépinières & Semis en cours
-              </h3>
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                id="nurseries-container"
-              >
-                <!-- Rempli dynamiquement via crops.js -->
-              </div>
-            </div>
-
-            <!-- Traitements & Délai Avant Récolte (DAR) Section -->
-            <div class="space-y-4 pt-6 border-t border-slate-150 dark:border-[#143E23]/20">
-              <!-- Bannière d'alerte DAR pour les cultures -->
-              <div
-                id="crops-dar-alert"
-                class="hidden p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center gap-2"
-              >
-                <i data-lucide="shield-alert" class="h-4 w-4 text-rose-500"></i>
-                <div>
-                  <h4 class="text-[10px] font-black text-rose-600 dark:text-rose-400">
-                    ⚠️ Alerte DAR Active
-                  </h4>
-                  <p class="text-[9px] text-slate-400 font-semibold">
-                    Récolte interdite sur certaines cultures. Respectez le délai avant récolte.
-                  </p>
-                </div>
-              </div>
-
-              <div
-                class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left"
-              >
-                <div class="space-y-1">
-                  <h3
-                    class="text-xs font-black text-[#819888] uppercase tracking-wider text-left flex items-center gap-1.5"
-                  >
-                    <i
-                      data-lucide="shield-alert"
-                      class="h-4 w-4 text-emerald-500 animate-pulse"
-                    ></i>
-                    Registre des Traitements & Protection DAR (Délai Avant Récolte)
-                  </h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
-                    Suivez les apports phytosanitaires ou d'engrais et assurez la sécurité de vos
-                    récoltes avant la vente.
-                  </p>
-                </div>
-                <button
-                  onclick="window.openTreatmentModal()"
-                  class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
-                >
-                  <i data-lucide="plus" class="h-3.5 w-3.5"></i> Enregistrer un traitement
-                </button>
-              </div>
-
-              <!-- Treatment Cards Grid -->
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                id="treatments-container"
-              >
-                <!-- Rempli dynamiquement via crops.js -->
-              </div>
-            </div>
-
-            <!-- 🔮 Estimateur de Récolte & Planificateur de Rendement -->
-            <div
-              class="p-6 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-6 shadow-sm"
-            >
-              <div class="space-y-1">
-                <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest"
-                  >IA Prédictive & Agronomie</span
-                >
-                <h3
-                  class="text-xs font-black text-slate-850 dark:text-white uppercase tracking-wider flex items-center gap-1.5 font-sans"
-                >
-                  <i data-lucide="sparkles" class="h-4 w-4 text-emerald-500 animate-pulse"></i>
-                  Estimateur de Récolte & Planificateur de Rendement
-                </h3>
-                <p class="text-[11px] text-slate-400 font-semibold">
-                  Estimez le rendement de vos planches de culture (en tonnes) et la date optimale de
-                  récolte selon la densité et la variété.
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                <!-- Left Side Inputs -->
-                <div class="lg:col-span-5 space-y-4 text-xs font-semibold">
-                  <div class="space-y-1">
-                    <label
-                      class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                      >Variété de Semence</label
-                    >
-                    <select
-                      id="est-crop-select"
-                      class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-                      onchange="window.updateYieldEstimator()"
-                    >
-                      <option value="tomate">🍅 Tomate Mongal F1 (Cycle court: 80 j)</option>
-                      <option value="oignon">🧅 Oignon Rouge de Galmi (Cycle long: 135 j)</option>
-                      <option value="menthe">🌿 Menthe de Thiès (Cycle très court: 45 j)</option>
-                      <option value="chou">🥬 Chou Cabus KK-Cross (Cycle moyen: 90 j)</option>
-                      <option value="piment">🌶 Piment Oiseau de Cayenne (Cycle long: 135 j)</option>
-                    </select>
-                  </div>
-
-                  <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                      <label
-                        class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                        >Surface cultivée (m²)</label
-                      >
-                      <input
-                        type="number"
-                        id="est-surface"
-                        value="150"
-                        min="1"
-                        class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-                        oninput="window.updateYieldEstimator()"
-                      />
-                    </div>
-
-                    <div class="space-y-1">
-                      <label
-                        class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                        >Densité (plants/m²)</label
-                      >
-                      <input
-                        type="number"
-                        id="est-density"
-                        value="4"
-                        min="0.1"
-                        step="0.1"
-                        class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-                        oninput="window.updateYieldEstimator()"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="space-y-1">
-                    <label
-                      class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider"
-                      >Date de Semis</label
-                    >
-                    <input
-                      type="date"
-                      id="est-sowing-date"
-                      class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-                      onchange="window.updateYieldEstimator()"
-                    />
-                  </div>
-                </div>
-
-                <!-- Right Side Results Display -->
-                <div
-                  class="lg:col-span-7 bg-slate-50 dark:bg-[#061109]/40 border border-slate-150 dark:border-[#143E23]/25 rounded-2xl p-5 text-left space-y-4"
-                >
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                      <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider"
-                        >Volume récoltable estimé</span
-                      >
-                      <p
-                        id="est-yield-result"
-                        class="text-2xl font-black text-emerald-500 font-mono"
-                      >
-                        0.00 T
-                      </p>
-                      <p id="est-yield-sub" class="text-[10px] text-slate-400 font-bold">
-                        ~ 0 kg de légumes
-                      </p>
-                    </div>
-
-                    <div class="space-y-1">
-                      <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider"
-                        >Date optimale de récolte</span
-                      >
-                      <p id="est-date-result" class="text-lg font-black text-amber-500 font-sans">
-                        -- -- ----
-                      </p>
-                      <p id="est-days-countdown" class="text-[10px] text-slate-400 font-bold">
-                        -- jours restants
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Alert details depending on countdown -->
-                  <div
-                    id="est-alert-panel"
-                    class="p-3.5 bg-emerald-500/5 dark:bg-[#061109]/20 rounded-xl border border-emerald-500/10 flex items-start gap-3"
-                  >
-                    <div class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg">
-                      <i id="est-alert-icon" data-lucide="info" class="h-4 w-4"></i>
-                    </div>
-                    <div class="space-y-0.5">
-                      <p
-                        id="est-alert-title"
-                        class="text-xs font-extrabold text-slate-800 dark:text-slate-200"
-                      >
-                        Simulation initialisée
-                      </p>
-                      <p
-                        id="est-alert-desc"
-                        class="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed font-semibold"
-                      >
-                        Sélectionnez vos paramètres maraîchers pour projeter le rendement sahélien
-                        idéal.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bibliothèque d'aide intégrée - Fiches de Cultures spécifiques au Sénégal (Option 4) -->
-            <div
-              class="space-y-4 pt-6 border-t border-slate-150 dark:border-[#143E23]/20 text-left"
-            >
-              <div class="space-y-1">
-                <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest"
-                  >Conseils & Bibliothèque Maraîchère</span
-                >
-                <h3
-                  class="text-xs font-black text-[#819888] uppercase tracking-wider flex items-center gap-1.5"
-                >
-                  <i data-lucide="book-open" class="h-4 w-4 text-emerald-500"></i> Fiches Pratiques
-                  Maraîchères (Spécifiques au Sénégal)
-                </h3>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
-                  Consultez les cycles de culture, les besoins en eau (système d'irrigation
-                  conseillé) et les rendements estimés pour toutes les zones agricoles et
-                  sahéliennes du Sénégal.
-                </p>
-              </div>
-
-              <!-- Champs de recherche et de filtre de la bibliothèque -->
-              <div class="flex flex-col sm:flex-row gap-3">
-                <div class="relative flex-1">
-                  <i
-                    data-lucide="search"
-                    class="absolute left-3.5 top-3 h-4 w-4 text-slate-400"
-                  ></i>
-                  <input
-                    type="text"
-                    id="library-search"
-                    oninput="window.filterLibraryCrops()"
-                    placeholder="Rechercher une variété ou culture..."
-                    class="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl text-xs outline-none"
-                  />
-                </div>
-                <select
-                  id="library-filter"
-                  onchange="window.filterLibraryCrops()"
-                  class="px-4 py-2 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl text-xs outline-none font-bold text-slate-600 dark:text-slate-300"
-                >
-                  <option value="all">Tous les types</option>
-                  <option value="Fruit">Fruits & Solanacées</option>
-                  <option value="Bulbe">Bulbes & Racines</option>
-                  <option value="Feuille">Légumes Feuilles</option>
-                </select>
-              </div>
-
-              <!-- Fiches Grid Container -->
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-                id="library-container"
-              >
-                <!-- Rendu dynamiquement par CropsModule via crops.js -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-
-    <!-- Dialog for Adding a Crop -->
-    <div
-      id="crop-form-modal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden animate-fadeIn"
-    >
-      <div
-        class="w-full max-w-md bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl space-y-4"
-      >
-        <div class="flex justify-between items-center">
-          <h3
-            class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2"
-          >
-            <i data-lucide="plus-circle" class="h-4 w-4 text-emerald-500"></i> Ajouter une Planche
-            de Culture
-          </h3>
-          <button
-            onclick="document.getElementById('crop-form-modal').classList.add('hidden')"
-            class="text-slate-400 hover:text-slate-200 cursor-pointer"
-          >
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
-        </div>
-
-        <form id="shared-crop-form" class="space-y-4 text-xs font-semibold">
-          <div class="space-y-1">
-            <label
-              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Nom de la Culture (Variété)</label
-            >
-            <input
-              type="text"
-              id="form-crop-name"
-              required
-              placeholder="Ex: Oignon Rouge de Galmi"
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-            />
-          </div>
-
-          <div class="space-y-1">
-            <label
-              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Parcelle de culture</label
-            >
-            <select
-              id="form-crop-field-select"
-              required
-              onchange="window.onCropFieldChange(this.value)"
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none cursor-pointer"
-            >
-              <!-- Rempli dynamiquement avec les parcelles -->
-              <option value="custom">+ Saisir une nouvelle parcelle...</option>
-            </select>
-          </div>
-
-          <div class="space-y-1 hidden" id="form-crop-field-custom-container">
-            <label
-              class="block text-[10px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider"
-              >Nom de la Nouvelle Parcelle</label
-            >
-            <input
-              type="text"
-              id="form-crop-field-custom"
-              placeholder="Ex: Parcelle Est - Planche 4"
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
+    <!-- Zone du contenu principal -->
+    <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
+      <div class="w-full space-y-8">
+        <!-- ==================== ONGLET : CULTURES & PÉPINIÈRES ==================== -->
+        <div class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
             <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Type de Semence utilisée</label
-              >
-              <select
-                id="form-crop-seed-type"
-                required
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none cursor-pointer"
-              >
-                <option value="Hybride F1 Certifiée">🍅 Hybride F1 Certifiée</option>
-                <option value="Locale Améliorée">🧅 Locale Améliorée</option>
-                <option value="Graines Paysannes">🌿 Graines Paysannes / Traditionnelles</option>
-                <option value="Bouture / Éclat de souche">🌱 Bouture / Éclat de souche</option>
-              </select>
-            </div>
-            <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Saison Agricole (Suivi)</label
-              >
-              <select
-                id="form-crop-season"
-                required
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none cursor-pointer"
-              >
-                <option value="Saison Sèche Froide">❄️ Saison Sèche Froide (Contre-saison)</option>
-                <option value="Saison Sèche Chaude">☀️ Saison Sèche Chaude (Contre-saison)</option>
-                <option value="Hivernage / Saison des Pluies">
-                  🌧️ Hivernage / Saison des Pluies
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Date de Semis</label
-              >
-              <input
-                type="date"
-                id="form-crop-sowing"
-                required
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
-            </div>
-            <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Récolte Planifiée</label
-              >
-              <input
-                type="date"
-                id="form-crop-harvest"
-                required
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all cursor-pointer shadow-lg shadow-emerald-950/20 text-xs"
-          >
-            Créer la planche de culture
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Dialog for Adding a Nursery -->
-    <div
-      id="nursery-form-modal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden animate-fadeIn"
-    >
-      <div
-        class="w-full max-w-md bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl space-y-4"
-      >
-        <div class="flex justify-between items-center">
-          <h3
-            class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2"
-          >
-            <i data-lucide="plus-circle" class="h-4 w-4 text-emerald-500"></i> Ajouter une Nouvelle
-            Pépinière
-          </h3>
-          <button
-            onclick="document.getElementById('nursery-form-modal').classList.add('hidden')"
-            class="text-slate-400 hover:text-slate-200 cursor-pointer"
-          >
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
-        </div>
-
-        <form id="shared-nursery-form" class="space-y-4 text-xs font-semibold">
-          <div class="space-y-1">
-            <label
-              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Nom du Semis</label
-            >
-            <input
-              type="text"
-              id="form-nursery-name"
-              required
-              placeholder="Ex: Pépinière Poivron Yolo Wonder"
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Type de Légume</label
-              >
-              <input
-                type="text"
-                id="form-nursery-crop"
-                required
-                placeholder="Ex: Poivron"
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
-            </div>
-            <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Estimation Plants</label
-              >
-              <input
-                type="number"
-                id="form-nursery-qty"
-                required
-                placeholder="Ex: 1000"
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Date de Semis</label
-              >
-              <input
-                type="date"
-                id="form-nursery-sowing"
-                required
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
-            </div>
-            <div class="space-y-1">
-              <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Date de Repiquage</label
-              >
-              <input
-                type="date"
-                id="form-nursery-transplant"
-                required
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all cursor-pointer shadow-lg shadow-emerald-950/20 text-xs"
-          >
-            Planifier la pépinière
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Dialog for Sanitary Diagnostics (With Camera Capture!) -->
-    <div
-      id="sanitary-modal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 hidden animate-fadeIn"
-    >
-      <div
-        class="w-full max-w-4xl bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto"
-      >
-            <!-- Côté gauche : liste des diagnostics et historique -->
-        <div class="flex-1 space-y-4">
-          <div
-            class="flex justify-between items-center pb-2 border-b border-slate-50 dark:border-[#143E23]/10"
-          >
-            <h3
-              id="sanitary-modal-title"
-              class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider"
-            >
-              Diagnostic Sanitaire - Tomates
-            </h3>
-            <button
-              onclick="window.closeSanitaryModal()"
-              class="md:hidden text-slate-400 hover:text-slate-200"
-            >
-              <i data-lucide="x" class="h-5 w-5"></i>
-            </button>
-          </div>
-
-          <h4
-            class="text-[10px] font-black text-slate-450 dark:text-slate-400 uppercase tracking-wider"
-          >
-            Historique des diagnostics
-          </h4>
-          <div id="sanitary-history" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
-            <!-- Rempli dynamiquement -->
-          </div>
-        </div>
-
-        <!-- Côté droit : capture caméra et formulaire d'envoi -->
-        <div
-          class="w-full md:w-[360px] space-y-4 border-t md:border-t-0 md:border-l border-slate-100 dark:border-[#143E23]/20 pt-4 md:pt-0 md:pl-6 text-xs font-semibold"
-        >
-          <div class="flex justify-between items-center">
-            <h4
-              class="text-[10px] font-black text-slate-450 dark:text-slate-400 uppercase tracking-wider"
-            >
-              Nouveau Diagnostic
-            </h4>
-            <button
-              onclick="window.closeSanitaryModal()"
-              class="hidden md:block text-slate-400 hover:text-slate-200"
-            >
-              <i data-lucide="x" class="h-5 w-5"></i>
-            </button>
-          </div>
-
-          <!-- Camera box / File selector -->
-          <div
-            class="relative h-48 bg-slate-50 dark:bg-[#061109]/40 border-2 border-dashed border-slate-300 dark:border-emerald-950/40 rounded-2xl overflow-hidden flex flex-col items-center justify-center"
-          >
-            <!-- Video feed -->
-            <video
-              id="sanitary-video"
-              autoplay
-              playsinline
-              class="absolute inset-0 w-full h-full object-cover hidden"
-            ></video>
-            <!-- Canvas for capturing frame -->
-            <canvas id="sanitary-canvas" class="hidden"></canvas>
-            <!-- Aperçu de l'image importée -->
-            <img
-              id="sanitary-preview"
-              src=""
-              alt="Capture Preview"
-              class="absolute inset-0 w-full h-full object-cover hidden"
-            />
-
-            <!-- Emplacement des actions d'importation et de caméra -->
-            <div id="sanitary-placeholder" class="text-center p-4 space-y-3 z-10">
-              <span class="text-3xl">📸</span>
-              <div class="flex flex-wrap gap-2 justify-center">
-                <button
-                  onclick="window.startLiveCamera()"
-                  class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[10px] rounded-lg transition-all cursor-pointer flex items-center gap-1"
-                >
-                  <i data-lucide="video" class="h-3 w-3"></i> Caméra
-                </button>
-                <label
-                  class="px-3 py-1.5 bg-slate-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-[#143E23]/20 hover:bg-slate-100 dark:hover:bg-emerald-950/40 font-extrabold text-[10px] rounded-lg transition-all cursor-pointer flex items-center gap-1"
-                >
-                  <i data-lucide="upload" class="h-3 w-3"></i> Importer
-                  <input
-                    type="file"
-                    id="sanitary-file-input"
-                    accept="image/*"
-                    class="hidden"
-                    onchange="window.handleSanitaryFile(this)"
-                  />
-                </label>
-              </div>
-              <p class="text-[9px] text-slate-400">
-                Prenez une photo en direct ou chargez un fichier.
+              <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest">Données
+                d'Exploitation</span>
+              <h2 class="text-2xl font-black text-slate-850 dark:text-white flex items-center gap-2">
+                <i data-lucide="folder-dot" class="h-6 w-6 text-emerald-500"></i> Suivi des
+                Cultures actives
+              </h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+                Suivez la croissance de vos planches et réalisez vos diagnostics sanitaires sur le
+                terrain.
               </p>
             </div>
 
-            <!-- Camera controls -->
-            <div
-              id="sanitary-camera-controls"
-              class="absolute bottom-3 left-0 right-0 justify-center gap-2 hidden z-20 flex"
-            >
-              <button
-                onclick="window.captureLivePhoto()"
-                class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] rounded-lg cursor-pointer"
-              >
-                Capturer
+            <div class="flex flex-wrap gap-2">
+              <button onclick="document.getElementById('crop-form-modal').classList.remove('hidden')"
+                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-1.5">
+                <i data-lucide="plus" class="h-3.5 w-3.5"></i> Nouvelle planche
               </button>
-              <button
-                onclick="window.stopLiveCamera()"
-                class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-black text-[10px] rounded-lg cursor-pointer"
-              >
-                Annuler
+              <button onclick="document.getElementById('nursery-form-modal').classList.remove('hidden')"
+                class="px-4 py-2 bg-slate-100 dark:bg-[#0B2112] hover:bg-slate-250 dark:hover:bg-[#143E23]/40 border border-slate-250 dark:border-[#143E23] text-emerald-700 dark:text-emerald-400 font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1.5">
+                <i data-lucide="layers" class="h-3.5 w-3.5"></i> Nouvelle Pépinière
+              </button>
+            </div>
+          </div>
+
+          <!-- Crops Section -->
+          <div class="space-y-4">
+            <h3 class="text-xs font-black text-[#819888] uppercase tracking-wider text-left">
+              Planches de Cultures actives
+            </h3>
+
+            <!-- Crops Filter Panel -->
+            <div
+              class="p-4 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-2xl flex flex-col md:flex-row gap-3 items-center text-xs font-semibold">
+              <div class="relative flex-1 w-full text-left">
+                <i data-lucide="search" class="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400"></i>
+                <input type="text" id="crops-search" oninput="window.filterActiveCrops()"
+                  placeholder="Rechercher une culture (ex: Tomate)..."
+                  class="w-full pl-10 pr-4 py-3 bg-[#061109]/5 dark:bg-[#061109]/40 border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-700 dark:text-slate-250" />
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto flex-shrink-0">
+                <select id="crops-filter-field" onchange="window.filterActiveCrops()"
+                  class="px-3 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-600 dark:text-slate-300 cursor-pointer">
+                  <option value="all">📍 Toutes Parcelles</option>
+                  <!-- Rempli dynamiquement -->
+                </select>
+                <select id="crops-filter-seed" onchange="window.filterActiveCrops()"
+                  class="px-3 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-600 dark:text-slate-300 cursor-pointer">
+                  <option value="all">🌱 Toutes Semences</option>
+                  <option value="Hybride F1 Certifiée">Hybride F1</option>
+                  <option value="Locale Améliorée">Locale Améliorée</option>
+                  <option value="Graines Paysannes">Graines Paysannes</option>
+                  <option value="Bouture / Éclat de souche">Bouture / Éclat</option>
+                </select>
+                <select id="crops-filter-season" onchange="window.filterActiveCrops()"
+                  class="px-3 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl outline-none text-slate-600 dark:text-slate-300 cursor-pointer">
+                  <option value="all">📅 Toutes Saisons</option>
+                  <option value="Saison Sèche Froide">Saison Sèche Froide</option>
+                  <option value="Saison Sèche Chaude">Saison Sèche Chaude</option>
+                  <option value="Hivernage / Saison des Pluies">Hivernage</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="crops-container">
+              <!-- Rempli dynamiquement via crops.js -->
+            </div>
+          </div>
+
+          <!-- Nurseries Section -->
+          <div class="space-y-4 pt-6 border-t border-slate-150 dark:border-[#143E23]/20">
+            <h3 class="text-xs font-black text-[#819888] uppercase tracking-wider text-left">
+              Pépinières & Semis en cours
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="nurseries-container">
+              <!-- Rempli dynamiquement via crops.js -->
+            </div>
+          </div>
+
+          <!-- Traitements & Délai Avant Récolte (DAR) Section -->
+          <div class="space-y-4 pt-6 border-t border-slate-150 dark:border-[#143E23]/20">
+            <!-- Bannière d'alerte DAR pour les cultures -->
+            <div id="crops-dar-alert"
+              class="hidden p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center gap-2">
+              <i data-lucide="shield-alert" class="h-4 w-4 text-rose-500"></i>
+              <div>
+                <h4 class="text-[10px] font-black text-rose-600 dark:text-rose-400">
+                  ⚠️ Alerte DAR Active
+                </h4>
+                <p class="text-[9px] text-slate-400 font-semibold">
+                  Récolte interdite sur certaines cultures. Respectez le délai avant récolte.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
+              <div class="space-y-1">
+                <h3
+                  class="text-xs font-black text-[#819888] uppercase tracking-wider text-left flex items-center gap-1.5">
+                  <i data-lucide="shield-alert" class="h-4 w-4 text-emerald-500 animate-pulse"></i>
+                  Registre des Traitements & Protection DAR (Délai Avant Récolte)
+                </h3>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
+                  Suivez les apports phytosanitaires ou d'engrais et assurez la sécurité de vos
+                  récoltes avant la vente.
+                </p>
+              </div>
+              <button onclick="window.openTreatmentModal()"
+                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-1.5">
+                <i data-lucide="plus" class="h-3.5 w-3.5"></i> Enregistrer un traitement
               </button>
             </div>
 
-            <!-- Bouton de réinitialisation de la sélection -->
-            <button
-              id="sanitary-reset-preview-btn"
-              onclick="window.resetSanitaryPhoto()"
-              class="absolute top-2 right-2 bg-black/70 hover:bg-black/90 text-white p-1 rounded-full transition-all cursor-pointer hidden z-20"
-              title="Retirer l'image"
-            >
-              <i data-lucide="trash" class="h-3.5 w-3.5"></i>
-            </button>
+            <!-- Treatment Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="treatments-container">
+              <!-- Rempli dynamiquement via crops.js -->
+            </div>
           </div>
 
-          <!-- Bouton d'analyse IA -->
-          <button
-            type="button"
-            id="sanitary-ai-analyze-btn"
-            onclick="window.analyzeSanitaryImage()"
-            class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <i data-lucide="sparkles" class="h-4 w-4"></i> Analyser avec IA
-          </button>
-
-          <!-- Affichage du résultat du diagnostic IA -->
+          <!-- 🔮 Estimateur de Récolte & Planificateur de Rendement -->
           <div
-            id="sanitary-ai-result"
-            class="hidden space-y-2 p-3 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 rounded-xl"
-          >
-            <div class="flex items-center gap-2">
-              <i data-lucide="stethoscope" class="h-4 w-4 text-blue-500"></i>
-              <h4
-                class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider"
-              >
-                Diagnostic IA
-              </h4>
+            class="p-6 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-6 shadow-sm">
+            <div class="space-y-1">
+              <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest">IA Prédictive &
+                Agronomie</span>
+              <h3
+                class="text-xs font-black text-slate-850 dark:text-white uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                <i data-lucide="sparkles" class="h-4 w-4 text-emerald-500 animate-pulse"></i>
+                Estimateur de Récolte & Planificateur de Rendement
+              </h3>
+              <p class="text-[11px] text-slate-400 font-semibold">
+                Estimez le rendement de vos planches de culture (en tonnes) et la date optimale de
+                récolte selon la densité et la variété.
+              </p>
             </div>
-            <div id="sanitary-ai-loading" class="hidden text-center py-3">
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <!-- Left Side Inputs -->
+              <div class="lg:col-span-5 space-y-4 text-xs font-semibold">
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Variété de
+                    Semence</label>
+                  <select id="est-crop-select"
+                    class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
+                    onchange="window.updateYieldEstimator()">
+                    <option value="tomate">🍅 Tomate Mongal F1 (Cycle court: 80 j)</option>
+                    <option value="oignon">🧅 Oignon Rouge de Galmi (Cycle long: 135 j)</option>
+                    <option value="menthe">🌿 Menthe de Thiès (Cycle très court: 45 j)</option>
+                    <option value="chou">🥬 Chou Cabus KK-Cross (Cycle moyen: 90 j)</option>
+                    <option value="piment">🌶 Piment Oiseau de Cayenne (Cycle long: 135 j)</option>
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Surface cultivée
+                      (m²)</label>
+                    <input type="number" id="est-surface" value="150" min="1"
+                      class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
+                      oninput="window.updateYieldEstimator()" />
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Densité
+                      (plants/m²)</label>
+                    <input type="number" id="est-density" value="4" min="0.1" step="0.1"
+                      class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
+                      oninput="window.updateYieldEstimator()" />
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date de
+                    Semis</label>
+                  <input type="date" id="est-sowing-date"
+                    class="w-full bg-[#0D2615]/10 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
+                    onchange="window.updateYieldEstimator()" />
+                </div>
+              </div>
+
+              <!-- Right Side Results Display -->
               <div
-                class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-r-transparent"
-              ></div>
-              <p class="text-[10px] text-slate-500 font-semibold mt-1">Analyse en cours...</p>
+                class="lg:col-span-7 bg-slate-50 dark:bg-[#061109]/40 border border-slate-150 dark:border-[#143E23]/25 rounded-2xl p-5 text-left space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="space-y-1">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Volume récoltable
+                      estimé</span>
+                    <p id="est-yield-result" class="text-2xl font-black text-emerald-500 font-mono">
+                      0.00 T
+                    </p>
+                    <p id="est-yield-sub" class="text-[10px] text-slate-400 font-bold">
+                      ~ 0 kg de légumes
+                    </p>
+                  </div>
+
+                  <div class="space-y-1">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Date optimale de
+                      récolte</span>
+                    <p id="est-date-result" class="text-lg font-black text-amber-500 font-sans">
+                      -- -- ----
+                    </p>
+                    <p id="est-days-countdown" class="text-[10px] text-slate-400 font-bold">
+                      -- jours restants
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Alert details depending on countdown -->
+                <div id="est-alert-panel"
+                  class="p-3.5 bg-emerald-500/5 dark:bg-[#061109]/20 rounded-xl border border-emerald-500/10 flex items-start gap-3">
+                  <div class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg">
+                    <i id="est-alert-icon" data-lucide="info" class="h-4 w-4"></i>
+                  </div>
+                  <div class="space-y-0.5">
+                    <p id="est-alert-title" class="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                      Simulation initialisée
+                    </p>
+                    <p id="est-alert-desc"
+                      class="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed font-semibold">
+                      Sélectionnez vos paramètres maraîchers pour projeter le rendement sahélien
+                      idéal.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div
-              id="sanitary-ai-content"
-              class="text-[11px] text-slate-700 dark:text-slate-300 font-semibold leading-relaxed whitespace-pre-wrap"
-            ></div>
           </div>
 
-          <form id="sanitary-form" onsubmit="window.saveSanitaryRecord(event)" class="space-y-3">
-            <input type="hidden" id="sanitary-crop-id" />
+          <!-- Bibliothèque d'aide intégrée - Fiches de Cultures spécifiques au Sénégal (Option 4) -->
+          <div class="space-y-4 pt-6 border-t border-slate-150 dark:border-[#143E23]/20 text-left">
+            <div class="space-y-1">
+              <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest">Conseils &
+                Bibliothèque Maraîchère</span>
+              <h3 class="text-xs font-black text-[#819888] uppercase tracking-wider flex items-center gap-1.5">
+                <i data-lucide="book-open" class="h-4 w-4 text-emerald-500"></i> Fiches Pratiques
+                Maraîchères (Spécifiques au Sénégal)
+              </h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
+                Consultez les cycles de culture, les besoins en eau (système d'irrigation
+                conseillé) et les rendements estimés pour toutes les zones agricoles et
+                sahéliennes du Sénégal.
+              </p>
+            </div>
 
-            <div class="space-y-1 text-left">
-              <label
-                class="block text-[10px] font-bold text-slate-550 dark:text-slate-400 uppercase tracking-wider"
-                >Diagnostic de l'état</label
-              >
-              <select
-                id="sanitary-status-select"
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 outline-none"
-              >
-                <option value="Sain">🟢 Culture Saine / Normal</option>
-                <option value="Surveiller">🟡 À Surveiller (Feuilles jaunies/Tâches)</option>
-                <option value="Alerte">🔴 Alerte / Ravageurs (Tuta Absoluta/Mildiou)</option>
+            <!-- Champs de recherche et de filtre de la bibliothèque -->
+            <div class="flex flex-col sm:flex-row gap-3">
+              <div class="relative flex-1">
+                <i data-lucide="search" class="absolute left-3.5 top-3 h-4 w-4 text-slate-400"></i>
+                <input type="text" id="library-search" oninput="window.filterLibraryCrops()"
+                  placeholder="Rechercher une variété ou culture..."
+                  class="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl text-xs outline-none" />
+              </div>
+              <select id="library-filter" onchange="window.filterLibraryCrops()"
+                class="px-4 py-2 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-xl text-xs outline-none font-bold text-slate-600 dark:text-slate-300">
+                <option value="all">Tous les types</option>
+                <option value="Fruit">Fruits & Solanacées</option>
+                <option value="Bulbe">Bulbes & Racines</option>
+                <option value="Feuille">Légumes Feuilles</option>
               </select>
             </div>
 
-            <div class="space-y-1 text-left">
-              <label
-                class="block text-[10px] font-bold text-slate-550 dark:text-slate-400 uppercase tracking-wider"
-                >Observations / Traitement</label
-              >
-              <textarea
-                id="sanitary-notes"
-                rows="3"
-                required
-                placeholder="Ex: Traces de mineuse sur les feuilles de tomates. Traitement prévu au purin de neem ce soir."
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 outline-none resize-none"
-              ></textarea>
+            <!-- Fiches Grid Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="library-container">
+              <!-- Rendu dynamiquement par CropsModule via crops.js -->
             </div>
-
-            <button
-              type="submit"
-              class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl transition-all cursor-pointer shadow-lg text-xs"
-            >
-              Enregistrer le diagnostic
-            </button>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
+  </div>
 
-    <!-- Dialog for Adding a Treatment (DAR) -->
+  <!-- Dialog for Adding a Crop -->
+  <div id="crop-form-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden animate-fadeIn">
     <div
-      id="treatment-modal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden animate-fadeIn"
-    >
-      <div
-        class="w-full max-w-md bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl space-y-4"
-      >
-        <div class="flex justify-between items-center">
-          <h3
-            class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2"
-          >
-            <i data-lucide="shield-alert" class="h-4 w-4 text-emerald-500"></i> Enregistrer un
-            Traitement & DAR
+      class="w-full max-w-md bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <i data-lucide="plus-circle" class="h-4 w-4 text-emerald-500"></i> Ajouter une Planche
+          de Culture
+        </h3>
+        <button onclick="document.getElementById('crop-form-modal').classList.add('hidden')"
+          class="text-slate-400 hover:text-slate-200 cursor-pointer">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <form id="shared-crop-form" class="space-y-4 text-xs font-semibold">
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nom de
+            la Culture (Variété)</label>
+          <input type="text" id="form-crop-name" required placeholder="Ex: Oignon Rouge de Galmi"
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+        </div>
+
+        <div class="space-y-1">
+          <label
+            class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Parcelle de
+            culture</label>
+          <select id="form-crop-field-select" required onchange="window.onCropFieldChange(this.value)"
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none cursor-pointer">
+            <!-- Rempli dynamiquement avec les parcelles -->
+            <option value="custom">+ Saisir une nouvelle parcelle...</option>
+          </select>
+        </div>
+
+        <div class="space-y-1 hidden" id="form-crop-field-custom-container">
+          <label class="block text-[10px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-wider">Nom
+            de la Nouvelle Parcelle</label>
+          <input type="text" id="form-crop-field-custom" placeholder="Ex: Parcelle Est - Planche 4"
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Type
+              de Semence utilisée</label>
+            <select id="form-crop-seed-type" required
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none cursor-pointer">
+              <option value="Hybride F1 Certifiée">🍅 Hybride F1 Certifiée</option>
+              <option value="Locale Améliorée">🧅 Locale Améliorée</option>
+              <option value="Graines Paysannes">🌿 Graines Paysannes / Traditionnelles</option>
+              <option value="Bouture / Éclat de souche">🌱 Bouture / Éclat de souche</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label
+              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Saison
+              Agricole (Suivi)</label>
+            <select id="form-crop-season" required
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none cursor-pointer">
+              <option value="Saison Sèche Froide">❄️ Saison Sèche Froide (Contre-saison)</option>
+              <option value="Saison Sèche Chaude">☀️ Saison Sèche Chaude (Contre-saison)</option>
+              <option value="Hivernage / Saison des Pluies">
+                🌧️ Hivernage / Saison des Pluies
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date
+              de Semis</label>
+            <input type="date" id="form-crop-sowing" required
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+          <div class="space-y-1">
+            <label
+              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Récolte
+              Planifiée</label>
+            <input type="date" id="form-crop-harvest" required
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all cursor-pointer shadow-lg shadow-emerald-950/20 text-xs">
+          Créer la planche de culture
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dialog for Adding a Nursery -->
+  <div id="nursery-form-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden animate-fadeIn">
+    <div
+      class="w-full max-w-md bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <i data-lucide="plus-circle" class="h-4 w-4 text-emerald-500"></i> Ajouter une Nouvelle
+          Pépinière
+        </h3>
+        <button onclick="document.getElementById('nursery-form-modal').classList.add('hidden')"
+          class="text-slate-400 hover:text-slate-200 cursor-pointer">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <form id="shared-nursery-form" class="space-y-4 text-xs font-semibold">
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nom du
+            Semis</label>
+          <input type="text" id="form-nursery-name" required placeholder="Ex: Pépinière Poivron Yolo Wonder"
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Type
+              de Légume</label>
+            <input type="text" id="form-nursery-crop" required placeholder="Ex: Poivron"
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+          <div class="space-y-1">
+            <label
+              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Estimation
+              Plants</label>
+            <input type="number" id="form-nursery-qty" required placeholder="Ex: 1000"
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date
+              de Semis</label>
+            <input type="date" id="form-nursery-sowing" required
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date
+              de Repiquage</label>
+            <input type="date" id="form-nursery-transplant" required
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all cursor-pointer shadow-lg shadow-emerald-950/20 text-xs">
+          Planifier la pépinière
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dialog for Sanitary Diagnostics (With Camera Capture!) -->
+  <div id="sanitary-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 hidden animate-fadeIn">
+    <div
+      class="w-full max-w-4xl bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto">
+      <!-- Côté gauche : liste des diagnostics et historique -->
+      <div class="flex-1 space-y-4">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-50 dark:border-[#143E23]/10">
+          <h3 id="sanitary-modal-title"
+            class="text-xs font-black text-slate-800 dark:text-white uppercase tracking-wider">
+            Diagnostic Sanitaire - Tomates
           </h3>
-          <button
-            onclick="document.getElementById('treatment-modal').classList.add('hidden')"
-            class="text-slate-400 hover:text-slate-200 cursor-pointer"
-          >
+          <button onclick="window.closeSanitaryModal()" class="md:hidden text-slate-400 hover:text-slate-200">
             <i data-lucide="x" class="h-5 w-5"></i>
           </button>
         </div>
 
-        <form
-          id="shared-treatment-form"
-          class="space-y-4 text-xs font-semibold"
-          onsubmit="window.saveTreatmentRecord(event)"
-        >
-          <div class="space-y-1">
-            <label
-              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Culture cible</label
-            >
-            <select
-              id="form-treat-crop"
-              required
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-            >
-              <!-- Rempli dynamiquement -->
-            </select>
-          </div>
+        <h4 class="text-[10px] font-black text-slate-450 dark:text-slate-400 uppercase tracking-wider">
+          Historique des diagnostics
+        </h4>
+        <div id="sanitary-history" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+          <!-- Rempli dynamiquement -->
+        </div>
+      </div>
 
-          <div class="space-y-1">
-            <label
-              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Type / Catégorie de produit</label
-            >
-            <select
-              id="form-treat-category"
-              required
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              onchange="window.onTreatmentCategoryChange(this.value)"
-            >
-              <option value="bio-phytosanitaire">
-                🌿 Traitement Phytosanitaire Bio (Purin, Neem...)
-              </option>
-              <option value="chimique-phytosanitaire">
-                ⚠️ Traitement Phytosanitaire Chimique (Pesticide)
-              </option>
-              <option value="bio-engrais">
-                🟤 Amendement / Engrais Organique (Fumier, Compost)
-              </option>
-              <option value="chimique-engrais">🧪 Engrais Minéral (Urée, NPK...)</option>
-            </select>
-          </div>
+      <!-- Côté droit : capture caméra et formulaire d'envoi -->
+      <div
+        class="w-full md:w-[360px] space-y-4 border-t md:border-t-0 md:border-l border-slate-100 dark:border-[#143E23]/20 pt-4 md:pt-0 md:pl-6 text-xs font-semibold">
+        <div class="flex justify-between items-center">
+          <h4 class="text-[10px] font-black text-slate-450 dark:text-slate-400 uppercase tracking-wider">
+            Nouveau Diagnostic
+          </h4>
+          <button onclick="window.closeSanitaryModal()" class="hidden md:block text-slate-400 hover:text-slate-200">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
 
-          <div class="space-y-1">
-            <label
-              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Nom du Produit appliqué</label
-            >
-            <input
-              type="text"
-              id="form-treat-product"
-              required
-              placeholder="Ex: Purin de Neem ou Décis F1"
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-            />
-          </div>
+        <!-- Camera box / File selector -->
+        <div
+          class="relative h-48 bg-slate-50 dark:bg-[#061109]/40 border-2 border-dashed border-slate-300 dark:border-emerald-950/40 rounded-2xl overflow-hidden flex flex-col items-center justify-center">
+          <!-- Video feed -->
+          <video id="sanitary-video" autoplay playsinline
+            class="absolute inset-0 w-full h-full object-cover hidden"></video>
+          <!-- Canvas for capturing frame -->
+          <canvas id="sanitary-canvas" class="hidden"></canvas>
+          <!-- Aperçu de l'image importée -->
+          <img id="sanitary-preview" src="" alt="Capture Preview"
+            class="absolute inset-0 w-full h-full object-cover hidden" />
 
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
+          <!-- Emplacement des actions d'importation et de caméra -->
+          <div id="sanitary-placeholder" class="text-center p-4 space-y-3 z-10">
+            <span class="text-3xl">📸</span>
+            <div class="flex flex-wrap gap-2 justify-center">
+              <button onclick="window.startLiveCamera()"
+                class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[10px] rounded-lg transition-all cursor-pointer flex items-center gap-1">
+                <i data-lucide="video" class="h-3 w-3"></i> Caméra
+              </button>
               <label
-                class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                >Date d'Application</label
-              >
-              <input
-                type="date"
-                id="form-treat-date"
-                required
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
+                class="px-3 py-1.5 bg-slate-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-[#143E23]/20 hover:bg-slate-100 dark:hover:bg-emerald-950/40 font-extrabold text-[10px] rounded-lg transition-all cursor-pointer flex items-center gap-1">
+                <i data-lucide="upload" class="h-3 w-3"></i> Importer
+                <input type="file" id="sanitary-file-input" accept="image/*" class="hidden"
+                  onchange="window.handleSanitaryFile(this)" />
+              </label>
             </div>
-            <div class="space-y-1">
-              <div class="flex justify-between items-center">
-                <label
-                  class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-                  >DAR (jours)</label
-                >
-                <span class="text-[9px] text-amber-500 font-bold" id="dar-suggest-label"
-                  >Conseillé: 3j</span
-                >
-              </div>
-              <input
-                type="number"
-                id="form-treat-dar"
-                required
-                min="0"
-                max="30"
-                value="3"
-                class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
-              />
+            <p class="text-[9px] text-slate-400">
+              Prenez une photo en direct ou chargez un fichier.
+            </p>
+          </div>
+
+          <!-- Camera controls -->
+          <div id="sanitary-camera-controls"
+            class="absolute bottom-3 left-0 right-0 justify-center gap-2 hidden z-20 flex">
+            <button onclick="window.captureLivePhoto()"
+              class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] rounded-lg cursor-pointer">
+              Capturer
+            </button>
+            <button onclick="window.stopLiveCamera()"
+              class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-black text-[10px] rounded-lg cursor-pointer">
+              Annuler
+            </button>
+          </div>
+
+          <!-- Bouton de réinitialisation de la sélection -->
+          <button id="sanitary-reset-preview-btn" onclick="window.resetSanitaryPhoto()"
+            class="absolute top-2 right-2 bg-black/70 hover:bg-black/90 text-white p-1 rounded-full transition-all cursor-pointer hidden z-20"
+            title="Retirer l'image">
+            <i data-lucide="trash" class="h-3.5 w-3.5"></i>
+          </button>
+        </div>
+
+        <!-- Bouton d'analyse IA -->
+        <button type="button" id="sanitary-ai-analyze-btn" onclick="window.analyzeSanitaryImage()"
+          class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i data-lucide="sparkles" class="h-4 w-4"></i> Analyser avec IA
+        </button>
+
+        <!-- Affichage du résultat du diagnostic IA -->
+        <div id="sanitary-ai-result"
+          class="hidden space-y-2 p-3 bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 rounded-xl">
+          <div class="flex items-center gap-2">
+            <i data-lucide="stethoscope" class="h-4 w-4 text-blue-500"></i>
+            <h4 class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+              Diagnostic IA
+            </h4>
+          </div>
+          <div id="sanitary-ai-loading" class="hidden text-center py-3">
+            <div class="inline-block h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-r-transparent">
             </div>
+            <p class="text-[10px] text-slate-500 font-semibold mt-1">Analyse en cours...</p>
+          </div>
+          <div id="sanitary-ai-content"
+            class="text-[11px] text-slate-700 dark:text-slate-300 font-semibold leading-relaxed whitespace-pre-wrap">
+          </div>
+        </div>
+
+        <form id="sanitary-form" onsubmit="window.saveSanitaryRecord(event)" class="space-y-3">
+          <input type="hidden" id="sanitary-crop-id" />
+
+          <div class="space-y-1 text-left">
+            <label
+              class="block text-[10px] font-bold text-slate-550 dark:text-slate-400 uppercase tracking-wider">Diagnostic
+              de l'état</label>
+            <select id="sanitary-status-select"
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 outline-none">
+              <option value="Sain">🟢 Culture Saine / Normal</option>
+              <option value="Surveiller">🟡 À Surveiller (Feuilles jaunies/Tâches)</option>
+              <option value="Alerte">🔴 Alerte / Ravageurs (Tuta Absoluta/Mildiou)</option>
+            </select>
           </div>
 
           <div class="space-y-1 text-left">
             <label
-              class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Notes & Précautions</label
-            >
-            <textarea
-              id="form-treat-notes"
-              rows="2"
-              placeholder="Ex: Appliqué après 17h pour éviter la chaleur de la journée. Arrosage suspendu."
-              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 outline-none resize-none"
-            ></textarea>
+              class="block text-[10px] font-bold text-slate-550 dark:text-slate-400 uppercase tracking-wider">Observations
+              / Traitement</label>
+            <textarea id="sanitary-notes" rows="3" required
+              placeholder="Ex: Traces de mineuse sur les feuilles de tomates. Traitement prévu au purin de neem ce soir."
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 outline-none resize-none"></textarea>
           </div>
 
-          <button
-            type="submit"
-            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all cursor-pointer shadow-lg text-xs"
-          >
-            Enregistrer le traitement phytosanitaire
+          <button type="submit"
+            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl transition-all cursor-pointer shadow-lg text-xs">
+            Enregistrer le diagnostic
           </button>
         </form>
       </div>
     </div>
+  </div>
 
-    <!-- Shared App & Crops Module Entry Points -->
-    <script type="module" src="/js/router.js"></script>
-    <script type="module" src="/js/app.js"></script>
-    <script type="module" src="/js/modules/crops.js"></script>
+  <!-- Dialog for Adding a Treatment (DAR) -->
+  <div id="treatment-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 hidden animate-fadeIn">
+    <div
+      class="w-full max-w-md bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl p-6 text-left shadow-2xl space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <i data-lucide="shield-alert" class="h-4 w-4 text-emerald-500"></i> Enregistrer un
+          Traitement & DAR
+        </h3>
+        <button onclick="document.getElementById('treatment-modal').classList.add('hidden')"
+          class="text-slate-400 hover:text-slate-200 cursor-pointer">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        // Définir les dates par défaut au chargement
-        const todayStr = new Date().toISOString().split("T")[0];
-        const cropSowingInput = document.getElementById("form-crop-sowing");
-        const cropHarvestInput = document.getElementById("form-crop-harvest");
-        const nurserySowingInput = document.getElementById("form-nursery-sowing");
-        const nurseryTransplantInput = document.getElementById("form-nursery-transplant");
+      <form id="shared-treatment-form" class="space-y-4 text-xs font-semibold"
+        onsubmit="window.saveTreatmentRecord(event)">
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Culture
+            cible</label>
+          <select id="form-treat-crop" required
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none">
+            <!-- Rempli dynamiquement -->
+          </select>
+        </div>
 
-        if (cropSowingInput) cropSowingInput.value = todayStr;
-        if (cropHarvestInput) {
-          const futureDate = new Date();
-          futureDate.setDate(futureDate.getDate() + 90);
-          cropHarvestInput.value = futureDate.toISOString().split("T")[0];
-        }
-        if (nurserySowingInput) nurserySowingInput.value = todayStr;
-        if (nurseryTransplantInput) {
-          const transplantDate = new Date();
-          transplantDate.setDate(transplantDate.getDate() + 30);
-          nurseryTransplantInput.value = transplantDate.toISOString().split("T")[0];
-        }
-      });
-    </script>
-  </body>
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Type /
+            Catégorie de produit</label>
+          <select id="form-treat-category" required
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none"
+            onchange="window.onTreatmentCategoryChange(this.value)">
+            <option value="bio-phytosanitaire">
+              🌿 Traitement Phytosanitaire Bio (Purin, Neem...)
+            </option>
+            <option value="chimique-phytosanitaire">
+              ⚠️ Traitement Phytosanitaire Chimique (Pesticide)
+            </option>
+            <option value="bio-engrais">
+              🟤 Amendement / Engrais Organique (Fumier, Compost)
+            </option>
+            <option value="chimique-engrais">🧪 Engrais Minéral (Urée, NPK...)</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nom du
+            Produit appliqué</label>
+          <input type="text" id="form-treat-product" required placeholder="Ex: Purin de Neem ou Décis F1"
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date
+              d'Application</label>
+            <input type="date" id="form-treat-date" required
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+          <div class="space-y-1">
+            <div class="flex justify-between items-center">
+              <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">DAR
+                (jours)</label>
+              <span class="text-[9px] text-amber-500 font-bold" id="dar-suggest-label">Conseillé: 3j</span>
+            </div>
+            <input type="number" id="form-treat-dar" required min="0" max="30" value="3"
+              class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-4 py-2.5 text-slate-800 dark:text-slate-200 outline-none" />
+          </div>
+        </div>
+
+        <div class="space-y-1 text-left">
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Notes &
+            Précautions</label>
+          <textarea id="form-treat-notes" rows="2"
+            placeholder="Ex: Appliqué après 17h pour éviter la chaleur de la journée. Arrosage suspendu."
+            class="w-full bg-slate-50 dark:bg-[#0D2615] border border-slate-200 dark:border-[#1A4525] rounded-xl px-3 py-2 text-slate-800 dark:text-slate-200 outline-none resize-none"></textarea>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all cursor-pointer shadow-lg text-xs">
+          Enregistrer le traitement phytosanitaire
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared App & Crops Module Entry Points -->
+  <script type="module" src="/js/router.js"></script>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="/js/modules/crops.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Définir les dates par défaut au chargement
+      const todayStr = new Date().toISOString().split("T")[0];
+      const cropSowingInput = document.getElementById("form-crop-sowing");
+      const cropHarvestInput = document.getElementById("form-crop-harvest");
+      const nurserySowingInput = document.getElementById("form-nursery-sowing");
+      const nurseryTransplantInput = document.getElementById("form-nursery-transplant");
+
+      if (cropSowingInput) cropSowingInput.value = todayStr;
+      if (cropHarvestInput) {
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + 90);
+        cropHarvestInput.value = futureDate.toISOString().split("T")[0];
+      }
+      if (nurserySowingInput) nurserySowingInput.value = todayStr;
+      if (nurseryTransplantInput) {
+        const transplantDate = new Date();
+        transplantDate.setDate(transplantDate.getDate() + 30);
+        nurseryTransplantInput.value = transplantDate.toISOString().split("T")[0];
+      }
+    });
+  </script>
+</body>
+
 </html>

@@ -1,137 +1,105 @@
 // KA Farm - Tests pour le module Cultures
 import { CropsModule } from "../js/modules/crops.js";
+import { KAStorage } from "../js/storage.js";
 
-// Simuler localStorage
-const localStorageMock = (() => {
-  let store = {};
-  return {
-    getItem: (key) => store[key] || null,
-    setItem: (key, value) => {
-      store[key] = value.toString();
-    },
-    removeItem: (key) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
+// KAStorage (coeur) n'expose pas les méthodes "pépinière" (déjà dans js/storage/crops.js).
+// On les rattache à l'objet singleton partagé pour que le module fonctionne avec le vrai storage local.
+if (!KAStorage.getNurseries) KAStorage.getNurseries = () => KAStorage.get("ka_farm_nurseries", []);
+if (!KAStorage.saveNurseries) KAStorage.saveNurseries = (n) => KAStorage.set("ka_farm_nurseries", n);
 
-Object.defineProperty(window, "localStorage", { value: localStorageMock });
-
-// Simuler KAStorage
-const mockKAStorage = {
-  getCrops: () => [],
-  saveCrops: (crops) => {
-    localStorage.setItem("ka_farm_crops", JSON.stringify(crops));
-  },
-  getNurseries: () => [],
-  saveNurseries: (nurseries) => {
-    localStorage.setItem("ka_farm_nurseries", JSON.stringify(nurseries));
-  },
-  getParcelles: () => [],
-  getScopedKey: (key) => key,
-  init: () => {},
-};
-
-Object.defineProperty(window, "KAStorage", { value: mockKAStorage });
-
-// Simuler window.confirm
+// Mocks globaux
 window.confirm = jest.fn(() => true);
-
-// Simuler les icônes Lucide
 window.lucide = { createIcons: () => {} };
+window.App = { updateBadges: () => {} };
+global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: async () => [] }));
 
-// Simuler fetch
-global.fetch = () => Promise.resolve({});
+const norm = (s) => String(s).replace(/[\u202F\u00A0]/g, " ");
+
+function cropEls(html) {
+  document.body.innerHTML = `
+    <div id="crops-container"></div>
+    <div id="nurseries-container"></div>
+    <div id="treatments-container"></div>
+    <div id="library-container"></div>
+    <input id="crops-search" value="">
+    <select id="crops-filter-field"><option value="all" selected></option></select>
+    <select id="crops-filter-seed"><option value="all" selected></option></select>
+    <select id="crops-filter-season"><option value="all" selected></option></select>
+    <form id="shared-crop-form">
+      <input id="form-crop-name">
+      <select id="form-crop-field-select"></select>
+      <input id="form-crop-sowing">
+      <input id="form-crop-harvest">
+      <input id="form-crop-seed-type" value="Hybride F1 Certifiée">
+      <input id="form-crop-season" value="Saison Sèche Froide">
+    </form>
+    <div id="crop-form-modal" class="hidden"></div>
+    <form id="shared-nursery-form">
+      <input id="form-nursery-name">
+      <select id="form-nursery-crop"></select>
+      <input id="form-nursery-qty">
+      <input id="form-nursery-sowing">
+      <input id="form-nursery-transplant">
+    </form>
+    <div id="nursery-form-modal" class="hidden"></div>
+    ${html}
+  `;
+}
 
 describe("CropsModule", () => {
   beforeEach(() => {
     localStorage.clear();
-    // Empêcher le chargement des données de démonstration en définissant des tableaux vides
     localStorage.setItem("ka_farm_crops", JSON.stringify([]));
     localStorage.setItem("ka_farm_nurseries", JSON.stringify([]));
-    // Réinitialiser la simulation de confirm
     window.confirm = jest.fn(() => true);
   });
 
   test("devrait initialiser le module sans erreur", () => {
-    // Simuler les éléments DOM requis
-    document.body.innerHTML = `
-      <div id="crops-container"></div>
-      <div id="nurseries-container"></div>
-      <div id="treatments-container"></div>
-      <div id="library-container"></div>
-    `;
+    cropEls("");
     expect(() => CropsModule.init()).not.toThrow();
   });
 
   test("devrait calculer le rendement pour tomate", () => {
-    // Simuler les entrées du calculateur
-    document.body.innerHTML = `
+    cropEls(`
       <select id="est-crop-select"><option value="tomate" selected></option></select>
       <input id="est-surface" value="10">
       <input id="est-density" value="4">
       <input id="est-sowing-date" value="2026-06-01">
       <span id="est-yield-result"></span>
       <span id="est-yield-sub"></span>
-    `;
-
+    `);
     CropsModule.updateYieldEstimator();
-
-    const result = document.getElementById("est-yield-result").textContent;
-    expect(result).toContain("T");
+    expect(document.getElementById("est-yield-result").textContent).toContain("T");
   });
 
   test("devrait calculer le cycle pour oignon", () => {
-    document.body.innerHTML = `
+    cropEls(`
       <select id="est-crop-select"><option value="oignon" selected></option></select>
       <input id="est-surface" value="5">
       <input id="est-density" value="8">
       <input id="est-sowing-date" value="2026-06-01">
       <span id="est-date-result"></span>
-    `;
-
+    `);
     CropsModule.updateYieldEstimator();
-
-    const harvestDate = document.getElementById("est-date-result").textContent;
-    expect(harvestDate).not.toBe("-- -- ----");
+    expect(document.getElementById("est-date-result").textContent).not.toBe("-- -- ----");
   });
 
   test("devrait gérer les cultures vides", () => {
-    // Mock empty crops
-    mockKAStorage.getCrops = () => [];
-
-    document.body.innerHTML = `
-      <div id="crops-container"></div>
-    `;
-
+    cropEls("");
     CropsModule.renderCrops();
-
-    const container = document.getElementById("crops-container");
-    expect(container.innerHTML).toContain("Aucune culture");
+    expect(document.getElementById("crops-container").innerHTML).toContain("Aucune culture");
   });
 
-  test("devrait ajouter une culture", () => {
-    const crops = [];
-    mockKAStorage.saveCrops(crops);
+  test("devrait ajouter une culture via le formulaire", () => {
+    cropEls("");
+    document.getElementById("form-crop-name").value = "Tomate Test";
+    document.getElementById("form-crop-field-select").innerHTML =
+      '<option value="Parcelle Nord" selected></option>';
+    document.getElementById("form-crop-sowing").value = "2026-06-01";
+    document.getElementById("form-crop-harvest").value = "2026-08-01";
 
-    document.body.innerHTML = `
-      <form id="shared-crop-form">
-        <input id="form-crop-name" value="Tomate Test">
-        <select id="form-crop-field-select"><option value="Parcelle Nord" selected></option></select>
-        <input id="form-crop-sowing" value="2026-06-01">
-        <input id="form-crop-harvest" value="2026-08-01">
-        <input id="form-crop-status" value="Croissance">
-        <input id="form-crop-water" value="Optimale">
-        <input id="form-crop-fert" value="OK">
-        <div id="crops-container"></div>
-      </form>
-    `;
-
-    const form = document.getElementById("shared-crop-form");
-    form.dispatchEvent(new Event("submit"));
+    CropsModule.init();
+    document.getElementById("shared-crop-form").dispatchEvent(new Event("submit"));
 
     const savedCrops = JSON.parse(localStorage.getItem("ka_farm_crops"));
     expect(savedCrops.length).toBe(1);
@@ -139,65 +107,49 @@ describe("CropsModule", () => {
   });
 
   test("devrait supprimer une culture", () => {
-    const crops = [
-      {
-        id: "C-123",
-        name: "Tomate à supprimer",
-        field: "Nord",
-        sowingDate: "2026-06-01",
-        harvestDate: "2026-08-01",
-        status: "Croissance",
-        waterStatus: "Optimale",
-        fertilizerStatus: "OK",
-        photos: [],
-      },
-    ];
-    mockKAStorage.saveCrops(crops);
-
-    document.body.innerHTML = `
-      <div id="crops-container"></div>
-    `;
-
-    window.confirm = jest.fn(() => true);
+    localStorage.setItem(
+      "ka_farm_crops",
+      JSON.stringify([
+        {
+          id: "C-123",
+          name: "Tomate à supprimer",
+          field: "Nord",
+          sowingDate: "2026-06-01",
+          harvestDate: "2026-08-01",
+          status: "Croissance",
+          waterStatus: "Optimale",
+          fertilizerStatus: "OK",
+          photos: [],
+        },
+      ])
+    );
+    cropEls("");
     window.deleteCrop("C-123");
-
-    const savedCrops = JSON.parse(localStorage.getItem("ka_farm_crops"));
-    expect(savedCrops.length).toBe(0);
+    expect(JSON.parse(localStorage.getItem("ka_farm_crops")).length).toBe(0);
     expect(window.confirm).toHaveBeenCalled();
   });
 
   test("devrait basculer le statut hydrique", () => {
-    const crops = [{ id: "C-1", name: "Test", waterStatus: "Optimale" }];
-    mockKAStorage.saveCrops(crops);
-
-    document.body.innerHTML = `
-      <div id="crops-container"></div>
-    `;
-
+    localStorage.setItem(
+      "ka_farm_crops",
+      JSON.stringify([{ id: "C-1", name: "Test", waterStatus: "Optimale" }])
+    );
+    cropEls("");
     window.toggleWaterStatus("C-1");
-
-    const savedCrops = JSON.parse(localStorage.getItem("ka_farm_crops"));
-    expect(savedCrops[0].waterStatus).toBe("Besoin d'eau");
+    expect(JSON.parse(localStorage.getItem("ka_farm_crops"))[0].waterStatus).toBe("Besoin d'eau");
   });
 
-  test("devrait créer une pépinière", () => {
-    const nurseries = [];
-    mockKAStorage.saveNurseries(nurseries);
+  test("devrait créer une pépinière via le formulaire", () => {
+    cropEls("");
+    document.getElementById("form-nursery-name").value = "Pépinière Test";
+    document.getElementById("form-nursery-crop").innerHTML =
+      '<option value="Tomate" selected></option>';
+    document.getElementById("form-nursery-qty").value = "100";
+    document.getElementById("form-nursery-sowing").value = "2026-06-01";
+    document.getElementById("form-nursery-transplant").value = "2026-07-01";
 
-    document.body.innerHTML = `
-      <form id="shared-nursery-form">
-        <input id="form-nursery-name" value="Pépinière Test">
-        <select id="form-nursery-crop"><option value="Tomate" selected></option></select>
-        <input id="form-nursery-qty" value="100">
-        <input id="form-nursery-sowing" value="2026-06-01">
-        <input id="form-nursery-transplant" value="2026-07-01">
-        <input id="form-nursery-status" value="Semis">
-        <div id="nurseries-container"></div>
-      </form>
-    `;
-
-    const form = document.getElementById("shared-nursery-form");
-    form.dispatchEvent(new Event("submit"));
+    CropsModule.init();
+    document.getElementById("shared-nursery-form").dispatchEvent(new Event("submit"));
 
     const savedNurseries = JSON.parse(localStorage.getItem("ka_farm_nurseries"));
     expect(savedNurseries.length).toBe(1);
@@ -205,52 +157,35 @@ describe("CropsModule", () => {
   });
 
   test("devrait faire évoluer le statut de pépinière", () => {
-    const nurseries = [
-      {
-        id: "PEP-1",
-        name: "Test",
-        status: "Semis",
-        sowingDate: "2026-06-01",
-        plannedTransplantDate: "2026-07-01",
-        quantityEst: 50,
-        healthStatus: "Excellent",
-      },
-    ];
-    mockKAStorage.saveNurseries(nurseries);
-
-    document.body.innerHTML = `
-      <div id="nurseries-container"></div>
-    `;
-
-    window.confirm = jest.fn(() => true);
+    localStorage.setItem(
+      "ka_farm_nurseries",
+      JSON.stringify([
+        {
+          id: "PEP-1",
+          name: "Test",
+          status: "Semis",
+          sowingDate: "2026-06-01",
+          plannedTransplantDate: "2026-07-01",
+          quantityEst: 50,
+          healthStatus: "Excellent",
+        },
+      ])
+    );
+    cropEls("");
     window.nextNurseryStatus("PEP-1");
-
-    const savedNurseries = JSON.parse(localStorage.getItem("ka_farm_nurseries"));
-    expect(savedNurseries[0].status).toBe("Levée");
+    expect(JSON.parse(localStorage.getItem("ka_farm_nurseries"))[0].status).toBe("Levée");
   });
 
   test("devrait filtrer les cultures par recherche", () => {
-    const crops = [
-      {
-        id: "C-1",
-        name: "Tomate Mongal",
-        field: "Nord",
-        seedType: "Hybride",
-        season: "Saison Sèche",
-      },
-      { id: "C-2", name: "Oignon Rouge", field: "Sud", seedType: "Locale", season: "Saison Pluie" },
-    ];
-    mockKAStorage.saveCrops(crops);
-
-    document.body.innerHTML = `
-      <input id="crops-search" value="tomate">
-      <div id="crops-container"></div>
-    `;
-
+    localStorage.setItem(
+      "ka_farm_crops",
+      JSON.stringify([
+        { id: "C-1", name: "Tomate Mongal", field: "Nord", seedType: "Hybride", season: "Saison Sèche" },
+        { id: "C-2", name: "Oignon Rouge", field: "Sud", seedType: "Locale", season: "Saison Pluie" },
+      ])
+    );
+    cropEls('<input id="crops-search" value="tomate">');
     window.filterActiveCrops();
-
-    // Le filtre devrait trouver la tomate
-    const container = document.getElementById("crops-container");
-    expect(container.innerHTML).toContain("Tomate Mongal");
+    expect(norm(document.getElementById("crops-container").innerHTML)).toContain("Tomate Mongal");
   });
 });

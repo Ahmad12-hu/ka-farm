@@ -153,6 +153,14 @@ function getJwtSecret() {
   throw new Error(errorMsg);
 }
 
+// Garde de démarrage : en production, JWT_SECRET est obligatoire.
+// Le serveur refuse de démarrer sans un secret configuré.
+if (isProduction() && !(process.env.JWT_SECRET || "").trim()) {
+  throw new Error(
+    "JWT_SECRET environment variable is required in production. Refusing to start the server."
+  );
+}
+
 // Initialiser le SDK Firebase Admin (pour les opérations backend sécurisées)
 let adminDb = null;
 let firebaseInitializationError = null;
@@ -311,7 +319,8 @@ function requireAuth(req, res, next) {
 }
 
 // Public routes (no auth required)
-app.use(["/api/weather", "/api/auth/login"], requireFirestoreReady);
+// /api/weather ne dépend pas de Firestore (API Open-Meteo externe)
+app.use(["/api/auth/login"], requireFirestoreReady);
 
 // Protected AI routes (auth required, no Firestore dependency)
 // /api/gemini et /api/ai/* ne dépendent pas de Firestore : on les isole du middleware
@@ -667,7 +676,7 @@ app.get("/api/crops", async (req, res) => {
   try {
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
     const data = await Cache.memo(
-      "crops_list",
+      `crops_list_${enterpriseId}`,
       async () => await syncWithFirestore("crops", serverCrops, enterpriseId),
       30000
     );
@@ -687,8 +696,8 @@ app.post("/api/crops", async (req, res) => {
     } else {
       serverCrops.push(crop);
     }
-    await Cache.invalidate("crops_list");
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
+    await Cache.invalidate(`crops_list_${enterpriseId}`);
     await saveToFirestore("crops", serverCrops, enterpriseId);
     res.json({ success: true, crop });
   } catch (error) {
@@ -717,11 +726,19 @@ app.put("/api/crops/:id", async (req, res) => {
 });
 
 app.delete("/api/crops/:id", async (req, res) => {
-  const { id } = req.params;
-  serverCrops = serverCrops.filter((c) => c.id !== id);
-  const enterpriseId = req.user?.enterpriseId || "ka_farm";
-  await saveToFirestore("crops", serverCrops, enterpriseId);
-  res.json({ success: true });
+  try {
+    const { id } = req.params;
+    serverCrops = serverCrops.filter((c) => c.id !== id);
+    const enterpriseId = req.user?.enterpriseId || "ka_farm";
+    await saveToFirestore("crops", serverCrops, enterpriseId);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error("Error deleting crop", { error: error.message });
+    if (error.message.includes("Firestore") || error.message.includes("Firebase Admin")) {
+      return res.status(503).json({ error: error.message });
+    }
+    res.status(500).json({ error: "Erreur lors de la suppression" });
+  }
 });
 
 // ==================== PARCELLES ====================
@@ -729,7 +746,7 @@ app.get("/api/parcelles", async (req, res) => {
   try {
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
     const data = await Cache.memo(
-      "parcelles_list",
+      `parcelles_list_${enterpriseId}`,
       async () => await syncWithFirestore("parcelles", serverParcelles, enterpriseId),
       30000
     );
@@ -749,8 +766,8 @@ app.post("/api/parcelles", async (req, res) => {
     } else {
       serverParcelles.push(parcelle);
     }
-    await Cache.invalidate("parcelles_list");
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
+    await Cache.invalidate(`parcelles_list_${enterpriseId}`);
     await saveToFirestore("parcelles", serverParcelles, enterpriseId);
     res.json({ success: true, parcelle });
   } catch (error) {
@@ -779,11 +796,19 @@ app.put("/api/parcelles/:id", async (req, res) => {
 });
 
 app.delete("/api/parcelles/:id", async (req, res) => {
-  const { id } = req.params;
-  serverParcelles = serverParcelles.filter((p) => p.id !== id);
-  const enterpriseId = req.user?.enterpriseId || "ka_farm";
-  await saveToFirestore("parcelles", serverParcelles, enterpriseId);
-  res.json({ success: true });
+  try {
+    const { id } = req.params;
+    serverParcelles = serverParcelles.filter((p) => p.id !== id);
+    const enterpriseId = req.user?.enterpriseId || "ka_farm";
+    await saveToFirestore("parcelles", serverParcelles, enterpriseId);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error("Error deleting parcelle", { error: error.message });
+    if (error.message.includes("Firestore") || error.message.includes("Firebase Admin")) {
+      return res.status(503).json({ error: error.message });
+    }
+    res.status(500).json({ error: "Erreur lors de la suppression" });
+  }
 });
 
 // ==================== TASKS ====================
@@ -791,7 +816,7 @@ app.get("/api/tasks", async (req, res) => {
   try {
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
     const data = await Cache.memo(
-      "tasks_list",
+      `tasks_list_${enterpriseId}`,
       async () => await syncWithFirestore("tasks", serverTasks, enterpriseId),
       15000
     );
@@ -840,11 +865,19 @@ app.put("/api/tasks/:id", async (req, res) => {
 });
 
 app.delete("/api/tasks/:id", async (req, res) => {
-  const { id } = req.params;
-  serverTasks = serverTasks.filter((t) => t.id !== id);
-  const enterpriseId = req.user?.enterpriseId || "ka_farm";
-  await saveToFirestore("tasks", serverTasks, enterpriseId);
-  res.json({ success: true });
+  try {
+    const { id } = req.params;
+    serverTasks = serverTasks.filter((t) => t.id !== id);
+    const enterpriseId = req.user?.enterpriseId || "ka_farm";
+    await saveToFirestore("tasks", serverTasks, enterpriseId);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error("Error deleting task", { error: error.message });
+    if (error.message.includes("Firestore") || error.message.includes("Firebase Admin")) {
+      return res.status(503).json({ error: error.message });
+    }
+    res.status(500).json({ error: "Erreur lors de la suppression" });
+  }
 });
 
 // ==================== FINANCES ====================
@@ -852,7 +885,7 @@ app.get("/api/finances", async (req, res) => {
   try {
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
     const data = await Cache.memo(
-      "finances_list",
+      `finances_list_${enterpriseId}`,
       async () => await syncWithFirestore("finances", serverFinances, enterpriseId),
       30000
     );
@@ -908,7 +941,7 @@ app.get("/api/employees", async (req, res) => {
   try {
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
     const data = await Cache.memo(
-      "employees_list",
+      `employees_list_${enterpriseId}`,
       async () => await syncWithFirestore("employees", serverEmployees, enterpriseId),
       30000
     );
@@ -980,7 +1013,7 @@ app.get("/api/cheptel", async (req, res) => {
   try {
     const enterpriseId = req.user?.enterpriseId || "ka_farm";
     const data = await Cache.memo(
-      "cheptel_list",
+      `cheptel_list_${enterpriseId}`,
       async () => await syncWithFirestore("cheptel", serverCheptel, enterpriseId),
       30000
     );
@@ -1029,11 +1062,19 @@ app.put("/api/cheptel/:id", async (req, res) => {
 });
 
 app.delete("/api/cheptel/:id", async (req, res) => {
-  const { id } = req.params;
-  serverCheptel = serverCheptel.filter((c) => c.id !== id);
-  const enterpriseId = req.user?.enterpriseId || "ka_farm";
-  await saveToFirestore("cheptel", serverCheptel, enterpriseId);
-  res.json({ success: true });
+  try {
+    const { id } = req.params;
+    serverCheptel = serverCheptel.filter((c) => c.id !== id);
+    const enterpriseId = req.user?.enterpriseId || "ka_farm";
+    await saveToFirestore("cheptel", serverCheptel, enterpriseId);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error("Error deleting cheptel", { error: error.message });
+    if (error.message.includes("Firestore") || error.message.includes("Firebase Admin")) {
+      return res.status(503).json({ error: error.message });
+    }
+    res.status(500).json({ error: "Erreur lors de la suppression" });
+  }
 });
 
 // ==================== ELEVAGE PRODUCTION ====================

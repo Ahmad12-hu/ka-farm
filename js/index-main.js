@@ -93,7 +93,27 @@ if (chatForm && chatInput && chatMessages) {
       const loader = document.getElementById("ai-msg-loader");
       if (loader) loader.remove();
 
-      if (!response.ok) throw new Error("Gemini API call failed");
+      if (!response.ok) {
+        // Logger le status HTTP + corps de la réponse d'erreur (JSON ou texte) avant de throw
+        const rawErrorBody = await response.text().catch(() => "");
+        let errorBody = null;
+        try {
+          errorBody = rawErrorBody ? JSON.parse(rawErrorBody) : null;
+        } catch {
+          errorBody = rawErrorBody || null;
+        }
+        console.error("[Gemini] Erreur de l'API", {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorBody,
+        });
+        const message =
+          (errorBody && errorBody.error) ||
+          rawErrorBody ||
+          response.statusText ||
+          "Gemini API call failed";
+        throw new Error(message);
+      }
       const data = await response.json();
 
       const aiResponseDiv = document.createElement("div");

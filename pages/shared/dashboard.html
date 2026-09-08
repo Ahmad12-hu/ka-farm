@@ -17,10 +17,11 @@
     <!-- Feuilles de style séparées personnalisées -->
     <link rel="stylesheet" href="/css/styles.css" />
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="/css/animations.css" />
   </head>
 
   <body
-    class="bg-slate-50 dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200"
+    class="bg-slate-50 dark:bg-[#0f1a0b] text-slate-800 dark:text-slate-100 min-h-screen bg-transition text-transition"
   >
     <!-- Lien de saut pour l'accessibilité -->
     <a
@@ -44,7 +45,7 @@
       <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
         <div class="w-full space-y-6">
           <!-- Section de recherche globale -->
-          <div class="relative z-50 w-full max-w-2xl mx-auto md:mx-0">
+          <div class="relative z-50 w-full max-w-2xl mx-auto md:mx-0 animate-on-scroll">
             <div class="relative group">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <i
@@ -57,7 +58,7 @@
                 id="global-search-input"
                 placeholder="Rechercher une parcelle, un stock, ou une fiche de culture..."
                 aria-label="Recherche globale"
-                class="w-full pl-11 pr-10 py-3 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/40 rounded-2xl text-xs sm:text-sm outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/10 shadow-sm font-semibold dark:text-slate-200 dark:placeholder-slate-500"
+                class="w-full pl-11 pr-10 py-3 bg-white dark:bg-[#162010] border border-slate-200 dark:border-[#7ec850]/30 rounded-2xl text-xs sm:text-sm outline-none transition-all focus:border-[#7ec850]/50 focus:ring-2 focus:ring-[#7ec850]/10 shadow-sm font-semibold dark:text-slate-200 dark:placeholder-slate-500"
                 autocomplete="off"
               />
               <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -79,15 +80,15 @@
             <!-- Menu déroulant des résultats flottants -->
             <div
               id="global-search-dropdown"
-              class="hidden absolute left-0 right-0 mt-2 bg-white dark:bg-[#0B2112] border border-slate-200 dark:border-[#143E23]/60 rounded-3xl shadow-2xl overflow-hidden animate-fadeIn text-left max-h-[380px] overflow-y-auto"
+              class="hidden absolute left-0 right-0 mt-2 bg-white dark:bg-[#162010] border border-slate-200 dark:border-[#7ec850]/40 rounded-3xl shadow-2xl overflow-hidden animate-fadeIn text-left max-h-[380px] overflow-y-auto"
             >
               <div
-                class="p-3 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-[#819888] border-b border-slate-50 dark:border-[#143E23]/10"
+                class="p-3 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-[#7ec850]/70 border-b border-slate-50 dark:border-[#7ec850]/20"
               >
                 Résultats de la recherche
               </div>
               <div
-                class="divide-y divide-slate-100 dark:divide-[#143E23]/15"
+                class="divide-y divide-slate-100 dark:divide-[#7ec850]/15"
                 id="global-search-results"
               >
                 <!-- Lignes rendues dynamiquement -->
@@ -96,7 +97,7 @@
           </div>
 
           <!-- En-tête d'accueil du tableau de bord -->
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 text-left">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 text-left animate-on-scroll stagger-1">
             <div class="space-y-1">
               <span class="text-[10px] text-emerald-500 font-extrabold uppercase tracking-widest"
                 >Tableau de Bord Global</span
@@ -115,27 +116,27 @@
 
             <!-- Sélecteur de station météo -->
             <div
-              class="flex items-center gap-2 bg-[#0B2112]/40 border border-[#143E23]/30 px-3 py-1.5 rounded-xl"
+              class="flex items-center gap-2 bg-[#162010]/60 border border-[#7ec850]/30 px-3 py-1.5 rounded-xl"
             >
-              <i data-lucide="cloud-sun" class="h-4 w-4 text-emerald-500"></i>
+              <i data-lucide="cloud-sun" class="h-4 w-4 text-[#7ec850]"></i>
               <select
                 id="weather-selector"
-                class="bg-transparent text-xs font-extrabold text-[#819888] dark:text-emerald-400 border-none outline-none cursor-pointer"
+                class="bg-transparent text-xs font-extrabold text-[#7ec850]/80 dark:text-[#7ec850] border-none outline-none cursor-pointer"
               >
-                <option value="Dakar" class="bg-[#06130B]">Dakar</option>
-                <option value="Diourbel" class="bg-[#06130B]">Diourbel</option>
-                <option value="Fatick" class="bg-[#06130B]">Fatick</option>
-                <option value="Kaffrine" class="bg-[#06130B]">Kaffrine</option>
-                <option value="Kaolack" class="bg-[#06130B]">Kaolack</option>
-                <option value="Kédougou" class="bg-[#06130B]">Kédougou</option>
-                <option value="Kolda" class="bg-[#06130B]">Kolda</option>
-                <option value="Louga" class="bg-[#06130B]">Louga</option>
-                <option value="Matam" class="bg-[#06130B]">Matam</option>
-                <option value="Saint-Louis" class="bg-[#06130B]">Saint-Louis</option>
-                <option value="Sédhiou" class="bg-[#06130B]">Sédhiou</option>
-                <option value="Tambacounda" class="bg-[#06130B]">Tambacounda</option>
-                <option value="Thiès" class="bg-[#06130B]">Thiès (Mbour)</option>
-                <option value="Ziguinchor" class="bg-[#06130B]">Ziguinchor (Casamance)</option>
+                <option value="Dakar" class="bg-[#0f1a0b]">Dakar</option>
+                <option value="Diourbel" class="bg-[#0f1a0b]">Diourbel</option>
+                <option value="Fatick" class="bg-[#0f1a0b]">Fatick</option>
+                <option value="Kaffrine" class="bg-[#0f1a0b]">Kaffrine</option>
+                <option value="Kaolack" class="bg-[#0f1a0b]">Kaolack</option>
+                <option value="Kédougou" class="bg-[#0f1a0b]">Kédougou</option>
+                <option value="Kolda" class="bg-[#0f1a0b]">Kolda</option>
+                <option value="Louga" class="bg-[#0f1a0b]">Louga</option>
+                <option value="Matam" class="bg-[#0f1a0b]">Matam</option>
+                <option value="Saint-Louis" class="bg-[#0f1a0b]">Saint-Louis</option>
+                <option value="Sédhiou" class="bg-[#0f1a0b]">Sédhiou</option>
+                <option value="Tambacounda" class="bg-[#0f1a0b]">Tambacounda</option>
+                <option value="Thiès" class="bg-[#0f1a0b]">Thiès (Mbour)</option>
+                <option value="Ziguinchor" class="bg-[#0f1a0b]">Ziguinchor (Casamance)</option>
               </select>
             </div>
           </div>
@@ -143,7 +144,7 @@
           <!-- Water Alert Banner -->
           <div
             id="dashboard-water-alert"
-            class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-3 hidden text-left animate-fadeIn"
+            class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-3 hidden text-left animate-on-scroll"
           >
             <i data-lucide="droplet-off" class="h-5 w-5 text-amber-500"></i>
             <div>
@@ -159,7 +160,7 @@
           <!-- DAR Alert Banner -->
           <div
             id="dashboard-dar-alert"
-            class="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 hidden text-left animate-fadeIn"
+            class="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 hidden text-left animate-on-scroll pulse-dar"
           >
             <i data-lucide="shield-alert" class="h-5 w-5 text-rose-500"></i>
             <div>
@@ -173,17 +174,17 @@
           </div>
 
           <!-- Top statistics widgets -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-on-scroll stagger-2">
             <div
-              class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left stat-card cursor-pointer hover:border-emerald-500/30 transition-all stagger-card delay-1"
+              class="p-5 bg-white dark:bg-[#162010] border border-slate-100 dark:border-[#7ec850]/20 rounded-3xl text-left stat-card cursor-pointer card-hover stagger-card delay-1"
               onclick="window.location.href = '/pages/shared/crops.html'"
             >
               <div class="flex items-center justify-between">
-                <span class="text-[10px] font-black text-[#819888] uppercase tracking-wider"
+                <span class="text-[10px] font-black text-[#7ec850]/70 uppercase tracking-wider"
                   >Cultures Actives</span
                 >
                 <div
-                  class="h-7 w-7 bg-emerald-500/10 text-emerald-500 rounded-lg flex items-center justify-center"
+                  class="h-7 w-7 bg-[#7ec850]/10 text-[#7ec850] rounded-lg flex items-center justify-center"
                 >
                   <i data-lucide="sprout" class="h-4 w-4"></i>
                 </div>
@@ -200,11 +201,11 @@
             </div>
 
             <div
-              class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left stat-card cursor-pointer hover:border-amber-500/30 transition-all stagger-card delay-2"
+              class="p-5 bg-white dark:bg-[#162010] border border-slate-100 dark:border-[#7ec850]/20 rounded-3xl text-left stat-card cursor-pointer card-hover stagger-card delay-2"
               onclick="window.location.href = '/pages/personal/my-tasks.html'"
             >
               <div class="flex items-center justify-between">
-                <span class="text-[10px] font-black text-[#819888] uppercase tracking-wider"
+                <span class="text-[10px] font-black text-[#7ec850]/70 uppercase tracking-wider"
                   >Tâches en attente</span
                 >
                 <div
@@ -225,11 +226,11 @@
             </div>
 
             <div
-              class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left stat-card cursor-pointer hover:border-[#a855f7]/30 transition-all stagger-card delay-3"
+              class="p-5 bg-white dark:bg-[#162010] border border-slate-100 dark:border-[#7ec850]/20 rounded-3xl text-left stat-card cursor-pointer card-hover stagger-card delay-3"
               onclick="window.location.href = '/pages/shared/crops.html'"
             >
               <div class="flex items-center justify-between">
-                <span class="text-[10px] font-black text-[#819888] uppercase tracking-wider"
+                <span class="text-[10px] font-black text-[#7ec850]/70 uppercase tracking-wider"
                   >Pépinières actives</span
                 >
                 <div
@@ -250,11 +251,11 @@
             </div>
 
             <div
-              class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left stat-card cursor-pointer hover:border-amber-500/30 transition-all stagger-card delay-4"
+              class="p-5 bg-white dark:bg-[#162010] border border-slate-100 dark:border-[#7ec850]/20 rounded-3xl text-left stat-card cursor-pointer card-hover stagger-card delay-4"
               onclick="window.location.href = '/pages/shared/elevage.html'"
             >
               <div class="flex items-center justify-between">
-                <span class="text-[10px] font-black text-[#819888] uppercase tracking-wider"
+                <span class="text-[10px] font-black text-[#7ec850]/70 uppercase tracking-wider"
                   >Cheptel Actif</span
                 >
                 <div
@@ -277,7 +278,7 @@
 
           <!-- Finances summary block -->
           <div
-            class="p-6 bg-[#0B2112] border border-[#143E23]/30 rounded-3xl grid grid-cols-1 sm:grid-cols-3 gap-6 text-left shadow-lg stagger-card delay-5"
+            class="p-6 bg-[#0B2112] border border-[#143E23]/30 rounded-3xl grid grid-cols-1 sm:grid-cols-3 gap-6 text-left shadow-lg animate-on-scroll stagger-3"
           >
             <div>
               <p class="text-[10px] font-black text-[#A4C4AF] uppercase tracking-wider">
@@ -321,10 +322,10 @@
           </div>
 
           <!-- Middle widgets: Weather advice + summary items -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-on-scroll stagger-4">
             <!-- Weather recommendations -->
             <div
-              class="md:col-span-2 p-6 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-4 stagger-card delay-6"
+              class="md:col-span-2 p-6 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-4 card-hover"
             >
               <div
                 class="flex justify-between items-center pb-2 border-b border-slate-50 dark:border-slate-800/10"
@@ -335,7 +336,7 @@
                   <i data-lucide="cloud-lightning" class="h-4 w-4 text-emerald-500"></i> Bulletin
                   Météo & Recommandation
                   <span
-                    class="inline-flex items-center gap-1 text-[8px] bg-red-500/15 text-red-500 font-extrabold px-1.5 py-0.5 rounded-md animate-pulse"
+                    class="inline-flex items-center gap-1 text-[8px] bg-red-500/15 text-red-500 font-extrabold px-1.5 py-0.5 rounded-md"
                   >
                     <span class="h-1 w-1 bg-red-500 rounded-full"></span> DIRECT API
                   </span>
@@ -422,7 +423,7 @@
             <div class="space-y-4">
               <!-- Harvest ready crops -->
               <div
-                class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-3 stagger-card delay-7"
+                class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-3 card-hover"
               >
                 <h4
                   class="text-[10px] font-black text-slate-450 dark:text-slate-400 uppercase tracking-wider"
@@ -441,7 +442,7 @@
 
               <!-- Stocks critical warnings CORRIGÉ -->
               <div
-                class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-3 stagger-card delay-8"
+                class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-3 card-hover pulse-alert"
               >
                 <h4
                   class="text-[10px] font-black text-slate-450 dark:text-slate-400 uppercase tracking-wider"
@@ -460,7 +461,7 @@
 
               <!-- Recent Livestock Production -->
               <div
-                class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-3 cursor-pointer hover:border-emerald-500/30 transition-all stagger-card delay-9"
+                class="p-5 bg-white dark:bg-[#0B2112] border border-slate-100 dark:border-[#143E23]/30 rounded-3xl text-left space-y-3 cursor-pointer card-hover"
                 onclick="window.location.href = '/pages/shared/elevage.html'"
               >
                 <h4
@@ -584,6 +585,7 @@
     <script type="module" src="/js/router.js"></script>
     <script type="module" src="/js/app.js"></script>
     <script type="module" src="/js/modules/dashboard.js"></script>
+    <script type="module" src="/js/modules/scroll-animations.js"></script>
     <script type="module" src="/js/components/YieldsChart.jsx"></script>
   </body>
 </html>

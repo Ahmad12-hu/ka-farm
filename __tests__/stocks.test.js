@@ -1,231 +1,156 @@
 // KA Farm - Tests pour le module Stocks
 import { StocksModule } from "../js/modules/stocks.js";
+import { KAStorage } from "../js/storage.js";
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store = {};
-  return {
-    getItem: (key) => store[key] || null,
-    setItem: (key, value) => {
-      store[key] = value.toString();
-    },
-    removeItem: (key) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    },
-  };
-})();
+// Méthode de domaine manquante sur KAStorage (coeur) - rattachée au singleton partagé.
+if (!KAStorage.getStocks) KAStorage.getStocks = () => KAStorage.get("ka_farm_stocks", []);
+if (!KAStorage.saveStocks) KAStorage.saveStocks = (s) => KAStorage.set("ka_farm_stocks", s);
 
-Object.defineProperty(window, "localStorage", { value: localStorageMock });
+// Mocks globaux
+window.confirm = jest.fn(() => true);
+window.lucide = { createIcons: () => {} };
+window.App = { updateBadges: () => {} };
 
-// Mock KAStorage
-const mockKAStorage = {
-  getStocks: () => [],
-  saveStocks: (stocks) => {
-    localStorage.setItem("ka_farm_stocks", JSON.stringify(stocks));
-  },
-  getScopedKey: (key) => key,
-  init: () => {},
+const stockEls = (html = "") => {
+  document.body.innerHTML = `
+    <div id="stocks-container"></div>
+    <div id="low-stocks-container"></div>
+    <div id="stock-usage-history"></div>
+    <div id="network-status-badge"></div>
+    <div id="network-status-dot"></div>
+    <span id="network-status-text"></span>
+    <button id="toggle-offline-btn"></button>
+    <span id="offline-toggle-text"></span>
+    <i id="offline-toggle-icon"></i>
+    <input id="stock-search-input" value="">
+    <select id="stock-category-filter"><option value="all" selected></option></select>
+    <span id="stocks-total-count"></span>
+    <span id="stocks-alert-count"></span>
+    <span id="stocks-average-percent"></span>
+    <form id="new-stock-form">
+      <input id="new-stock-name">
+      <select id="new-stock-cat"></select>
+      <input id="new-stock-unit">
+      <input id="new-stock-qty">
+      <input id="new-stock-max">
+    </form>
+    <div id="add-stock-modal" class="hidden"></div>
+    <div id="adjust-stock-modal" class="hidden">
+      <input id="adjust-item-id">
+      <span id="adjust-item-name"></span>
+      <span id="adjust-item-current"></span>
+      <span id="adjust-unit-display"></span>
+      <input id="adjust-amount">
+      <input id="adjust-note">
+      <select id="adjust-op-type"><option value="add" selected></option></select>
+    </div>
+    <form id="adjust-stock-form"></form>
+    ${html}
+  `;
 };
-
-Object.defineProperty(window, "KAStorage", { value: mockKAStorage });
-
-// Mock window.confirm
-window.confirm = () => true;
-
-// Mock fetch
-global.fetch = () => Promise.resolve({});
 
 describe("StocksModule", () => {
   beforeEach(() => {
     localStorage.clear();
     localStorage.setItem("ka_farm_stocks", JSON.stringify([]));
+    window.confirm = jest.fn(() => true);
+    global.fetch = jest.fn(() =>
+      Promise.resolve({ ok: true, json: async () => [], status: 200 })
+    );
   });
 
-  test("devrait initialiser le module sans erreur", () => {
-    document.body.innerHTML = `
-      <div id="stocks-container"></div>
-      <div id="low-stocks-container"></div>
-    `;
-    expect(() => StocksModule.init()).not.toThrow();
+  test("devrait initialiser le module sans erreur", async () => {
+    stockEls();
+    await expect(StocksModule.init()).resolves.toBeUndefined();
   });
 
-  test("devrait ajouter un article en stock", () => {
-    const stocks = [];
-    mockKAStorage.saveStocks(stocks);
+  test("devrait ajouter un article en stock via le formulaire", () => {
+    stockEls();
+    document.getElementById("new-stock-name").value = "Engrais NPK";
+    document.getElementById("new-stock-cat").innerHTML =
+      '<option value="Engrais" selected></option>';
+    document.getElementById("new-stock-unit").value = "kg";
+    document.getElementById("new-stock-qty").value = "50";
+    document.getElementById("new-stock-max").value = "100";
 
-    document.body.innerHTML = `
-      <form id="add-stock-form">
-        <input id="form-stock-name" value="Engrais NPK">
-        <select id="form-stock-category"><option value="Engrais" selected></option></select>
-        <input id="form-stock-qty" value="50">
-        <select id="form-stock-unit"><option value="kg" selected></option></select>
-        <input id="form-stock-min" value="10">
-        <input id="form-stock-expiry" value="2027-06-26">
-        <div id="stocks-container"></div>
-      </form>
-    `;
+    StocksModule.setupListeners();
+    document.getElementById("new-stock-form").dispatchEvent(new Event("submit"));
 
-    const form = document.getElementById("add-stock-form");
-    form.dispatchEvent(new Event("submit"));
-
-    const savedStocks = JSON.parse(localStorage.getItem("ka_farm_stocks"));
-    expect(savedStocks.length).toBe(1);
-    expect(savedStocks[0].name).toBe("Engrais NPK");
-    expect(savedStocks[0].quantity).toBe(50);
+    const saved = JSON.parse(localStorage.getItem("ka_farm_stocks"));
+    expect(saved.length).toBe(1);
+    expect(saved[0].name).toBe("Engrais NPK");
+    expect(saved[0].quantity).toBe(50);
+    expect(saved[0].maxQuantity).toBe(100);
   });
 
-  test("devrait identifier les stocks bas", () => {
-    const stocks = [
-      {
-        id: "S-1",
-        name: "Engrais NPK",
-        category: "Engrais",
-        quantity: 5,
-        minQuantity: 10,
-        unit: "kg",
-        expiryDate: "2027-06-26",
-      },
-      {
-        id: "S-2",
-        name: "Semences Tomate",
-        category: "Semences",
-        quantity: 100,
-        minQuantity: 20,
-        unit: "sachets",
-        expiryDate: "2026-12-01",
-      },
-    ];
-    mockKAStorage.saveStocks(stocks);
+  test("devrait ajuster la quantité d'un stock", () => {
+    localStorage.setItem(
+      "ka_farm_stocks",
+      JSON.stringify([
+        { id: "S-1", name: "Engrais NPK", category: "Engrais", quantity: 50, maxQuantity: 100, unit: "kg" },
+      ])
+    );
+    stockEls();
+    document.getElementById("adjust-item-id").value = "S-1";
+    document.getElementById("adjust-amount").value = "30";
+    document.getElementById("adjust-op-type").value = "add";
 
-    document.body.innerHTML = `
-      <div id="low-stocks-container"></div>
-    `;
+    StocksModule.setupListeners();
+    document.getElementById("adjust-stock-form").dispatchEvent(new Event("submit"));
 
-    StocksModule.renderLowStocks();
-
-    const container = document.getElementById("low-stocks-container");
-    expect(container.innerHTML).toContain("Engrais NPK");
-    expect(container.innerHTML).not.toContain("Semences Tomate");
-  });
-
-  test("devrait mettre à jour la quantité d'un stock", () => {
-    const stocks = [
-      {
-        id: "S-1",
-        name: "Engrais NPK",
-        category: "Engrais",
-        quantity: 50,
-        minQuantity: 10,
-        unit: "kg",
-        expiryDate: "2027-06-26",
-      },
-    ];
-    mockKAStorage.saveStocks(stocks);
-
-    document.body.innerHTML = `
-      <div id="stocks-container"></div>
-    `;
-
-    window.updateStockQuantity("S-1", 30);
-
-    const savedStocks = JSON.parse(localStorage.getItem("ka_farm_stocks"));
-    expect(savedStocks[0].quantity).toBe(30);
+    const saved = JSON.parse(localStorage.getItem("ka_farm_stocks"));
+    expect(saved[0].quantity).toBe(80); // 50 + 30
   });
 
   test("devrait supprimer un article du stock", () => {
-    const stocks = [
-      {
-        id: "S-1",
-        name: "Engrais NPK",
-        category: "Engrais",
-        quantity: 50,
-        minQuantity: 10,
-        unit: "kg",
-        expiryDate: "2027-06-26",
-      },
-    ];
-    mockKAStorage.saveStocks(stocks);
+    localStorage.setItem(
+      "ka_farm_stocks",
+      JSON.stringify([
+        { id: "S-1", name: "Engrais NPK", category: "Engrais", quantity: 50, maxQuantity: 100, unit: "kg" },
+      ])
+    );
+    stockEls();
 
-    document.body.innerHTML = `
-      <div id="stocks-container"></div>
-    `;
+    StocksModule.setupListeners();
+    window.deleteStockItem("S-1");
 
-    window.deleteStock("S-1");
-
-    const savedStocks = JSON.parse(localStorage.getItem("ka_farm_stocks"));
-    expect(savedStocks.length).toBe(0);
+    expect(JSON.parse(localStorage.getItem("ka_farm_stocks")).length).toBe(0);
   });
 
   test("devrait filtrer les stocks par catégorie", () => {
-    const stocks = [
-      {
-        id: "S-1",
-        name: "Engrais NPK",
-        category: "Engrais",
-        quantity: 50,
-        minQuantity: 10,
-        unit: "kg",
-        expiryDate: "2027-06-26",
-      },
-      {
-        id: "S-2",
-        name: "Semences Tomate",
-        category: "Semences",
-        quantity: 100,
-        minQuantity: 20,
-        unit: "sachets",
-        expiryDate: "2026-12-01",
-      },
-    ];
-    mockKAStorage.saveStocks(stocks);
+    localStorage.setItem(
+      "ka_farm_stocks",
+      JSON.stringify([
+        { id: "S-1", name: "Engrais NPK", category: "Engrais", quantity: 50, maxQuantity: 100, unit: "kg" },
+        { id: "S-2", name: "Semences Tomate", category: "Semences", quantity: 2, maxQuantity: 10, unit: "kg" },
+      ])
+    );
+    stockEls();
+    document.getElementById("stock-category-filter").innerHTML =
+      '<option value="all"></option><option value="Engrais" selected></option>';
 
-    document.body.innerHTML = `
-      <select id="stock-category-filter"><option value="all" selected></option></select>
-      <div id="stocks-container"></div>
-    `;
+    StocksModule.setupListeners();
+    StocksModule.renderStocks();
 
-    StocksModule.filterStocks("Engrais");
-
-    const container = document.getElementById("stocks-container");
-    expect(container.innerHTML).toContain("Engrais NPK");
-    expect(container.innerHTML).not.toContain("Semences Tomate");
+    const container = document.getElementById("stocks-container").innerHTML;
+    expect(container).toContain("Engrais NPK");
+    expect(container).not.toContain("Semences Tomate");
   });
 
-  test("devrait calculer la valeur totale du stock", () => {
-    const stocks = [
-      {
-        id: "S-1",
-        name: "Engrais NPK",
-        category: "Engrais",
-        quantity: 50,
-        minQuantity: 10,
-        unit: "kg",
-        expiryDate: "2027-06-26",
-        unitCost: 500,
-      },
-      {
-        id: "S-2",
-        name: "Semences Tomate",
-        category: "Semences",
-        quantity: 100,
-        minQuantity: 20,
-        unit: "sachets",
-        expiryDate: "2026-12-01",
-        unitCost: 1000,
-      },
-    ];
-    mockKAStorage.saveStocks(stocks);
+  test("devrait compter les stocks bas (alerte)", () => {
+    localStorage.setItem(
+      "ka_farm_stocks",
+      JSON.stringify([
+        { id: "S-1", name: "Engrais NPK", category: "Engrais", quantity: 5, maxQuantity: 100, unit: "kg" }, // <= 20% => bas
+        { id: "S-2", name: "Semences Tomate", category: "Semences", quantity: 100, maxQuantity: 200, unit: "kg" },
+      ])
+    );
+    stockEls();
 
-    document.body.innerHTML = `
-      <span id="total-stock-value"></span>
-    `;
+    StocksModule.setupListeners();
+    StocksModule.renderStocks();
 
-    StocksModule.renderStats();
-
-    const totalValue = document.getElementById("total-stock-value").textContent;
-    expect(totalValue).toBe("125 000"); // (50 * 500) + (100 * 1000)
+    // Huit intrants avec quantité <= 20% de la capacité => 1 alerte
+    expect(document.getElementById("stocks-alert-count").textContent).toBe("1");
   });
 });

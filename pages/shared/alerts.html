@@ -1,362 +1,316 @@
 <!doctype html>
 <html lang="fr" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alertes Sanitaires & IA Advisor - KA Farm</title>
 
-    <!-- Favicon & Branding -->
-    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
-    <link rel="apple-touch-icon" href="/assets/logo.svg" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alertes Sanitaires & IA Advisor - KA Farm</title>
 
-    <!-- Tailwind CSS CDN & Lucide Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Favicon & Branding -->
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+  <link rel="apple-touch-icon" href="/assets/logo.svg" />
 
-    <!-- Custom separated Stylesheets -->
-    <link rel="stylesheet" href="/css/styles.css" />
+  <!-- Tailwind CSS CDN & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                dark: "#06130B",
-                slate: "#0B2112",
-                green: "#10B981",
-                hover: "#059669",
-              },
+  <!-- Custom separated Stylesheets -->
+  <link rel="stylesheet" href="/css/styles.css" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: "#06130B",
+              slate: "#0B2112",
+              green: "#10B981",
+              hover: "#059669",
             },
           },
         },
-      };
-    </script>
-  </head>
-  <body
-    class="bg-[#050e08] dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200"
-  >
-    <!-- Mobile Top Header Placeholder -->
-    <div id="mobile-header-placeholder"></div>
+      },
+    };
+  </script>
+</head>
 
-    <div class="min-h-screen flex flex-col lg:flex-row">
-      <!-- Sidebar Placeholder -->
-      <div id="sidebar-placeholder"></div>
+<body
+  class="bg-[#050e08] dark:bg-[#061109] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
+  <!-- Mobile Top Header Placeholder -->
+  <div id="mobile-header-placeholder"></div>
 
-      <!-- Main Content Stage -->
-      <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
-        <div class="w-full max-w-6xl mx-auto space-y-6">
-          <!-- Header with elegant gradient border design -->
-          <div
-            class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#143E23]/30 pb-5 text-left"
-          >
-            <div class="space-y-1">
-              <span
-                class="text-[10px] text-purple-400 font-extrabold uppercase tracking-widest bg-purple-500/10 border border-purple-500/20 px-2.5 py-1 rounded-full"
-              >
-                ⚡ Biosécurité, Vigilance & IA Appliquée
-              </span>
-              <h2
-                class="text-3xl font-black text-slate-850 dark:text-white flex items-center gap-2 mt-2"
-              >
-                <i data-lucide="shield-alert" class="h-8 w-8 text-purple-400"></i> Vigilance &
-                Diagnostics
-              </h2>
-              <p class="text-xs text-[#819888] font-bold">
-                Protégez l'exploitation KA Farm en surveillant les maladies et en concevant des
-                remèdes naturels avec notre IA horticole.
-              </p>
+  <div class="min-h-screen flex flex-col lg:flex-row">
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content Stage -->
+    <main class="flex-1 min-w-0 p-4 md:p-8 overflow-y-auto">
+      <div class="w-full max-w-6xl mx-auto space-y-6">
+        <!-- Header with elegant gradient border design -->
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#143E23]/30 pb-5 text-left">
+          <div class="space-y-1">
+            <span
+              class="text-[10px] text-purple-400 font-extrabold uppercase tracking-widest bg-purple-500/10 border border-purple-500/20 px-2.5 py-1 rounded-full">
+              ⚡ Biosécurité, Vigilance & IA Appliquée
+            </span>
+            <h2 class="text-3xl font-black text-slate-850 dark:text-white flex items-center gap-2 mt-2">
+              <i data-lucide="shield-alert" class="h-8 w-8 text-purple-400"></i> Vigilance &
+              Diagnostics
+            </h2>
+            <p class="text-xs text-[#819888] font-bold">
+              Protégez l'exploitation KA Farm en surveillant les maladies et en concevant des
+              remèdes naturels avec notre IA horticole.
+            </p>
+          </div>
+
+          <!-- Status Summary Cards -->
+          <div class="flex items-center gap-3">
+            <div class="bg-[#0B2112] border border-[#143E23]/40 p-3 rounded-2xl flex items-center gap-3">
+              <div
+                class="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <i data-lucide="activity" class="h-4 w-4"></i>
+              </div>
+              <div>
+                <p class="text-[8px] text-[#4F6D58] font-black uppercase tracking-widest">
+                  Santé Globale
+                </p>
+                <p class="text-xs font-black text-emerald-400">98.5% Saine</p>
+              </div>
             </div>
 
-            <!-- Status Summary Cards -->
-            <div class="flex items-center gap-3">
+            <div class="bg-[#0B2112] border border-[#143E23]/40 p-3 rounded-2xl flex items-center gap-3">
               <div
-                class="bg-[#0B2112] border border-[#143E23]/40 p-3 rounded-2xl flex items-center gap-3"
-              >
-                <div
-                  class="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400"
-                >
-                  <i data-lucide="activity" class="h-4 w-4"></i>
-                </div>
-                <div>
-                  <p class="text-[8px] text-[#4F6D58] font-black uppercase tracking-widest">
-                    Santé Globale
-                  </p>
-                  <p class="text-xs font-black text-emerald-400">98.5% Saine</p>
-                </div>
+                class="h-8 w-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <i data-lucide="bot" class="h-4 w-4"></i>
+              </div>
+              <div>
+                <p class="text-[8px] text-[#4F6D58] font-black uppercase tracking-widest">
+                  IA Advisor
+                </p>
+                <p class="text-xs font-black text-purple-400">Actif & Prêt</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Layout Split Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left columns: Alert logs (7/12 width) -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-black text-[#819888] uppercase tracking-wider text-left flex items-center gap-2">
+                <i data-lucide="bell-ring" class="h-4 w-4 text-emerald-400 animate-bounce"></i>
+                Anomalies actives signalées
+              </h3>
+
+              <!-- Action Button to Simulate Alert -->
+              <button onclick="window.simulateDemoAlert()"
+                class="px-3 py-1 bg-[#10B981]/10 hover:bg-[#10B981]/20 border border-[#10B981]/30 text-emerald-400 font-extrabold text-[9px] rounded-lg cursor-pointer transition-all flex items-center gap-1.5 uppercase tracking-wider">
+                <i data-lucide="plus-circle" class="h-3 w-3"></i> Simuler une alerte
+              </button>
+            </div>
+
+            <!-- Dynamic Alerts Container -->
+            <div id="alerts-container" class="space-y-4">
+              <!-- Populated dynamically via notifications.js -->
+            </div>
+
+            <!-- Precaution Guides / Protocols (Displayed below to enrich the screen beautifully) -->
+            <div class="bg-[#0B2112]/25 border border-[#143E23]/20 rounded-3xl p-6 text-left space-y-4">
+              <div class="flex items-center gap-2 pb-2 border-b border-[#143E23]/25">
+                <i data-lucide="book-open" class="h-4 w-4 text-emerald-400"></i>
+                <h4 class="text-xs font-black text-white uppercase tracking-wider">
+                  Protocoles de Biosécurité KA Farm
+                </h4>
               </div>
 
-              <div
-                class="bg-[#0B2112] border border-[#143E23]/40 p-3 rounded-2xl flex items-center gap-3"
-              >
-                <div
-                  class="h-8 w-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400"
-                >
-                  <i data-lucide="bot" class="h-4 w-4"></i>
-                </div>
-                <div>
-                  <p class="text-[8px] text-[#4F6D58] font-black uppercase tracking-widest">
-                    IA Advisor
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Guide 1 -->
+                <div class="p-4 bg-[#051009]/60 border border-[#143E23]/35 rounded-2xl space-y-2">
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="h-6 w-6 bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 rounded-lg flex items-center justify-center text-xs font-bold">01</span>
+                    <h5 class="text-xs font-black text-white">Mineuse de la Tomate (Tuta)</h5>
+                  </div>
+                  <p class="text-[11px] text-slate-400 leading-relaxed font-medium">
+                    Pulvérisation préventive hebdomadaire de
+                    <strong class="text-emerald-300">purin de Neem</strong> ou savon noir bio.
+                    Enlever et brûler immédiatement les feuilles attaquées.
                   </p>
-                  <p class="text-xs font-black text-purple-400">Actif & Prêt</p>
+                </div>
+
+                <!-- Guide 2 -->
+                <div class="p-4 bg-[#051009]/60 border border-[#143E23]/35 rounded-2xl space-y-2">
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="h-6 w-6 bg-purple-500/10 text-purple-400 border border-purple-500/25 rounded-lg flex items-center justify-center text-xs font-bold">02</span>
+                    <h5 class="text-xs font-black text-white">Mildiou & Humidité</h5>
+                  </div>
+                  <p class="text-[11px] text-slate-400 leading-relaxed font-medium">
+                    Éviter d'arroser les feuilles en fin de journée. Favoriser l'arrosage au pied
+                    par goutte-à-goutte pour maintenir le feuillage sec et aéré.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Main Layout Split Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left columns: Alert logs (7/12 width) -->
-            <div class="lg:col-span-7 space-y-6">
-              <div class="flex items-center justify-between">
-                <h3
-                  class="text-xs font-black text-[#819888] uppercase tracking-wider text-left flex items-center gap-2"
-                >
-                  <i data-lucide="bell-ring" class="h-4 w-4 text-emerald-400 animate-bounce"></i>
-                  Anomalies actives signalées
-                </h3>
-
-                <!-- Action Button to Simulate Alert -->
-                <button
-                  onclick="window.simulateDemoAlert()"
-                  class="px-3 py-1 bg-[#10B981]/10 hover:bg-[#10B981]/20 border border-[#10B981]/30 text-emerald-400 font-extrabold text-[9px] rounded-lg cursor-pointer transition-all flex items-center gap-1.5 uppercase tracking-wider"
-                >
-                  <i data-lucide="plus-circle" class="h-3 w-3"></i> Simuler une alerte
-                </button>
-              </div>
-
-              <!-- Dynamic Alerts Container -->
-              <div id="alerts-container" class="space-y-4">
-                <!-- Populated dynamically via notifications.js -->
-              </div>
-
-              <!-- Precaution Guides / Protocols (Displayed below to enrich the screen beautifully) -->
-              <div
-                class="bg-[#0B2112]/25 border border-[#143E23]/20 rounded-3xl p-6 text-left space-y-4"
-              >
-                <div class="flex items-center gap-2 pb-2 border-b border-[#143E23]/25">
-                  <i data-lucide="book-open" class="h-4 w-4 text-emerald-400"></i>
-                  <h4 class="text-xs font-black text-white uppercase tracking-wider">
-                    Protocoles de Biosécurité KA Farm
-                  </h4>
+          <!-- Right columns: Gemini Agro Chat workspace (5/12 width) -->
+          <div
+            class="lg:col-span-5 flex flex-col h-[700px] bg-[#05130B]/90 border border-[#143E23]/45 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-md text-left">
+            <!-- Chat Header -->
+            <div class="p-4 bg-[#051009]/85 border-b border-[#143E23]/40 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 bg-purple-500/10 border border-purple-500/30 text-purple-400 rounded-2xl flex items-center justify-center relative">
+                  <i data-lucide="bot" class="h-5 w-5 animate-pulse"></i>
+                  <!-- Pulsate Active Online Ring -->
+                  <span
+                    class="absolute bottom-0 right-0 h-2 w-2 bg-emerald-500 border border-[#06130B] rounded-full"></span>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <!-- Guide 1 -->
-                  <div class="p-4 bg-[#051009]/60 border border-[#143E23]/35 rounded-2xl space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span
-                        class="h-6 w-6 bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 rounded-lg flex items-center justify-center text-xs font-bold"
-                        >01</span
-                      >
-                      <h5 class="text-xs font-black text-white">Mineuse de la Tomate (Tuta)</h5>
-                    </div>
-                    <p class="text-[11px] text-slate-400 leading-relaxed font-medium">
-                      Pulvérisation préventive hebdomadaire de
-                      <strong class="text-emerald-300">purin de Neem</strong> ou savon noir bio.
-                      Enlever et brûler immédiatement les feuilles attaquées.
-                    </p>
-                  </div>
-
-                  <!-- Guide 2 -->
-                  <div class="p-4 bg-[#051009]/60 border border-[#143E23]/35 rounded-2xl space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span
-                        class="h-6 w-6 bg-purple-500/10 text-purple-400 border border-purple-500/25 rounded-lg flex items-center justify-center text-xs font-bold"
-                        >02</span
-                      >
-                      <h5 class="text-xs font-black text-white">Mildiou & Humidité</h5>
-                    </div>
-                    <p class="text-[11px] text-slate-400 leading-relaxed font-medium">
-                      Éviter d'arroser les feuilles en fin de journée. Favoriser l'arrosage au pied
-                      par goutte-à-goutte pour maintenir le feuillage sec et aéré.
-                    </p>
-                  </div>
+                <div>
+                  <h3 class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-1.5">
+                    KA-Advisor
+                    <span
+                      class="text-[9px] bg-purple-500/20 text-purple-400 px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">Éco-IA</span>
+                  </h3>
+                  <p class="text-[10px] text-[#819888] font-bold">
+                    Veille horticole connectée à KA Farm
+                  </p>
                 </div>
               </div>
+
+              <!-- Clear Chat History -->
+              <button onclick="window.clearChatHistory()"
+                class="p-2 text-slate-500 hover:text-rose-400 transition-colors" title="Effacer la discussion">
+                <i data-lucide="trash-2" class="h-4 w-4"></i>
+              </button>
             </div>
 
-            <!-- Right columns: Gemini Agro Chat workspace (5/12 width) -->
-            <div
-              class="lg:col-span-5 flex flex-col h-[700px] bg-[#05130B]/90 border border-[#143E23]/45 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-md text-left"
-            >
-              <!-- Chat Header -->
-              <div
-                class="p-4 bg-[#051009]/85 border-b border-[#143E23]/40 flex items-center justify-between"
-              >
-                <div class="flex items-center gap-3">
-                  <div
-                    class="h-10 w-10 bg-purple-500/10 border border-purple-500/30 text-purple-400 rounded-2xl flex items-center justify-center relative"
-                  >
-                    <i data-lucide="bot" class="h-5 w-5 animate-pulse"></i>
-                    <!-- Pulsate Active Online Ring -->
-                    <span
-                      class="absolute bottom-0 right-0 h-2 w-2 bg-emerald-500 border border-[#06130B] rounded-full"
-                    ></span>
-                  </div>
-                  <div>
-                    <h3
-                      class="text-xs font-black text-white uppercase tracking-widest flex items-center gap-1.5"
-                    >
-                      KA-Advisor
-                      <span
-                        class="text-[9px] bg-purple-500/20 text-purple-400 px-1.5 py-0.2 rounded font-bold uppercase tracking-wider"
-                        >Éco-IA</span
-                      >
-                    </h3>
-                    <p class="text-[10px] text-[#819888] font-bold">
-                      Veille horticole connectée à KA Farm
-                    </p>
-                  </div>
-                </div>
+            <!-- Chat Message Bubble Stream -->
+            <div id="advisor-chat-container"
+              class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4 min-h-0 bg-[#051009]/20">
+              <!-- Populated dynamically via notifications.js -->
+            </div>
 
-                <!-- Clear Chat History -->
-                <button
-                  onclick="window.clearChatHistory()"
-                  class="p-2 text-slate-500 hover:text-rose-400 transition-colors"
-                  title="Effacer la discussion"
-                >
-                  <i data-lucide="trash-2" class="h-4 w-4"></i>
-                </button>
-              </div>
-
-              <!-- Chat Message Bubble Stream -->
-              <div
-                id="advisor-chat-container"
-                class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4 min-h-0 bg-[#051009]/20"
-              >
-                <!-- Populated dynamically via notifications.js -->
-              </div>
-
-              <!-- Helper Quick Suggestion Chips (Predefined Questions) -->
-              <div class="p-4 bg-[#051009]/40 border-t border-[#143E23]/20 space-y-2">
-                <p class="text-[8px] font-black text-[#819888] uppercase tracking-widest pl-1">
-                  👉 Suggestions de recherche :
-                </p>
-                <div class="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto">
-                  <button
-                    onclick="
+            <!-- Helper Quick Suggestion Chips (Predefined Questions) -->
+            <div class="p-4 bg-[#051009]/40 border-t border-[#143E23]/20 space-y-2">
+              <p class="text-[8px] font-black text-[#819888] uppercase tracking-widest pl-1">
+                👉 Suggestions de recherche :
+              </p>
+              <div class="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto">
+                <button onclick="
                       window.askPreset('Fiche complète sur la Mineuse de la tomate (Tuta Absoluta)')
                     "
-                    class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer"
-                  >
-                    🐛 Tuta Absoluta
-                  </button>
-                  <button
-                    onclick="
+                  class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer">
+                  🐛 Tuta Absoluta
+                </button>
+                <button onclick="
                       window.askPreset('Comment préparer facilement du purin de neem à la ferme ?')
                     "
-                    class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer"
-                  >
-                    🌱 Purin de Neem
-                  </button>
-                  <button
-                    onclick="
+                  class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer">
+                  🌱 Purin de Neem
+                </button>
+                <button onclick="
                       window.askPreset(
                         'Quels sont les traitements naturels contre le Mildiou de l\'oignon rouge ?'
                       )
                     "
-                    class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer"
-                  >
-                    🧅 Mildiou Oignon
-                  </button>
-                  <button
-                    onclick="
+                  class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer">
+                  🧅 Mildiou Oignon
+                </button>
+                <button onclick="
                       window.askPreset('Recette et dosage du savon noir bio contre les pucerons')
                     "
-                    class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer"
-                  >
-                    🧼 Savon Noir & Pucerons
-                  </button>
-                </div>
+                  class="px-2.5 py-1.5 bg-[#0B2112]/50 hover:bg-purple-950/40 border border-[#143E23]/40 hover:border-purple-500/40 rounded-full text-[10px] font-bold text-slate-300 hover:text-purple-300 transition-all flex items-center gap-1 cursor-pointer">
+                  🧼 Savon Noir & Pucerons
+                </button>
               </div>
+            </div>
 
-              <!-- Chat Footer Input Form (Copilot style rounded input card) -->
-              <form id="advisor-chat-form" class="p-4 bg-[#051009]/80 border-t border-[#143E23]/30">
-                <div
-                  class="bg-[#0B2112] border border-[#143E23]/60 rounded-2xl p-3 focus-within:border-purple-500/80 transition-all flex flex-col gap-2 shadow-inner"
-                >
-                  <textarea
-                    id="advisor-chat-input"
-                    rows="2"
-                    required
-                    placeholder="Poser une question horticole ou demander un diagnostic..."
-                    class="w-full bg-transparent text-xs text-slate-200 outline-none placeholder:text-[#4F6D58] resize-none focus:ring-0 leading-relaxed"
-                  ></textarea>
+            <!-- Chat Footer Input Form (Copilot style rounded input card) -->
+            <form id="advisor-chat-form" class="p-4 bg-[#051009]/80 border-t border-[#143E23]/30">
+              <div
+                class="bg-[#0B2112] border border-[#143E23]/60 rounded-2xl p-3 focus-within:border-purple-500/80 transition-all flex flex-col gap-2 shadow-inner">
+                <textarea id="advisor-chat-input" rows="2" required
+                  placeholder="Poser une question horticole ou demander un diagnostic..."
+                  class="w-full bg-transparent text-xs text-slate-200 outline-none placeholder:text-[#4F6D58] resize-none focus:ring-0 leading-relaxed"></textarea>
 
-                  <!-- Bottom controls row -->
-                  <div
-                    class="flex items-center justify-between pt-2.5 border-t border-[#143E23]/25"
-                  >
-                    <!-- Left: Add button & model selection badge -->
-                    <div class="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onclick="window.simulateDemoAlert()"
-                        class="h-6.5 w-6.5 rounded-full bg-[#143E23]/50 hover:bg-[#143E23]/90 border border-[#143E23]/60 flex items-center justify-center text-[#819888] hover:text-white transition-colors cursor-pointer"
-                        title="Joindre un diagnostic / photo"
-                      >
-                        <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-                      </button>
+                <!-- Bottom controls row -->
+                <div class="flex items-center justify-between pt-2.5 border-t border-[#143E23]/25">
+                  <!-- Left: Add button & model selection badge -->
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="window.simulateDemoAlert()"
+                      class="h-6.5 w-6.5 rounded-full bg-[#143E23]/50 hover:bg-[#143E23]/90 border border-[#143E23]/60 flex items-center justify-center text-[#819888] hover:text-white transition-colors cursor-pointer"
+                      title="Joindre un diagnostic / photo">
+                      <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                    </button>
 
+                    <div class="flex items-center gap-1.5 min-w-0">
                       <div
-                        class="flex items-center gap-1 px-2 py-0.8 bg-purple-500/10 border border-purple-500/20 rounded-lg text-[9px] text-purple-300 font-extrabold cursor-pointer hover:bg-purple-950/20 hover:border-purple-500/40 transition-colors"
-                      >
+                        class="flex items-center gap-1 px-2 py-1 bg-purple-500/10 border border-purple-500/20 rounded-lg text-[9px] text-purple-300 font-extrabold cursor-pointer hover:bg-purple-950/20 hover:border-purple-500/40 transition-colors">
                         <span class="h-1 w-1 rounded-full bg-purple-400 animate-pulse"></span>
-                        <span>Éco-Conseil</span>
-                        <i data-lucide="chevron-down" class="h-2.5 w-2.5 text-purple-400"></i>
+                        <select id="advisor-agent-select"
+                          class="bg-transparent outline-none text-[9px] text-purple-300 font-extrabold cursor-pointer appearance-none"
+                          title="Choisir un agent IA spécialisé">
+                          <option value="advisor" class="bg-[#0B2112] text-slate-200">🤖 Conseiller Horticole IA
+                          </option>
+                          <option value="plantDoctor" class="bg-[#0B2112] text-slate-200">🔬 Docteur Plante IA</option>
+                          <option value="livestock" class="bg-[#0B2112] text-slate-200">🐄 Conseiller Élevage IA
+                          </option>
+                          <option value="finance" class="bg-[#0B2112] text-slate-200">💰 Analyste Financier IA</option>
+                          <option value="irrigation" class="bg-[#0B2112] text-slate-200">💧 Expert Irrigation IA
+                          </option>
+                          <option value="soil" class="bg-[#0B2112] text-slate-200">🌱 Expert Sol & Compost IA</option>
+                          <option value="personal" class="bg-[#0B2112] text-slate-200">📋 Assistant Personnel IA
+                          </option>
+                          <option value="wolofAdvisor" class="bg-[#0B2112] text-slate-200">🇸🇳 Conseiller en Wolof
+                          </option>
+                        </select>
+                        <i data-lucide="chevron-down" class="h-2.5 w-2.5 text-purple-400 pointer-events-none"></i>
                       </div>
                     </div>
+                  </div>
 
-                    <!-- Right: Vocals and Send button -->
-                    <div class="flex items-center gap-2">
-                      <button
-                        type="button"
-                        class="h-6.5 w-6.5 rounded-full text-[#819888] hover:text-purple-300 flex items-center justify-center hover:bg-[#143E23]/30 transition-colors cursor-pointer"
-                        title="Activer l'entrée vocale (Bêta)"
-                      >
-                        <i data-lucide="mic" class="h-3.5 w-3.5"></i>
-                      </button>
-                      <button
-                        type="submit"
-                        class="h-7.5 px-3 bg-purple-600 hover:bg-purple-500 text-white font-black text-[10px] rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
-                      >
-                        <span>Smart</span>
-                        <i data-lucide="send" class="h-3 w-3"></i>
-                      </button>
-                    </div>
+                  <!-- Right: Vocals and Send button -->
+                  <div class="flex items-center gap-2">
+                    <button type="button"
+                      class="h-6.5 w-6.5 rounded-full text-[#819888] hover:text-purple-300 flex items-center justify-center hover:bg-[#143E23]/30 transition-colors cursor-pointer"
+                      title="Activer l'entrée vocale (Bêta)">
+                      <i data-lucide="mic" class="h-3.5 w-3.5"></i>
+                    </button>
+                    <button type="submit"
+                      class="h-7.5 px-3 bg-purple-600 hover:bg-purple-500 text-white font-black text-[10px] rounded-xl shadow-lg transition-all flex items-center gap-1.5 cursor-pointer hover:scale-[1.02] active:scale-[0.98]">
+                      <span>Smart</span>
+                      <i data-lucide="send" class="h-3 w-3"></i>
+                    </button>
                   </div>
                 </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
+  </div>
 
-    <!-- Fullscreen Photo Modal -->
-    <div
-      id="photo-modal"
-      class="fixed inset-0 z-50 bg-black/95 hidden flex items-center justify-center p-4"
-      onclick="window.closePhotoModal()"
-    >
-      <button
-        class="absolute top-4 right-4 text-white hover:text-emerald-400 transition-colors p-2"
-      >
-        <i data-lucide="x" class="h-8 w-8"></i>
-      </button>
-      <img
-        id="modal-image"
-        src=""
-        alt="Photo d'Alerte Grand Format"
-        class="max-w-full max-h-full rounded-2xl border border-emerald-500/10 object-contain shadow-2xl"
-      />
-    </div>
+  <!-- Fullscreen Photo Modal -->
+  <div id="photo-modal" class="fixed inset-0 z-50 bg-black/95 hidden flex items-center justify-center p-4"
+    onclick="window.closePhotoModal()">
+    <button class="absolute top-4 right-4 text-white hover:text-emerald-400 transition-colors p-2">
+      <i data-lucide="x" class="h-8 w-8"></i>
+    </button>
+    <img id="modal-image" src="" alt="Photo d'Alerte Grand Format"
+      class="max-w-full max-h-full rounded-2xl border border-emerald-500/10 object-contain shadow-2xl" />
+  </div>
 
-    <!-- Shared App & Notifications Module Entry Points -->
-    <script type="module" src="/js/router.js"></script>
-    <script type="module" src="/js/app.js"></script>
-    <script type="module" src="/js/modules/notifications.js"></script>
-  </body>
+  <!-- Shared App & Notifications Module Entry Points -->
+  <script type="module" src="/js/router.js"></script>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="/js/modules/notifications.js"></script>
+</body>
+
 </html>

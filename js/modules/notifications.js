@@ -2,14 +2,39 @@
 import { KAStorage } from "../storage.js";
 import { logger } from "./logger.js";
 import { ErrorHandler } from "./error-handler.js";
+import { AIService } from "./ai-service.js";
 
 let chatHistory = [];
+let currentAgent = "advisor";
+let currentLanguage = "fr";
 
 export const NotificationsModule = {
   init() {
     this.renderAlerts();
     this.renderAdvisorChat();
     this.setupListeners();
+    this.loadAgents();
+  },
+
+  async loadAgents() {
+    try {
+      const res = await fetch("/api/ai/agents");
+      if (res.ok) {
+        const agents = await res.json();
+        const select = document.getElementById("advisor-agent-select");
+        if (select && agents.length) {
+          select.innerHTML = agents
+            .map(
+              (a) =>
+                `<option value="${a.id}">${a.name} - ${a.description}</option>`
+            )
+            .join("");
+          select.value = currentAgent;
+        }
+      }
+    } catch (err) {
+      logger.warn("Notifications: Failed to load AI agents", { error: err.message });
+    }
   },
 
   renderAlerts() {
@@ -230,26 +255,19 @@ export const NotificationsModule = {
     }
 
     try {
-      const res = await fetch("/api/gemini", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt,
-          history: chatHistory.slice(0, -1), // Excluding the latest prompt we just pushed
-        }),
+      // Utiliser le service IA centralisé avec l'agent sélectionné
+      const result = await AIService.ask({
+        prompt,
+        agentType: currentAgent,
+        history: chatHistory.slice(0, -1),
+        language: currentLanguage,
       });
-
-      const data = await res.json();
 
       // Remove loading indicator
       const loaderEl = document.getElementById(loadingId);
       if (loaderEl) loaderEl.remove();
 
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      chatHistory.push({ role: "advisor", text: data.text });
+      chatHistory.push({ role: "advisor", text: result.text });
     } catch (err) {
       logger.error("Notifications: Error sending to advisor", { error: err.message });
       const loaderEl = document.getElementById(loadingId);
@@ -257,7 +275,7 @@ export const NotificationsModule = {
 
       chatHistory.push({
         role: "advisor",
-        text: `⚠️ Désolé, une erreur technique est survenue lors de la communication avec l'IA horticole : ${err.message || "Serveur indisponible"}.`,
+        text: `⚠️ Désolé, une erreur technique est survenue lors de la communication avec l'IA : ${err.message || "Serveur indisponible"}.`,
       });
     }
 
@@ -275,6 +293,17 @@ export const NotificationsModule = {
         const val = input.value;
         input.value = "";
         this.sendToAdvisor(val);
+      });
+    }
+
+    // Agent selector - change AI specialist
+    const agentSelect = document.getElementById("advisor-agent-select");
+    if (agentSelect) {
+      agentSelect.addEventListener("change", (e) => {
+        currentAgent = e.target.value;
+        // If Wolof selected, switch language
+        currentLanguage = currentAgent === "wolofAdvisor" ? "wo" : "fr";
+        logger.info("AI Agent changed", { agent: currentAgent, language: currentLanguage });
       });
     }
 
