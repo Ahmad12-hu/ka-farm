@@ -620,6 +620,40 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 ```
 
+> ### ⚠️ Note d'état : écart entre ce document et le code réel (2026-08-09)
+>
+> Le flux Supabase décrit ci-dessus (stockage de `kafarm_token` + `kafarm_user` au
+> login) est l'**architecture cible**, mais **n'est PAS encore implémenté dans le
+> frontend**.
+>
+> **État actuel du code** :
+> - `js/auth.js` effectue une authentification **locale** (via `localStorage` +
+>   `KAStorage`), et le frontend **n'envoie jamais** de token `Authorization:
+>   Bearer ...` dans ses appels `fetch`.
+> - En conséquence, **toutes les routes protégées par `requireAuth` du backend
+>   de production** (`api/index.js`) — à commencer par l'IA (`/api/gemini`,
+>   `/api/ai/*`) et `/api/stocks` — renvoient **401** lorsque le frontend les
+>   appelle, car aucun token n'est fourni.
+> - En **développement local** (`server.js`), les routes IA ne sont **pas**
+>   protégées, donc l'IA fonctionne en local.
+>
+> **Résolution prévue** : migrer l'authentification frontend vers **Firebase
+> Auth** (`signInWithEmailAndPassword`, `onAuthStateChanged`) afin que chaque
+> requête envoie un **ID token Firebase** valide. Cette migration débloquera
+> automatiquement **toutes** les routes `requireAuth` (IA + données), sans
+> nécessiter de route JWT de session temporaire.
+>
+> **Ne pas faire** : construire un second mécanisme de session JWT juste pour
+> l'IA — il serait jetable après la migration Firebase Auth.
+>
+> **Liste des routes concernées (bloquées en prod tant que la migration n'est
+> pas faite)** :
+> - IA : `/api/gemini`, `/api/ai/openai`, `/api/ai/claude`, `/api/ai/stream`,
+>   `/api/ai/agents`, `/api/ai/translate`
+> - Données : `/api/stocks` (et toutes les routes `requireAuth` de `/api/crops`,
+>   `/api/parcelles`, etc. si jamais appelées par le frontend)
+> - Non concernées (publiques) : `/api/weather`, `/api/health`, `/api/auth/login`
+
 ### 2.5 Page de login
 
 **`pages/auth/login.html`** (NOUVEAU) :

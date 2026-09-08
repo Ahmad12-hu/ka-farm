@@ -322,6 +322,31 @@ function requireAuth(req, res, next) {
 // /api/weather ne dépend pas de Firestore (API Open-Meteo externe)
 app.use(["/api/auth/login"], requireFirestoreReady);
 
+// ⚠️ NOTE DE MIGRATION IA / AUTH (2026-08-09)
+// ------------------------------------------------------------------
+// Les routes IA ci-dessous sont protégées par requireAuth (JWT `Authorization:
+// Bearer <token>`, signé avec JWT_SECRET). OR le frontend actuel utilise une
+// authentification LOCALE (js/auth.js -> localStorage) et n'envoie AUCUN token
+// dans ses appels fetch (js/index-main.js, js/modules/ai-service.js,
+// js/modules/crops.js, js/modules/diagnostics.js, js/modules/notifications.js,
+// pages/shared/training.html).
+//
+// CONSÉQUENCE : l'IA (et toute autre route requireAuth appelée par le frontend)
+// ne fonctionne PAS en production sur Vercel (réponse 401 « Token requis »).
+// En développement (`server.js`), les routes IA ne sont PAS protégées, donc l'IA
+// fonctionne en local.
+//
+// CETTE LIMITATION SERA RÉSOLUE AUTOMATIQUEMENT par la migration Firebase Auth
+// côté client : remplacer js/auth.js/localStorage par le SDK Firebase Auth
+// (signInWithEmailAndPassword, onAuthStateChanged). Une fois la migration faite,
+// le frontend enverra un ID token Firebase avec chaque requête (toutes les routes
+// requireAuth seront débloquées d'un coup, y compris /api/gemini).
+//
+// → Ne pas construire de route de session JWT temporaire pour l'IA : cela
+//   créerait un second système d'auth à jeter ensuite. Attendre la migration
+//   Firebase Auth.
+// ------------------------------------------------------------------
+
 // Protected AI routes (auth required, no Firestore dependency)
 // /api/gemini et /api/ai/* ne dépendent pas de Firestore : on les isole du middleware
 // requireFirestoreReady pour éviter un blocage silencieux (503) lorsque

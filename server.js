@@ -438,7 +438,7 @@ async function startServer() {
 
   // Helper pour appeler Gemini avec retry
   async function callGeminiWithRetry(ai, model, contents, systemInstruction) {
-    const modelsToTry = [model, "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+    const modelsToTry = [model, "gemini-3.6-flash", "gemini-3.5-flash-lite"];
     let response = null;
     let lastError = null;
 
@@ -525,7 +525,7 @@ async function startServer() {
         ? [...contents, { role: "user", parts: requestParts }]
         : requestParts;
 
-      const response = await callGeminiWithRetry(ai, model || "gemini-2.5-flash", finalContents, systemInstruction);
+      const response = await callGeminiWithRetry(ai, model || "gemini-3.6-flash", finalContents, systemInstruction);
 
       return res.json({ text: response.text });
     } catch (error) {
@@ -749,7 +749,7 @@ async function startServer() {
 
       try {
         const stream = await ai.models.generateContentStream({
-          model: "gemini-2.5-flash",
+          model: "gemini-3.6-flash",
           contents: finalContents,
           config: {
             systemInstruction,
@@ -808,7 +808,7 @@ async function startServer() {
       });
 
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3.6-flash",
         contents: [
           {
             role: "user",
